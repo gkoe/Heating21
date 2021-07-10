@@ -1,0 +1,15 @@
+version: '3'
+services:
+  heating:
+    image: heating:latest
+    container_name: heating
+    environment:
+      ASPNETCORE_URLS: http://0.0.0.0:5000
+      ASPNETCORE_ENVIRONMENT: Development
+    restart: always
+    ports:
+      - 8085:5000
+      - 0.0.0.0:49152:49152/udp
+    volumes:
+      - /home/pi/docker/volumes/heating:/app/data
+  

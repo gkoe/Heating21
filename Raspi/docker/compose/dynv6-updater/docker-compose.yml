@@ -1,0 +1,9 @@
+version: '2.2'
+services:
+  openhab:
+    image: gkoe/dynv6-updater-raspi
+    container_name: dynv6-updater
+    restart: always
+    network_mode: host
+    volumes:
+      - /home/pi/docker/volumes/dynv6-updater/config/:/usr/src/app/config/

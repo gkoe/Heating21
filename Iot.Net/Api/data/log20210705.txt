@@ -1,0 +1,255 @@
+07/05/2021 10:04:08;INF;App starting ...;
+07/05/2021 10:04:12;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/05/2021 10:04:14;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/05/2021 10:04:16;INF;Executed DbCommand ("952"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/05/2021 10:04:16;INF;Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/05/2021 10:04:17;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/05/2021 10:04:17;INF;Now listening on: "https://localhost:5001";
+07/05/2021 10:04:17;INF;Now listening on: "http://localhost:5000";
+07/05/2021 10:04:17;INF;Application started. Press Ctrl+C to shut down.;
+07/05/2021 10:04:17;INF;Hosting environment: "Development";
+07/05/2021 10:04:17;INF;Content root path: "D:\work\CSharp\iot.net\Iot.Net\Api";
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/05/2021 10:04:18;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 34.3178ms;
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/05/2021 10:04:18;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 56.4747ms;
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/05/2021 10:04:18;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/05/2021 10:04:18;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/05/2021 10:04:18;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/05/2021 10:04:18;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 986342 application/javascript 33.6628ms;
+07/05/2021 10:04:18;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 311804 application/javascript 36.4757ms;
+07/05/2021 10:04:18;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 142933 text/css 39.6358ms;
+07/05/2021 10:04:18;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/05/2021 10:04:19;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 140.9511ms;
+07/05/2021 10:04:29;INF;Request starting HTTP/2 OPTIONS https://localhost:5001/api/account/login - -;
+07/05/2021 10:04:29;INF;CORS policy execution successful.;
+07/05/2021 10:04:29;INF;Request finished HTTP/2 OPTIONS https://localhost:5001/api/account/login - - - 204 - - 8.3417ms;
+07/05/2021 10:04:29;INF;Request starting HTTP/2 POST https://localhost:5001/api/account/login application/json;+charset=utf-8 50;
+07/05/2021 10:04:29;INF;CORS policy execution successful.;
+07/05/2021 10:04:29;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/05/2021 10:04:29;INF;Executing endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/05/2021 10:04:29;INF;Route matched with "{action = \"Login\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Common.DataTransferObjects.LoginRequestDto)" on controller "Api.Controllers.AccountController" ("Api").;
+07/05/2021 10:04:29;INF;Executing action method "Api.Controllers.AccountController.Login (Api)" - Validation state: Valid;
+07/05/2021 10:04:30;INF;Executed DbCommand ("5"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__user_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ClaimType\", \"a\".\"ClaimValue\", \"a\".\"UserId\"
+FROM \"AspNetUserClaims\" AS \"a\"
+WHERE \"a\".\"UserId\" = @__user_Id_0";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 5)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"
+WHERE \"a\".\"NormalizedName\" = @__normalizedName_0
+LIMIT 1";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__role_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"ClaimType\", \"a\".\"ClaimValue\"
+FROM \"AspNetRoleClaims\" AS \"a\"
+WHERE \"a\".\"RoleId\" = @__role_Id_0";
+07/05/2021 10:04:30;INF;AuthenticationScheme: "Identity.Application" signed in.;
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedEmail\" = @__normalizedEmail_0
+LIMIT 2";
+07/05/2021 10:04:30;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/05/2021 10:04:30;INF;Executed DbCommand ("2"ms) [Parameters=["@p0='?' (Size = 36), @p1='?', @p2='?'"], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO \"Sessions\" (\"ApplicationUserId\", \"Login\", \"Logout\")
+VALUES (@p0, @p1, @p2);
+SELECT \"Id\", \"RowVersion\"
+FROM \"Sessions\"
+WHERE changes() = 1 AND \"rowid\" = last_insert_rowid();";
+07/05/2021 10:04:31;INF;Executed action method "Api.Controllers.AccountController.Login (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 1980.6247ms.;
+07/05/2021 10:04:32;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.LoginResponseDto"'.;
+07/05/2021 10:04:32;INF;Executed action "Api.Controllers.AccountController.Login (Api)" in 2324.7765ms;
+07/05/2021 10:04:32;INF;Executed endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/05/2021 10:04:32;INF;Request finished HTTP/2 POST https://localhost:5001/api/account/login application/json;+charset=utf-8 50 - 200 719 application/json;+charset=utf-8 2668.6706ms;
+07/05/2021 10:04:35;INF;Request starting HTTP/2 OPTIONS https://localhost:5001/api/account/get - -;
+07/05/2021 10:04:35;INF;CORS policy execution successful.;
+07/05/2021 10:04:35;INF;Request finished HTTP/2 OPTIONS https://localhost:5001/api/account/get - - - 204 - - 5.0955ms;
+07/05/2021 10:04:35;INF;Request starting HTTP/2 GET https://localhost:5001/api/account/get - -;
+07/05/2021 10:04:35;INF;CORS policy execution successful.;
+07/05/2021 10:04:35;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/05/2021 10:04:35;INF;Executed DbCommand ("1"ms) [Parameters=["@__mail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (\"a\".\"Email\" = @__mail_0)
+LIMIT 1";
+07/05/2021 10:04:35;INF;Executed DbCommand ("3"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\"
+FROM \"Sessions\" AS \"s\"
+WHERE \"s\".\"ApplicationUserId\" = @__userId_0
+ORDER BY \"s\".\"Login\" DESC
+LIMIT 1";
+07/05/2021 10:04:35;INF;Successfully validated the token.;
+07/05/2021 10:04:35;INF;Authorization was successful.;
+07/05/2021 10:04:35;INF;Executing endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/05/2021 10:04:35;INF;Route matched with "{action = \"Get\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get()" on controller "Api.Controllers.AccountController" ("Api").;
+07/05/2021 10:04:35;INF;Executing action method "Api.Controllers.AccountController.Get (Api)" - Validation state: Valid;
+07/05/2021 10:04:35;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"Discriminator\" = 'ApplicationUser'
+ORDER BY \"a\".\"UserName\"";
+07/05/2021 10:04:35;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"";
+07/05/2021 10:04:35;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"UserId\", \"a\".\"RoleId\"
+FROM \"AspNetUserRoles\" AS \"a\"";
+07/05/2021 10:04:38;INF;Executed DbCommand ("1,983"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"t0\".\"Id\", \"t0\".\"ApplicationUserId\", \"t0\".\"Login\", \"t0\".\"Logout\", \"t0\".\"RowVersion\"
+FROM \"AspNetUsers\" AS \"a\"
+LEFT JOIN (
+    SELECT \"t\".\"Id\", \"t\".\"ApplicationUserId\", \"t\".\"Login\", \"t\".\"Logout\", \"t\".\"RowVersion\"
+    FROM (
+        SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\", ROW_NUMBER() OVER(PARTITION BY \"s\".\"ApplicationUserId\" ORDER BY \"s\".\"Login\" DESC) AS \"row\"
+        FROM \"Sessions\" AS \"s\"
+    ) AS \"t\"
+    WHERE \"t\".\"row\" <= 1
+) AS \"t0\" ON \"a\".\"Id\" = \"t0\".\"ApplicationUserId\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (
+    SELECT \"s0\".\"Id\"
+    FROM \"Sessions\" AS \"s0\"
+    WHERE \"a\".\"Id\" = \"s0\".\"ApplicationUserId\"
+    ORDER BY \"s0\".\"Login\" DESC
+    LIMIT 1) IS NOT NULL";
+07/05/2021 10:04:38;INF;Executed action method "Api.Controllers.AccountController.Get (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 2884.8713ms.;
+07/05/2021 10:04:38;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.UserDetailsDto[]"'.;
+07/05/2021 10:04:38;INF;Executed action "Api.Controllers.AccountController.Get (Api)" in 2928.8145ms;
+07/05/2021 10:04:38;INF;Executed endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/05/2021 10:04:38;INF;Request finished HTTP/2 GET https://localhost:5001/api/account/get - - - 200 806 application/json;+charset=utf-8 3419.9169ms;
+07/05/2021 10:05:09;INF;Request starting HTTP/2 POST https://localhost:5001/api/account/login application/json-patch+json 50;
+07/05/2021 10:05:09;INF;CORS policy execution successful.;
+07/05/2021 10:05:09;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/05/2021 10:05:09;INF;Executing endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/05/2021 10:05:09;INF;Route matched with "{action = \"Login\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Common.DataTransferObjects.LoginRequestDto)" on controller "Api.Controllers.AccountController" ("Api").;
+07/05/2021 10:05:09;INF;Executing action method "Api.Controllers.AccountController.Login (Api)" - Validation state: Valid;
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__user_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ClaimType\", \"a\".\"ClaimValue\", \"a\".\"UserId\"
+FROM \"AspNetUserClaims\" AS \"a\"
+WHERE \"a\".\"UserId\" = @__user_Id_0";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 5)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"
+WHERE \"a\".\"NormalizedName\" = @__normalizedName_0
+LIMIT 1";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__role_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"ClaimType\", \"a\".\"ClaimValue\"
+FROM \"AspNetRoleClaims\" AS \"a\"
+WHERE \"a\".\"RoleId\" = @__role_Id_0";
+07/05/2021 10:05:09;INF;AuthenticationScheme: "Identity.Application" signed in.;
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedEmail\" = @__normalizedEmail_0
+LIMIT 2";
+07/05/2021 10:05:09;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/05/2021 10:05:09;INF;Executed DbCommand ("0"ms) [Parameters=["@p0='?' (Size = 36), @p1='?', @p2='?'"], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO \"Sessions\" (\"ApplicationUserId\", \"Login\", \"Logout\")
+VALUES (@p0, @p1, @p2);
+SELECT \"Id\", \"RowVersion\"
+FROM \"Sessions\"
+WHERE changes() = 1 AND \"rowid\" = last_insert_rowid();";
+07/05/2021 10:05:12;INF;Executed action method "Api.Controllers.AccountController.Login (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 3240.5742ms.;
+07/05/2021 10:05:12;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.LoginResponseDto"'.;
+07/05/2021 10:05:12;INF;Executed action "Api.Controllers.AccountController.Login (Api)" in 3278.6624ms;
+07/05/2021 10:05:12;INF;Executed endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/05/2021 10:05:12;INF;Request finished HTTP/2 POST https://localhost:5001/api/account/login application/json-patch+json 50 - 200 719 application/json;+charset=utf-8 3297.5597ms;
+07/05/2021 10:05:51;INF;Request starting HTTP/2 GET https://localhost:5001/api/account/get - -;
+07/05/2021 10:05:51;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/05/2021 10:05:51;INF;Executed DbCommand ("9"ms) [Parameters=["@__mail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (\"a\".\"Email\" = @__mail_0)
+LIMIT 1";
+07/05/2021 10:05:51;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\"
+FROM \"Sessions\" AS \"s\"
+WHERE \"s\".\"ApplicationUserId\" = @__userId_0
+ORDER BY \"s\".\"Login\" DESC
+LIMIT 1";
+07/05/2021 10:05:51;INF;Successfully validated the token.;
+07/05/2021 10:05:51;INF;Authorization was successful.;
+07/05/2021 10:05:51;INF;Executing endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/05/2021 10:05:51;INF;Route matched with "{action = \"Get\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get()" on controller "Api.Controllers.AccountController" ("Api").;
+07/05/2021 10:05:51;INF;Executing action method "Api.Controllers.AccountController.Get (Api)" - Validation state: Valid;
+07/05/2021 10:05:51;INF;Executed DbCommand ("620"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"Discriminator\" = 'ApplicationUser'
+ORDER BY \"a\".\"UserName\"";
+07/05/2021 10:05:51;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"";
+07/05/2021 10:05:51;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"UserId\", \"a\".\"RoleId\"
+FROM \"AspNetUserRoles\" AS \"a\"";
+07/05/2021 10:05:51;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"t0\".\"Id\", \"t0\".\"ApplicationUserId\", \"t0\".\"Login\", \"t0\".\"Logout\", \"t0\".\"RowVersion\"
+FROM \"AspNetUsers\" AS \"a\"
+LEFT JOIN (
+    SELECT \"t\".\"Id\", \"t\".\"ApplicationUserId\", \"t\".\"Login\", \"t\".\"Logout\", \"t\".\"RowVersion\"
+    FROM (
+        SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\", ROW_NUMBER() OVER(PARTITION BY \"s\".\"ApplicationUserId\" ORDER BY \"s\".\"Login\" DESC) AS \"row\"
+        FROM \"Sessions\" AS \"s\"
+    ) AS \"t\"
+    WHERE \"t\".\"row\" <= 1
+) AS \"t0\" ON \"a\".\"Id\" = \"t0\".\"ApplicationUserId\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (
+    SELECT \"s0\".\"Id\"
+    FROM \"Sessions\" AS \"s0\"
+    WHERE \"a\".\"Id\" = \"s0\".\"ApplicationUserId\"
+    ORDER BY \"s0\".\"Login\" DESC
+    LIMIT 1) IS NOT NULL";
+07/05/2021 10:05:51;INF;Executed action method "Api.Controllers.AccountController.Get (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 645.0796ms.;
+07/05/2021 10:05:51;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.UserDetailsDto[]"'.;
+07/05/2021 10:05:51;INF;Executed action "Api.Controllers.AccountController.Get (Api)" in 673.653ms;
+07/05/2021 10:05:51;INF;Executed endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/05/2021 10:05:51;INF;Request finished HTTP/2 GET https://localhost:5001/api/account/get - - - 200 806 application/json;+charset=utf-8 715.0592ms;

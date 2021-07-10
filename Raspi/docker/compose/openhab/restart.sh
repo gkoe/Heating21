@@ -1,0 +1,1 @@
+docker-compose -f /volume1/homes/gerald/docker/compose/openhab/docker-compose.yml restart
