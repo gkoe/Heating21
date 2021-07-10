@@ -1,14 +1,13 @@
 ﻿using Common.Persistence;
-using Common.Persistence.Entities;
-
+using Core.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace Persistence
 {
     public class ApplicationDbContext : CommonApplicationDbContext
     {
-        //public DbSet<Locker> Lockers { get; set; }
-        //public DbSet<Booking> Bookings { get; set; }
+        public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<Measurement> Measurements { get; set; }
 
 
         public ApplicationDbContext():base()

@@ -1,11 +1,5 @@
-﻿using System.Configuration;
-
-using Common.Persistence;
-
+﻿using Common.Persistence;
 using Core.Contracts;
-
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 
 namespace Persistence
 {
@@ -17,9 +11,13 @@ namespace Persistence
 
         public UnitOfWork(ApplicationDbContext applicationDbContext) : base(applicationDbContext)
         {
-            //_configuration = configuration;
-            //PupilRepository = new PupilRepository(_dbContext);
+            Sensors = new SensorRepository(applicationDbContext);
+            Measurements = new MeasurementRepository(applicationDbContext);
         }
+
+        public ISensorRepository Sensors { get; }
+        public IMeasurementRepository Measurements { get; }
+
 
         //DbContextOptionsBuilder CreateOptions()
         //{
