@@ -1,23 +1,10 @@
 ﻿@page "/demo"
 
-<h3>Demo</h3>
+<h3>SignalR-Demo</h3>
 
-<div>
-    Name: @Name
-</div>
-
-<div>
-    IsAuthenticated: @IsAuthenticated
-</div>
-
-<div>
-    AuthenticationType: @AuthenticationType
-</div>
-
-<div>
-    Role: @Role
-</div>
-
-<div>
-    Expirationtime: @ExpirationTime
-</div>
+<ul id="messagesList">
+    @foreach (var message in Messages)
+    {
+        <li>@message</li>
+    }
+</ul>

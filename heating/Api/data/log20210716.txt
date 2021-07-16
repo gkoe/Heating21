@@ -1,0 +1,173 @@
+07/16/2021 14:06:10;INF;App starting ...;
+07/16/2021 14:06:16;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/16/2021 14:06:16;INF;SerialCommunicationService started;
+07/16/2021 14:06:16;FTL;App starting failed!;
+System.UnauthorizedAccessException: Access to the path 'COM3' is denied.
+   at System.IO.Ports.SerialStream..ctor(String portName, Int32 baudRate, Parity parity, Int32 dataBits, StopBits stopBits, Int32 readTimeout, Int32 writeTimeout, Handshake handshake, Boolean dtrEnable, Boolean rtsEnable, Boolean discardNull, Byte parityReplace)
+   at System.IO.Ports.SerialPort.Open()
+   at Services.SerialCommunicationService.ExecuteAsync(CancellationToken stoppingToken) in D:\work\CSharp\Heating21\heating\Services\SerialCommunicationService.cs:line 26
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Api.Program.Main(String[] args) in D:\work\CSharp\Heating21\heating\Api\Program.cs:line 24
+07/16/2021 14:06:39;INF;App starting ...;
+07/16/2021 14:06:41;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/16/2021 14:06:41;INF;SerialCommunicationService started;
+07/16/2021 14:06:41;INF;SerialCommunicationService, Port is open!;
+07/16/2021 14:06:43;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:06:43;INF;Executed DbCommand ("31"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/16/2021 14:06:43;INF;Executed DbCommand ("2"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/16/2021 14:06:43;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/16/2021 14:06:44;INF;Now listening on: "https://localhost:5001";
+07/16/2021 14:06:44;INF;Now listening on: "http://localhost:5000";
+07/16/2021 14:06:44;INF;Application started. Press Ctrl+C to shut down.;
+07/16/2021 14:06:44;INF;Hosting environment: "Development";
+07/16/2021 14:06:44;INF;Content root path: "D:\work\CSharp\Heating21\heating\Api";
+07/16/2021 14:06:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/16/2021 14:06:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 150.6819ms;
+07/16/2021 14:06:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/16/2021 14:06:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 282.6012ms;
+07/16/2021 14:06:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/16/2021 14:06:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/16/2021 14:06:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/16/2021 14:06:48;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/16/2021 14:06:48;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/16/2021 14:06:48;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 - text/css 789.3106ms;
+07/16/2021 14:06:48;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 - application/javascript 787.6089ms;
+07/16/2021 14:06:48;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/16/2021 14:06:48;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 - application/javascript 818.1218ms;
+07/16/2021 14:06:48;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - -;
+07/16/2021 14:06:48;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:06:49;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 386.1419ms;
+07/16/2021 14:06:49;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - -;
+07/16/2021 14:06:49;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:06:49;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 11.3154ms;
+07/16/2021 14:06:49;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/16/2021 14:06:49;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:06:49;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 6.6768ms;
+07/16/2021 14:06:49;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/16/2021 14:06:49;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:06:49;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 4.3693ms;
+07/16/2021 14:06:49;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/16/2021 14:06:49;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 98.7037ms;
+07/16/2021 14:06:55;INF;SerialCommunicationService; data received: rssi/state/{"timestamp":1626437216,"value":-85,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0};
+07/16/2021 14:07:12;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437233,"value":25.48};
+07/16/2021 14:07:18;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437234,"value":26.15};
+07/16/2021 14:07:19;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437235,"value":27.01};
+07/16/2021 14:07:20;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437236,"value":27.62};
+07/16/2021 14:07:20;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437237,"value":28.13};
+07/16/2021 14:11:57;INF;App starting ...;
+07/16/2021 14:11:59;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/16/2021 14:11:59;INF;SerialCommunicationService started;
+07/16/2021 14:11:59;INF;SerialCommunicationService, Port is open!;
+07/16/2021 14:12:00;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:12:00;INF;Executed DbCommand ("28"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/16/2021 14:12:00;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/16/2021 14:12:00;INF;Executed DbCommand ("19"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/16/2021 14:12:00;INF;SerialCommunicationService; data received: rssi/state/{"timestamp":1626437521,"value":-85,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0};
+07/16/2021 14:12:07;INF;Now listening on: "https://localhost:5001";
+07/16/2021 14:12:07;INF;Now listening on: "http://localhost:5000";
+07/16/2021 14:12:07;INF;Application started. Press Ctrl+C to shut down.;
+07/16/2021 14:12:07;INF;Hosting environment: "Development";
+07/16/2021 14:12:07;INF;Content root path: "D:\work\CSharp\Heating21\heating\Api";
+07/16/2021 14:12:08;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/16/2021 14:12:08;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 29.5690ms;
+07/16/2021 14:12:08;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/16/2021 14:12:08;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 50.8408ms;
+07/16/2021 14:12:08;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/16/2021 14:12:08;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/16/2021 14:12:08;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/16/2021 14:12:08;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/16/2021 14:12:08;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/16/2021 14:12:08;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 - text/css 59.4101ms;
+07/16/2021 14:12:08;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/16/2021 14:12:08;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 - application/javascript 61.6513ms;
+07/16/2021 14:12:08;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 - application/javascript 66.2608ms;
+07/16/2021 14:12:09;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - -;
+07/16/2021 14:12:09;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:12:09;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 113.1328ms;
+07/16/2021 14:12:09;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - -;
+07/16/2021 14:12:09;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:12:09;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 12.3883ms;
+07/16/2021 14:12:09;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/16/2021 14:12:09;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:12:09;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 7.4512ms;
+07/16/2021 14:12:09;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/16/2021 14:12:09;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/16/2021 14:12:09;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 2.9117ms;
+07/16/2021 14:12:09;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/16/2021 14:12:09;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 93.8600ms;
+07/16/2021 14:12:34;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437555,"value":25.60};
+07/16/2021 14:12:41;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437556,"value":26.21};
+07/16/2021 14:12:45;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437557,"value":26.89};
+07/16/2021 14:12:48;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437558,"value":27.42};
+07/16/2021 14:12:50;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437560,"value":27.92};
+07/16/2021 14:13:01;INF;SerialCommunicationService; data received: rssi/state/{"timestamp":1626437582,"value":-85,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0};
+07/16/2021 14:13:14;INF;SerialCommunicationService; data received: temperature_ntc/state/{"timestamp":1626437595,"value":27.42};
+07/16/2021 14:14:57;INF;App starting ...;
+07/16/2021 14:15:00;FTL;App starting failed!;
+System.AggregateException: Some services are not able to be constructed (Error while validating the service descriptor 'ServiceType: Services.Contracts.IStateService Lifetime: Singleton ImplementationType: Services.StateService': Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.)
+ ---> System.InvalidOperationException: Error while validating the service descriptor 'ServiceType: Services.Contracts.IStateService Lifetime: Singleton ImplementationType: Services.StateService': Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.
+ ---> System.InvalidOperationException: Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateArgumentCallSites(Type serviceType, Type implementationType, CallSiteChain callSiteChain, ParameterInfo[] parameters, Boolean throwIfCallSiteNotFound)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateConstructorCallSite(ResultCache lifetime, Type serviceType, Type implementationType, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.TryCreateExact(ServiceDescriptor descriptor, Type serviceType, CallSiteChain callSiteChain, Int32 slot)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.GetCallSite(ServiceDescriptor serviceDescriptor, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.ValidateService(ServiceDescriptor descriptor)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.ValidateService(ServiceDescriptor descriptor)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(IEnumerable`1 serviceDescriptors, IServiceProviderEngine engine, ServiceProviderOptions options)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(IEnumerable`1 serviceDescriptors, IServiceProviderEngine engine, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(IServiceCollection services, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.DefaultServiceProviderFactory.CreateServiceProvider(IServiceCollection containerBuilder)
+   at Microsoft.Extensions.Hosting.Internal.ServiceFactoryAdapter`1.CreateServiceProvider(Object containerBuilder)
+   at Microsoft.Extensions.Hosting.HostBuilder.CreateServiceProvider()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Api.Program.Main(String[] args) in D:\work\CSharp\Heating21\heating\Api\Program.cs:line 24
+07/16/2021 14:20:12;INF;App starting ...;
+07/16/2021 14:20:14;FTL;App starting failed!;
+System.AggregateException: Some services are not able to be constructed (Error while validating the service descriptor 'ServiceType: Microsoft.Extensions.Hosting.IHostedService Lifetime: Singleton ImplementationType: Services.StateService': Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.)
+ ---> System.InvalidOperationException: Error while validating the service descriptor 'ServiceType: Microsoft.Extensions.Hosting.IHostedService Lifetime: Singleton ImplementationType: Services.StateService': Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.
+ ---> System.InvalidOperationException: Unable to resolve service for type 'Services.SerialCommunicationService' while attempting to activate 'Services.StateService'.
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateArgumentCallSites(Type serviceType, Type implementationType, CallSiteChain callSiteChain, ParameterInfo[] parameters, Boolean throwIfCallSiteNotFound)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.CreateConstructorCallSite(ResultCache lifetime, Type serviceType, Type implementationType, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.TryCreateExact(ServiceDescriptor descriptor, Type serviceType, CallSiteChain callSiteChain, Int32 slot)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.CallSiteFactory.GetCallSite(ServiceDescriptor serviceDescriptor, CallSiteChain callSiteChain)
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.ValidateService(ServiceDescriptor descriptor)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceLookup.ServiceProviderEngine.ValidateService(ServiceDescriptor descriptor)
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(IEnumerable`1 serviceDescriptors, IServiceProviderEngine engine, ServiceProviderOptions options)
+   --- End of inner exception stack trace ---
+   at Microsoft.Extensions.DependencyInjection.ServiceProvider..ctor(IEnumerable`1 serviceDescriptors, IServiceProviderEngine engine, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.ServiceCollectionContainerBuilderExtensions.BuildServiceProvider(IServiceCollection services, ServiceProviderOptions options)
+   at Microsoft.Extensions.DependencyInjection.DefaultServiceProviderFactory.CreateServiceProvider(IServiceCollection containerBuilder)
+   at Microsoft.Extensions.Hosting.Internal.ServiceFactoryAdapter`1.CreateServiceProvider(Object containerBuilder)
+   at Microsoft.Extensions.Hosting.HostBuilder.CreateServiceProvider()
+   at Microsoft.Extensions.Hosting.HostBuilder.Build()
+   at Api.Program.Main(String[] args) in D:\work\CSharp\Heating21\heating\Api\Program.cs:line 24
+07/16/2021 14:27:49;INF;App starting ...;
+07/16/2021 14:27:51;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/16/2021 14:27:51;INF;SerialCommunicationService started;
+07/16/2021 14:27:51;INF;SerialCommunicationService, Port is open!;
+07/16/2021 14:27:51;INF;StateService started;
+07/16/2021 14:29:28;INF;App starting ...;
+07/16/2021 14:34:07;INF;App starting ...;
+07/16/2021 14:36:08;INF;App starting ...;

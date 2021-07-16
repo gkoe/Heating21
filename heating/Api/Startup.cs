@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text;
 
 using Api.Helper;
@@ -13,6 +14,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,6 +25,10 @@ using Microsoft.OpenApi.Models;
 using Newtonsoft.Json.Serialization;
 
 using Persistence;
+
+using Services;
+using Services.Contracts;
+using Services.Hubs;
 
 namespace Api
 {
@@ -50,16 +56,10 @@ namespace Api
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CommonUnitOfWork, UnitOfWork>();
             services.AddScoped<CheckIfLoggedOutMiddleware>();
-
-            //services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-
-            //services.AddIdentityServer()
-            //    .AddApiAuthorization<PizzaStoreUser, PizzaStoreContext>();
-
-            //services.AddAuthentication()
-            //    .AddIdentityServerJwt();
-
+            services.AddSignalR();
+            services.AddHostedService<SerialCommunicationService>();
+            services.AddSingleton<IRaspberryIoService, RaspberryIoService>();
+            services.AddHostedService<StateService>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
@@ -96,6 +96,12 @@ namespace Api
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<DbInitializer>();
+
+            services.AddResponseCompression(opts =>
+            {
+                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
+                    new[] { "application/octet-stream" });
+            });
 
             services.AddCors(o => o.AddPolicy("DefaultCors", builder =>
             {
@@ -144,6 +150,7 @@ namespace Api
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbInitializer dbInitializer)
         {
+            app.UseResponseCompression();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -166,6 +173,7 @@ namespace Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<MeasurementsHub>("/measurementshub");
             });
 
 

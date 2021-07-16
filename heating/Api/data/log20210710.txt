@@ -1,0 +1,734 @@
+07/10/2021 20:09:50;INF;App starting ...;
+07/10/2021 20:09:52;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:09:52;INF;SerialCommunicationService started;
+07/10/2021 20:09:52;FTL;App starting failed!;
+System.ArgumentException: The given port name (/dev/ttyUSB0) does not resolve to a valid serial port. (Parameter 'portName')
+   at System.IO.Ports.SerialStream..ctor(String portName, Int32 baudRate, Parity parity, Int32 dataBits, StopBits stopBits, Int32 readTimeout, Int32 writeTimeout, Handshake handshake, Boolean dtrEnable, Boolean rtsEnable, Boolean discardNull, Byte parityReplace)
+   at System.IO.Ports.SerialPort.Open()
+   at Services.SerialCommunicationService.ExecuteAsync(CancellationToken stoppingToken) in D:\work\CSharp\Heating21\heating\Services\SerialCommunicationService.cs:line 24
+   at Microsoft.Extensions.Hosting.BackgroundService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Api.Program.Main(String[] args) in D:\work\CSharp\Heating21\heating\Api\Program.cs:line 24
+07/10/2021 20:11:47;INF;App starting ...;
+07/10/2021 20:11:48;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:11:48;INF;SerialCommunicationService started;
+07/10/2021 20:11:48;FTL;App starting failed!;
+System.UnauthorizedAccessException: Access to the path 'COM7' is denied.
+   at System.IO.Ports.SerialStream..ctor(String portName, Int32 baudRate, Parity parity, Int32 dataBits, StopBits stopBits, Int32 readTimeout, Int32 writeTimeout, Handshake handshake, Boolean dtrEnable, Boolean rtsEnable, Boolean discardNull, Byte parityReplace)
+   at System.IO.Ports.SerialPort.Open()
+   at Services.SerialCommunicationService.ExecuteAsync(CancellationToken stoppingToken) in D:\work\CSharp\Heating21\heating\Services\SerialCommunicationService.cs:line 24
+   at Microsoft.Extensions.Hosting.BackgroundService.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.Internal.Host.StartAsync(CancellationToken cancellationToken)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.RunAsync(IHost host, CancellationToken token)
+   at Microsoft.Extensions.Hosting.HostingAbstractionsHostExtensions.Run(IHost host)
+   at Api.Program.Main(String[] args) in D:\work\CSharp\Heating21\heating\Api\Program.cs:line 24
+07/10/2021 20:12:08;INF;App starting ...;
+07/10/2021 20:12:08;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:12:08;INF;SerialCommunicationService started;
+07/10/2021 20:12:08;INF;SerialCommunicationService, Port is open!;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: ets Jun  8 2016 00:22:57
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: 
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: rst:0x1 (POWERON_RESET),boot:0x17 (SPI_FAST_FLASH_BOOT)
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: configsip: 0, SPIWP:0xee
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: clk_drv:0x00,q_drv:0x00,d_drv:0x00,cs0_drv:0x00,hd_drv:0x00,wp_drv:0x00
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: mode:DIO, clock div:2
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: load:0x3fff0030,len:4
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: load:0x3fff0034,len:6956
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: load:0x40078000,len:13072
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: load:0x40080400,len:3896
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: entry 0x40080688
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (29) boot: ESP-IDF v4.1-dirty 2nd stage bootloader[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (29) boot: compile time 12:30:58[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (29) boot: chip revision: 1[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (32) boot_comm: chip revision: 1, min. bootloader chip revision: 0[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (39) boot.esp32: SPI Speed      : 40MHz[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (43) boot.esp32: SPI Mode       : DIO[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (48) boot.esp32: SPI Flash Size : 4MB[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (53) boot: Enabling RNG early entropy source...[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (58) boot: Partition Table:[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (62) boot: ## Label            Usage          Type ST Offset   Length[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (69) boot:  0 nvs              WiFi data        01 02 00009000 00005000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (76) boot:  1 otadata          OTA data         01 00 0000e000 00002000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (84) boot:  2 app0             OTA app          00 10 00010000 001f0000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (91) boot:  3 app1             OTA app          00 11 00200000 001f0000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (99) boot:  4 spiffs           Unknown data     01 82 003f0000 0000f000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (106) boot:  5 eeprom           Unknown data     01 99 003ff000 00001000[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (114) boot: End of partition table[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (118) boot_comm: chip revision: 1, min. application chip revision: 0[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (125) esp_image: segment 0: paddr=0x00010020 vaddr=0x3f400020 size=0x23f54 (147284) map[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (190) esp_image: segment 1: paddr=0x00033f7c vaddr=0x3ffbdb60 size=0x03cc8 ( 15560) load[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (197) esp_image: segment 2: paddr=0x00037c4c vaddr=0x40080000 size=0x00404 (  1028) load[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (198) esp_image: segment 3: paddr=0x00038058 vaddr=0x40080404 size=0x07fc0 ( 32704) load[0m
+;
+07/10/2021 20:12:08;INF;SerialCommunicationService; data received: [0;32mI (220) esp_image: segment 4: paddr=0x00040020 vaddr=0x400d0020 size=0x98d24 (625956) map[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (459) esp_image: segment 5: paddr=0x000d8d4c vaddr=0x400883c4 size=0x0fb88 ( 64392) load[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (487) esp_image: segment 6: paddr=0x000e88dc vaddr=0x400c0000 size=0x00064 (   100) load[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (500) boot: Loaded app from partition at offset 0x10000[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (500) boot: Disabling RNG early entropy source...[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (501) cpu_start: Pro cpu up.[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (504) cpu_start: Application information:[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (509) cpu_start: Project name:     espserial[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (514) cpu_start: App version:      2a5d801-dirty[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (520) cpu_start: Compile time:     Jul 10 2021 10:07:21[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (526) cpu_start: ELF file SHA256:  a549542247ed0cf5...[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (532) cpu_start: ESP-IDF:          v4.1-dirty[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (537) cpu_start: Starting app cpu, entry point is 0x40081420[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (0) cpu_start: App cpu up.[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (547) heap_init: Initializing. RAM available for dynamic allocation:[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (554) heap_init: At 3FFAE6E0 len 0000F480 (61 KiB): DRAM[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (560) heap_init: At 3FFC7648 len 000189B8 (98 KiB): DRAM[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (567) heap_init: At 3FFE0440 len 00003AE0 (14 KiB): D/IRAM[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (573) heap_init: At 3FFE4350 len 0001BCB0 (111 KiB): D/IRAM[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (579) heap_init: At 40097F4C len 000080B4 (32 KiB): IRAM[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (586) cpu_start: Pro cpu start user code[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (604) spi_flash: detected chip: generic[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (605) spi_flash: flash io: dio[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (605) cpu_start: Starting scheduler on PRO CPU.[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (0) cpu_start: Starting scheduler on APP CPU.[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: =========
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: EspSerial
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: =========
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: TH* Logger init with name: EspSerial *LOG: SerialLogger for thing EspSerial initialized!
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;1;EspSerial;Logger;addLoggerTarget();LoggerTarget SLT registered
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;2;EspSerial;EspConfig;init();ssid=linksysAtHome, mqttbroker=mqtts://leobw.synology.me, mqttbrokerport=8883, thingname=heating
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;3;EspSerial;System Service;init();Reset reasons, core 0: POWERON_RESET, core 1: EXT_CPU_RESET
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;4;EspSerial;EspConfig;setNvsStringValue(), string stored:;Key: restartreason, Value: POWERON_RESET
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;5;EspSerial;SystemService;init();PowerON, reset restarts ==> 0
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;6;EspSerial;EspConfig;setNvsStringValue(), string stored:;Key: lasterror, Value: PowerON
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;7;EspSerial;EspConfig;setNvsIntValue(), int stored:;Key: restarts, Value: 0
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;8;EspSerial;EspSerial, app_main();Start as Station
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (848) wifi:wifi driver task: 3ffb8bbc, prio:23, stack:6656, core=0
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (848) system_api: Base MAC address is not set, read default base MAC address from BLK0 of EFUSE[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (848) system_api: Base MAC address is not set, read default base MAC address from BLK0 of EFUSE[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (878) wifi:wifi firmware version: 3ea4c76
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (878) wifi:config NVS flash: enabled
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (878) wifi:config nano formating: disabled
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (878) wifi:Init dynamic tx buffer num: 32
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (888) wifi:Init data frame dynamic rx buffer num: 32
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (888) wifi:Init management frame dynamic rx buffer num: 32
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (898) wifi:Init management short buffer num: 32
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (898) wifi:Init static rx buffer size: 1600
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (898) wifi:Init static rx buffer num: 10
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (908) wifi:Init dynamic rx buffer num: 32
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: [0;32mI (1008) phy: phy_version: 4180, cb3948e, Sep 12 2019, 16:39:13, 0, 0[0m
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1008) wifi:mode : sta (80:7d:3a:f4:71:74)
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;9;EspSerial;EspStation, init();Connecting to linksysAtHome
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: 
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I;0;10;EspSerial;EspStation, eventHandler();SYSTEM_EVENT_STA_START
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1138) wifi:new:<6,0>, old:<1,0>, ap:<255,255>, sta:<6,0>, prof:1
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1138) wifi:state: init -> auth (b0)
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1158) wifi:state: auth -> assoc (0)
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1168) wifi:state: assoc -> run (10)
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1208) wifi:connected with linksysAtHome, aid = 7, channel 6, BW20, bssid = 44:4e:6d:de:64:57
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1208) wifi:security: WPA2-PSK, phy: bgn, rssi: -67
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1208) wifi:pm start, type: 1
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: 
+;
+07/10/2021 20:12:09;INF;SerialCommunicationService; data received: I (1228) wifi:AP's beacon interval = 102400 us, DTIM period = 1
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: [0;32mI (1838) esp_netif_handlers: sta ip: 192.168.0.62, mask: 255.255.255.0, gw: 192.168.0.1[0m
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: I;1;11;EspSerial;EspStation, init();EspStation, eventHandler() IP-ADDRESS 192.168.0.62 ------------------------
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: I;1;12;EspSerial;EspStation, event_handler(), GotIp:;************** IP Address:  192.168.0.62 ******************
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: I;1;13;EspSerial;EspConfig;setNvsIntValue(), int stored:;Key: startAp, Value: 0
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: I;1;14;EspSerial;EspTime;synchronizeNtpTime();ntpserver: pool.ntp.org
+;
+07/10/2021 20:12:10;INF;SerialCommunicationService; data received: I;1;15;EspSerial;EspTime, synchronizeNtpTime();Time not set, waiting...
+;
+07/10/2021 20:12:12;INF;SerialCommunicationService; data received: I;1625940732;16;EspSerial;EspTime;timeSyncNotification();Ntp time synchronized, time: 1625940732
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;17;EspSerial;EspTime, synchronizeNtpTime();Date: 10.07.2021, Time: 20:12:15
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;18;EspSerial;EspTime, synchronizeNtpTime();Seconds since 1970: 1625940735
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: [0;32mI (6878) httpserver: Starting server on port: '80'[0m
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;19;EspSerial;EspTime;synchronizeNtpTime();ntpserver: pool.ntp.org
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;20;EspSerial;EspTime, synchronizeNtpTime();Date: 10.07.2021, Time: 20:12:15
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;21;EspSerial;EspTime, synchronizeNtpTime();Seconds since 1970: 1625940735
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: [0;32mI (6908) httpserver: Registering URI handlers[0m
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;22;EspSerial;EspSerial, app_main();HttpServer started
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;23;EspSerial;EspUdp; init();Clientsocket created!
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;24;EspSerial;EspUdp; udp_server_task();Socket created
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;25;EspSerial;EspUdp; udp_server_task();Socket bound, port 41235
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;26;EspSerial;Udplogger Broadcast IP;Broadcast-IP: 192.168.0.255
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;27;EspSerial;Udplogger Constructor;Udp-TargetAddress: 192.168.0.255, Port: 41234 created
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;28;EspSerial;Logger;addLoggerTarget();LoggerTarget ULT registered
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;29;EspSerial;EspMqttClient;init();maintopic: heating
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;30;EspSerial;EspMqttClient;init();MQTT-User: gerald, Password: mosquittoKla87Sie57
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;31;EspSerial;EspMqttClient;init();MQTT-URI: mqtts://leobw.synology.me, Port: 8883
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: [0;32mI (6988) system_api: Base MAC address is not set, read default base MAC address from BLK0 of EFUSE[0m
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;32;EspSerial;EspMqttClient;init();startClient, ResultCode: 0
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;33;EspSerial;EspMqttClient;mqtt_event_handler();mqtt_event_handler(),  MQTT_EVENT_BEFORE_CONNECT
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;34;EspSerial;HttpServer, addRoute();/testmqttrequest
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;35;EspSerial;EspSerial;init();Init
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;36;EspSerial;Thing, init(), name: ;heating
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;37;EspSerial;ThingClass Init;Thing init with name: heating
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;38;EspSerial;HttpServer, addRoute();/sensor
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;39;EspSerial;HttpServer, addRoute();/actor
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;40;EspSerial;EspSerial, app_main();Thing created
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;41;EspSerial;Sensor;Constructor;Sensor initialized: temperature_01
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: Ds18b20Sensor, constructor, address: fe06473b7e420028I;1625940735;42;EspSerial;System Service;resetIfMqttMoreThan5MinutesDown();Mqtt is not connected!
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: Ds18b20Hub, 1 sensors detected:
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: E;1625940735;43;EspSerial;EspMqttClient;publish;Client not connected
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;44;EspSerial;EspSerial;send();Message: rssi/state/{"timestamp":1625940735,"value":-76,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received:  sent, result: 104
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: I;1625940735;45;EspSerial;System Service;checkSystem(), send alive;topic: rssi/state, payload: {"timestamp":1625940735,"value":-76,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: E;1625940735;46;EspSerial;System Service;pushError();Error: Loosing heapsize, free: 187536, counter is on: 1
+;
+07/10/2021 20:12:15;INF;SerialCommunicationService; data received: E;1625940735;47;EspSerial;System Service;pushError();Error: Loosing heapsize, free: 157988, counter is on: 2
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: I;1625940736;48;EspSerial;EspMqttClient;mqtt_event_handler();MQTT_EVENT_CONNECTED
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: I;1625940736;49;EspSerial;EspMqttClient;addSubscriptionsToBroker();Start
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: New Value;-1.00;
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: I;1625940736;50;EspSerial;EspMqttClient;publish();Topic: heating/temperature_01/state , Payload: {"timestamp":1625940736,"value":-1.00} published, result: 0
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: I;1625940736;51;EspSerial;EspSerial;send();Message: temperature_01/state/{"timestamp":1625940736,"value":-1.00}
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received:  sent, result: 60
+;
+07/10/2021 20:12:16;INF;SerialCommunicationService; data received: V;1625940736;52;EspSerial;Sensor;set Measurement;temperature_01: -1.00 ??,Time: 1625940736
+;
+07/10/2021 20:12:17;INF;SerialCommunicationService; data received: New Value;24.25;
+;
+07/10/2021 20:12:17;INF;SerialCommunicationService; data received: I;1625940737;53;EspSerial;EspMqttClient;publish();Topic: heating/temperature_01/state , Payload: {"timestamp":1625940737,"value":24.25} published, result: 0
+;
+07/10/2021 20:12:17;INF;SerialCommunicationService; data received: I;1625940737;54;EspSerial;EspSerial;send();Message: temperature_01/state/{"timestamp":1625940737,"value":24.25}
+;
+07/10/2021 20:12:17;INF;SerialCommunicationService; data received:  sent, result: 60
+;
+07/10/2021 20:12:17;INF;SerialCommunicationService; data received: V;1625940737;55;EspSerial;Sensor;set Measurement;temperature_01: 24.25 ??,Time: 1625940737
+;
+07/10/2021 20:12:21;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:12:22;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.187500 deg C 
+;
+07/10/2021 20:12:27;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:12:28;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.187500 deg C 
+;
+07/10/2021 20:12:33;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:12:35;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:12:39;INF;Application is shutting down...;
+07/10/2021 20:12:40;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:12:41;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:12:41;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:12:41;INF;Executed DbCommand ("14"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/10/2021 20:12:41;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/10/2021 20:12:42;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/10/2021 20:12:42;FTL;Unable to start Kestrel.;
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+07/10/2021 20:15:35;INF;App starting ...;
+07/10/2021 20:15:37;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:15:38;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:15:38;INF;Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/10/2021 20:15:38;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/10/2021 20:15:39;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/10/2021 20:15:39;INF;Now listening on: "https://localhost:5001";
+07/10/2021 20:15:39;INF;Now listening on: "http://localhost:5000";
+07/10/2021 20:15:39;INF;Application started. Press Ctrl+C to shut down.;
+07/10/2021 20:15:39;INF;Hosting environment: "Development";
+07/10/2021 20:15:39;INF;Content root path: "D:\work\CSharp\Heating21\heating\Api";
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 30.3925ms;
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 53.0342ms;
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/10/2021 20:15:41;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 142933 text/css 145.4109ms;
+07/10/2021 20:15:41;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 311804 application/javascript 160.3319ms;
+07/10/2021 20:15:41;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 986342 application/javascript 180.5642ms;
+07/10/2021 20:15:41;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/10/2021 20:15:41;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 127.9720ms;
+07/10/2021 20:15:41;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:15:41;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:15:41;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:15:41;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:15:42;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 411.6775ms;
+07/10/2021 20:15:42;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 411.6777ms;
+07/10/2021 20:15:42;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:15:42;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:15:42;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:15:42;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:15:42;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 14.3238ms;
+07/10/2021 20:15:42;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 15.6825ms;
+07/10/2021 20:16:13;INF;App starting ...;
+07/10/2021 20:16:15;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:16:15;INF;SerialCommunicationService started;
+07/10/2021 20:16:16;INF;SerialCommunicationService, Port is open!;
+07/10/2021 20:16:16;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:16:19;INF;SerialCommunicationService; data received: I;1625940979;65;EspSerial;EspMqttClient;publish();Topic: heating/rssi/state , Payload: {"timestamp":1625940979,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0} published, result: 0
+;
+07/10/2021 20:16:19;INF;SerialCommunicationService; data received: I;1625940979;66;EspSerial;EspSerial;send();Message: rssi/state/{"timestamp":1625940979,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:16:19;INF;SerialCommunicationService; data received:  sent, result: 104
+;
+07/10/2021 20:16:19;INF;SerialCommunicationService; data received: I;1625940979;67;EspSerial;System Service;checkSystem(), send alive;topic: rssi/state, payload: {"timestamp":1625940979,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:16:21;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:16:23;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:16:28;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:16:29;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:16:34;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:17:35;INF;App starting ...;
+07/10/2021 20:17:37;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:17:37;INF;SerialCommunicationService started;
+07/10/2021 20:17:37;INF;SerialCommunicationService, Port is open!;
+07/10/2021 20:18:03;INF;Application is shutting down...;
+07/10/2021 20:18:04;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:18:04;INF;Executed DbCommand ("11"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/10/2021 20:18:04;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/10/2021 20:18:04;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/10/2021 20:18:04;FTL;Unable to start Kestrel.;
+System.Threading.Tasks.TaskCanceledException: A task was canceled.
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.BindAsync(CancellationToken cancellationToken)
+   at Microsoft.AspNetCore.Server.Kestrel.Core.KestrelServerImpl.StartAsync[TContext](IHttpApplication`1 application, CancellationToken cancellationToken)
+07/10/2021 20:19:08;INF;App starting ...;
+07/10/2021 20:19:10;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:19:10;INF;SerialCommunicationService started;
+07/10/2021 20:19:10;INF;SerialCommunicationService, Port is open!;
+07/10/2021 20:19:10;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:11;INF;Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/10/2021 20:19:11;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/10/2021 20:19:11;INF;Executed DbCommand ("8"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/10/2021 20:19:11;INF;Now listening on: "https://localhost:5001";
+07/10/2021 20:19:11;INF;Now listening on: "http://localhost:5000";
+07/10/2021 20:19:11;INF;Application started. Press Ctrl+C to shut down.;
+07/10/2021 20:19:11;INF;Hosting environment: "Development";
+07/10/2021 20:19:11;INF;Content root path: "D:\work\CSharp\Heating21\heating\Api";
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/10/2021 20:19:12;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 27.9462ms;
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/10/2021 20:19:12;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 55.2832ms;
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/10/2021 20:19:12;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/10/2021 20:19:12;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/10/2021 20:19:12;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/10/2021 20:19:12;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 986342 application/javascript 112.1153ms;
+07/10/2021 20:19:12;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 142933 text/css 112.4037ms;
+07/10/2021 20:19:12;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 311804 application/javascript 112.6456ms;
+07/10/2021 20:19:12;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/10/2021 20:19:13;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:19:13;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:19:13;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 118.9444ms;
+07/10/2021 20:19:13;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:13;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:13;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 133.5195ms;
+07/10/2021 20:19:13;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 133.4896ms;
+07/10/2021 20:19:13;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:19:13;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:19:13;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:13;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:13;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 18.9056ms;
+07/10/2021 20:19:13;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 18.8962ms;
+07/10/2021 20:19:43;INF;App starting ...;
+07/10/2021 20:19:45;INF;User profile is available. Using '"C:\Users\geral\AppData\Local\ASP.NET\DataProtection-Keys"' as key repository and Windows DPAPI to encrypt keys at rest.;
+07/10/2021 20:19:45;INF;SerialCommunicationService started;
+07/10/2021 20:19:45;INF;SerialCommunicationService, Port is open!;
+07/10/2021 20:19:45;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:19:45;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:46;INF;Executed DbCommand ("20"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT COUNT(*) FROM \"sqlite_master\" WHERE \"name\" = '__EFMigrationsHistory' AND \"type\" = 'table';";
+07/10/2021 20:19:46;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"MigrationId\", \"ProductVersion\"
+FROM \"__EFMigrationsHistory\"
+ORDER BY \"MigrationId\";";
+07/10/2021 20:19:46;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT EXISTS (
+    SELECT 1
+    FROM \"AspNetRoles\" AS \"a\"
+    WHERE \"a\".\"Name\" = 'Admin')";
+07/10/2021 20:19:46;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:19:46;INF;Now listening on: "https://localhost:5001";
+07/10/2021 20:19:46;INF;Now listening on: "http://localhost:5000";
+07/10/2021 20:19:46;INF;Application started. Press Ctrl+C to shut down.;
+07/10/2021 20:19:46;INF;Hosting environment: "Development";
+07/10/2021 20:19:46;INF;Content root path: "D:\work\CSharp\Heating21\heating\Api";
+07/10/2021 20:19:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger - -;
+07/10/2021 20:19:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger - - - 301 0 - 28.3338ms;
+07/10/2021 20:19:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/index.html - -;
+07/10/2021 20:19:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/index.html - - - 200 - text/html;charset=utf-8 56.6694ms;
+07/10/2021 20:19:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - -;
+07/10/2021 20:19:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - -;
+07/10/2021 20:19:47;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - -;
+07/10/2021 20:19:47;INF;Sending file. Request path: '"/swagger-ui-bundle.js"'. Physical path: '"N/A"';
+07/10/2021 20:19:47;INF;Sending file. Request path: '"/swagger-ui.css"'. Physical path: '"N/A"';
+07/10/2021 20:19:47;INF;Sending file. Request path: '"/swagger-ui-standalone-preset.js"'. Physical path: '"N/A"';
+07/10/2021 20:19:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-bundle.js - - - 200 986342 application/javascript 93.8103ms;
+07/10/2021 20:19:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui.css - - - 200 142933 text/css 95.9240ms;
+07/10/2021 20:19:47;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js - - - 200 311804 application/javascript 95.6423ms;
+07/10/2021 20:19:48;INF;Request starting HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - -;
+07/10/2021 20:19:48;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:19:48;INF;Request starting HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:19:48;INF;Request finished HTTP/2 GET https://localhost:5001/swagger/v1/swagger.json - - - 200 - application/json;charset=utf-8 124.1440ms;
+07/10/2021 20:19:48;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:48;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:48;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 115.4190ms;
+07/10/2021 20:19:48;INF;Request finished HTTP/1.1 GET https://localhost:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 115.4534ms;
+07/10/2021 20:19:48;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - -;
+07/10/2021 20:19:48;INF;Request starting HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - -;
+07/10/2021 20:19:48;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:48;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:19:48;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-standalone-preset.js.map - - - 404 0 - 21.2030ms;
+07/10/2021 20:19:48;INF;Request finished HTTP/1.1 GET https://127.0.0.1:5001/swagger/swagger-ui-bundle.js.map - - - 404 0 - 22.4783ms;
+07/10/2021 20:19:51;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:19:52;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:19:57;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:19:58;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:03;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:04;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:09;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:10;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:15;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:17;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:22;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:22;INF;Request starting HTTP/2 POST https://localhost:5001/api/account/login application/json-patch+json 50;
+07/10/2021 20:20:22;INF;CORS policy execution successful.;
+07/10/2021 20:20:22;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:20:22;INF;Executing endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/10/2021 20:20:22;INF;Route matched with "{action = \"Login\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Common.DataTransferObjects.LoginRequestDto)" on controller "Api.Controllers.AccountController" ("Api").;
+07/10/2021 20:20:22;INF;Executing action method "Api.Controllers.AccountController.Login (Api)" - Validation state: Valid;
+07/10/2021 20:20:22;INF;Executed DbCommand ("7"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__user_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ClaimType\", \"a\".\"ClaimValue\", \"a\".\"UserId\"
+FROM \"AspNetUserClaims\" AS \"a\"
+WHERE \"a\".\"UserId\" = @__user_Id_0";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedName_0='?' (Size = 5)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"
+WHERE \"a\".\"NormalizedName\" = @__normalizedName_0
+LIMIT 1";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__role_Id_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"ClaimType\", \"a\".\"ClaimValue\"
+FROM \"AspNetRoleClaims\" AS \"a\"
+WHERE \"a\".\"RoleId\" = @__role_Id_0";
+07/10/2021 20:20:22;INF;AuthenticationScheme: "Identity.Application" signed in.;
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedUserName_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedUserName\" = @__normalizedUserName_0
+LIMIT 1";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__normalizedEmail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"NormalizedEmail\" = @__normalizedEmail_0
+LIMIT 2";
+07/10/2021 20:20:22;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a0\".\"Name\"
+FROM \"AspNetUserRoles\" AS \"a\"
+INNER JOIN \"AspNetRoles\" AS \"a0\" ON \"a\".\"RoleId\" = \"a0\".\"Id\"
+WHERE \"a\".\"UserId\" = @__userId_0";
+07/10/2021 20:20:23;INF;SerialCommunicationService; data received: I;1625941223;77;EspSerial;EspMqttClient;publish();Topic: heating/rssi/state , Payload: {"timestamp":1625941223,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0} published, result: 0
+;
+07/10/2021 20:20:23;INF;SerialCommunicationService; data received: I;1625941223;78;EspSerial;EspSerial;send();Message: rssi/state/{"timestamp":1625941223,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:20:23;INF;SerialCommunicationService; data received:  sent, result: 104
+;
+07/10/2021 20:20:23;INF;SerialCommunicationService; data received: I;1625941223;79;EspSerial;System Service;checkSystem(), send alive;topic: rssi/state, payload: {"timestamp":1625941223,"value":-75,"ip":"192.168.0.62","wifipower":0.00,"operationHours":0}
+;
+07/10/2021 20:20:23;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:23;INF;Executed DbCommand ("1"ms) [Parameters=["@p0='?' (Size = 36), @p1='?', @p2='?'"], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO \"Sessions\" (\"ApplicationUserId\", \"Login\", \"Logout\")
+VALUES (@p0, @p1, @p2);
+SELECT \"Id\", \"RowVersion\"
+FROM \"Sessions\"
+WHERE changes() = 1 AND \"rowid\" = last_insert_rowid();";
+07/10/2021 20:20:23;INF;Executed action method "Api.Controllers.AccountController.Login (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 1067.306ms.;
+07/10/2021 20:20:23;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.LoginResponseDto"'.;
+07/10/2021 20:20:23;INF;Executed action "Api.Controllers.AccountController.Login (Api)" in 1327.6096ms;
+07/10/2021 20:20:23;INF;Executed endpoint '"Api.Controllers.AccountController.Login (Api)"';
+07/10/2021 20:20:23;INF;Request finished HTTP/2 POST https://localhost:5001/api/account/login application/json-patch+json 50 - 200 719 application/json;+charset=utf-8 1385.6367ms;
+07/10/2021 20:20:28;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:29;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:34;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:35;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:40;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:41;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:46;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:47;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:52;INF;Request starting HTTP/2 GET https://localhost:5001/api/account/get - -;
+07/10/2021 20:20:52;INF;Entity Framework Core "5.0.5" initialized '"ApplicationDbContext"' using provider '"Microsoft.EntityFrameworkCore.Sqlite"' with options: "None";
+07/10/2021 20:20:52;INF;Executed DbCommand ("1"ms) [Parameters=["@__mail_0='?' (Size = 12)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (\"a\".\"Email\" = @__mail_0)
+LIMIT 1";
+07/10/2021 20:20:52;INF;Executed DbCommand ("1"ms) [Parameters=["@__userId_0='?' (Size = 36)"], CommandType='Text', CommandTimeout='30']"
+""SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\"
+FROM \"Sessions\" AS \"s\"
+WHERE \"s\".\"ApplicationUserId\" = @__userId_0
+ORDER BY \"s\".\"Login\" DESC
+LIMIT 1";
+07/10/2021 20:20:52;INF;Successfully validated the token.;
+07/10/2021 20:20:52;INF;Authorization was successful.;
+07/10/2021 20:20:52;INF;Executing endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/10/2021 20:20:52;INF;Route matched with "{action = \"Get\", controller = \"Account\", page = \"\", area = \"\"}". Executing controller action with signature "System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Get()" on controller "Api.Controllers.AccountController" ("Api").;
+07/10/2021 20:20:52;INF;Executing action method "Api.Controllers.AccountController.Get (Api)" - Validation state: Valid;
+07/10/2021 20:20:52;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"AccessFailedCount\", \"a\".\"ConcurrencyStamp\", \"a\".\"Discriminator\", \"a\".\"Email\", \"a\".\"EmailConfirmed\", \"a\".\"LockoutEnabled\", \"a\".\"LockoutEnd\", \"a\".\"NormalizedEmail\", \"a\".\"NormalizedUserName\", \"a\".\"PasswordHash\", \"a\".\"PhoneNumber\", \"a\".\"PhoneNumberConfirmed\", \"a\".\"SecurityStamp\", \"a\".\"TwoFactorEnabled\", \"a\".\"UserName\", \"a\".\"Name\"
+FROM \"AspNetUsers\" AS \"a\"
+WHERE \"a\".\"Discriminator\" = 'ApplicationUser'
+ORDER BY \"a\".\"UserName\"";
+07/10/2021 20:20:52;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"Id\", \"a\".\"ConcurrencyStamp\", \"a\".\"Name\", \"a\".\"NormalizedName\"
+FROM \"AspNetRoles\" AS \"a\"";
+07/10/2021 20:20:52;INF;Executed DbCommand ("1"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"a\".\"UserId\", \"a\".\"RoleId\"
+FROM \"AspNetUserRoles\" AS \"a\"";
+07/10/2021 20:20:52;INF;Executed DbCommand ("11"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT \"t0\".\"Id\", \"t0\".\"ApplicationUserId\", \"t0\".\"Login\", \"t0\".\"Logout\", \"t0\".\"RowVersion\"
+FROM \"AspNetUsers\" AS \"a\"
+LEFT JOIN (
+    SELECT \"t\".\"Id\", \"t\".\"ApplicationUserId\", \"t\".\"Login\", \"t\".\"Logout\", \"t\".\"RowVersion\"
+    FROM (
+        SELECT \"s\".\"Id\", \"s\".\"ApplicationUserId\", \"s\".\"Login\", \"s\".\"Logout\", \"s\".\"RowVersion\", ROW_NUMBER() OVER(PARTITION BY \"s\".\"ApplicationUserId\" ORDER BY \"s\".\"Login\" DESC) AS \"row\"
+        FROM \"Sessions\" AS \"s\"
+    ) AS \"t\"
+    WHERE \"t\".\"row\" <= 1
+) AS \"t0\" ON \"a\".\"Id\" = \"t0\".\"ApplicationUserId\"
+WHERE (\"a\".\"Discriminator\" = 'ApplicationUser') AND (
+    SELECT \"s0\".\"Id\"
+    FROM \"Sessions\" AS \"s0\"
+    WHERE \"a\".\"Id\" = \"s0\".\"ApplicationUserId\"
+    ORDER BY \"s0\".\"Login\" DESC
+    LIMIT 1) IS NOT NULL";
+07/10/2021 20:20:52;INF;Executed action method "Api.Controllers.AccountController.Get (Api)", returned result "Microsoft.AspNetCore.Mvc.OkObjectResult" in 100.7752ms.;
+07/10/2021 20:20:52;INF;Executing "OkObjectResult", writing value of type '"Common.DataTransferObjects.UserDetailsDto[]"'.;
+07/10/2021 20:20:52;INF;Executed action "Api.Controllers.AccountController.Get (Api)" in 140.0914ms;
+07/10/2021 20:20:52;INF;Executed endpoint '"Api.Controllers.AccountController.Get (Api)"';
+07/10/2021 20:20:52;INF;Request finished HTTP/2 GET https://localhost:5001/api/account/get - - - 200 806 application/json;+charset=utf-8 388.8816ms;
+07/10/2021 20:20:52;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:20:54;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:20:59;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:21:00;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:21:05;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:21:06;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:21:11;INF;SerialCommunicationService; data received: Ds18b20Hub, Remaining Stack in words: 480 from 2000
+;
+07/10/2021 20:21:12;INF;SerialCommunicationService; data received:   Sensor fe06473b7e420028 reports 24.250000 deg C 
+;
+07/10/2021 20:21:17;INF;Application is shutting down...;

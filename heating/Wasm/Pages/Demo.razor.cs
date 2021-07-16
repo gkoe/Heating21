@@ -11,38 +11,49 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Components.Authorization;
 using Common.Helper;
 using System.Linq;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace Wasm.Pages
 {
     public partial class Demo
     {
         [Inject]
-        public ILocalStorageService LocalStorage { get; set; }
-        [Inject]
-        public AuthenticationStateProvider MyAuthStateProvider { get; set; }
+        public NavigationManager NavigationManager { get; set; }
 
-        public string Name { get; set; }
-        public bool IsAuthenticated { get; set; }
-        public string AuthenticationType { get; set; }
-        public string ExpirationTime { get; set; }
-        public string Role { get; set; }
+        private HubConnection hubConnection;
+        public List<string> Messages { get; set; }
 
 
         protected async override Task OnInitializedAsync()
         {
             await base.OnInitializedAsync();
-            var authState = await MyAuthStateProvider.GetAuthenticationStateAsync();
-            Name = authState.User.Identity.Name;
-            IsAuthenticated = authState.User.Identity.IsAuthenticated;
-            AuthenticationType = authState.User.Identity.AuthenticationType;
-            var token = await LocalStorage.GetItemAsync<string>(MagicStrings.Local_Token);
-            if (token != null)
+            hubConnection = new HubConnectionBuilder()
+                       .WithUrl(NavigationManager.ToAbsoluteUri("/measurementshub"))
+                       .Build();
+
+            hubConnection.On<string>("ReceiveMessage", (message) =>
             {
-                ExpirationTime = JwtParser.ParseExpirationTimeFromJwt(token).ToString();
-                Role = JwtParser.ParseRolesFromJwt(token).FirstOrDefault();
+                Console.WriteLine($"Message received: {message}");
+                var encodedMsg = $"{message}";
+                Messages.Add(encodedMsg);
+                StateHasChanged();
+            });
+
+            await hubConnection.StartAsync();
+        }
+
+        async Task Send() =>
+        await hubConnection.SendAsync("SendMessage", "XXX");
+
+        public bool IsConnected =>
+            hubConnection.State == HubConnectionState.Connected;
+
+        public async ValueTask DisposeAsync()
+        {
+            if (hubConnection is not null)
+            {
+                await hubConnection.DisposeAsync();
             }
-
-
         }
     }
 }
