@@ -44,6 +44,8 @@ namespace Api
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
+            services.AddSignalR();
             var appSettingsSection = Configuration.GetSection("ConnectionStrings");
             var dbFileName = appSettingsSection["DbFileName"];
             services.AddDbContext<ApplicationDbContext>(options =>
@@ -56,10 +58,11 @@ namespace Api
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             services.AddScoped<CommonUnitOfWork, UnitOfWork>();
             services.AddScoped<CheckIfLoggedOutMiddleware>();
-            services.AddSignalR();
-            services.AddHostedService<SerialCommunicationService>();
+            services.AddSingleton<IHttpCommunicationService, HttpCommunicationService>();
+            services.AddSingleton<ISerialCommunicationService, SerialCommunicationService>();
             services.AddSingleton<IRaspberryIoService, RaspberryIoService>();
-            services.AddHostedService<StateService>();
+            services.AddSingleton<IStateService,StateService>();
+            services.AddHostedService<RuleEngine>();
 
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()

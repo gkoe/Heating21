@@ -1,0 +1,9 @@
+version: '2.2'
+services:
+  dynv6updater:
+    image: gkoe/dynv6-updater
+    container_name: dynv6-updater
+    restart: always
+    network_mode: host
+    volumes:
+      - /pi/docker/volumes/dynv6-updater/config/:/usr/src/app/config/

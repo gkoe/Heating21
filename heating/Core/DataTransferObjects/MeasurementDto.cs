@@ -11,10 +11,12 @@ namespace Core.DataTransferObjects
         public double Value { get; set; }
         public DateTime Time { get; set; }
         public int SensorId { get; set; }
+        public string SensorName { get; set; }
+        public double Trend { get; set; }
 
         public override string ToString()
         {
-            return $"{Time.ToShortTimeString()}: {Value}";
+            return $"{SensorName} {Time.ToShortTimeString()}: {Value}";
         }
     }
 }

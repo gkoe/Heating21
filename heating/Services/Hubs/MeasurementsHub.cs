@@ -1,7 +1,11 @@
 ﻿
+using Core.DataTransferObjects;
+
 using Microsoft.AspNetCore.SignalR;
 
 using Serilog;
+
+using Services.Contracts;
 
 using System;
 using System.Collections.Generic;
@@ -18,7 +22,7 @@ namespace Services.Hubs
         {
             // https://consultwithgriff.com/signalr-connection-ids/
             Log.Information($"client connected, connectionid: {Context.ConnectionId}");
-            await Clients.All.SendAsync("ReceiveMessage", "Hello by SignalR");
+            //await Clients.All.SendAsync("ReceiveMessage", "Hello by SignalR");
             await base.OnConnectedAsync();
         }
 
@@ -35,9 +39,15 @@ namespace Services.Hubs
             return base.OnDisconnectedAsync(exception);
         }
 
-        public async Task SendMessage(string message)
+        public async Task SendMessage(string user, string message)
         {
-            await Clients.All.SendAsync("ReceiveMessage", message);
+            await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+
+        public async Task SendMeasurement(MeasurementDto measurement)
+        {
+            await Clients.All.SendAsync("ReceiveMeasurement", measurement);
+        }
+
     }
 }

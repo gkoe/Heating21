@@ -1,7 +1,109 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+<div class="container">
+    @*<div class="row">
+            @foreach (string s in list)
+            {
+                <div class="col-lg-3"><span class="oi @s" aria-hidden="true"></span> @s</div>
+            }
+        </div>*@
+    <h3 class="col-12 text-success text-center py-2">
+        <strong>Heizungssteuerung</strong>
+    </h3>
+    <div class="card">
+        <h5 class="card-header">Warmwasser</h5>
+        <div class="card-body">
+            <h5 class="card-title">Special title treatment</h5>
+            <div>
+                <div class="flex-container">
+                    <div><input type="text" readonly class="form-control-plaintext measurementlabel" value="HttpValue:"></div>
+                    <div><input type="text" readonly class="form-control-plaintext measurementtext" value=@HttpValue.ToString()></div>
+                    <div class="oi @HttpTrendIcon trendicon" aria-hidden="true"></div>
+                    <div><input type="text" readonly class="form-control-plaintext" value=@HttpTrend.ToString("0.##")></div>
+                </div>
+                <div class="flex-container">
+                    <div><input type="text" readonly class="form-control-plaintext measurementlabel" value="NtcValue:"></div>
+                    <div><input type="text" readonly class="form-control-plaintext measurementtext" value=@NtcValue.ToString()></div>
+                    <div class="oi @NtcTrendIcon trendicon" aria-hidden="true"></div>
+                    <div><input type="text" readonly class="form-control-plaintext" value=@NtcTrend.ToString("0.##")></div>
+                </div>
+                <div class="flex-container">
+                    <div><input type="text" readonly class="form-control-plaintext measurementlabel" value="OneWireValue:"></div>
+                    <div><input type="text" readonly class="form-control-plaintext measurementtext" value=@OneWireValue.ToString()></div>
+                    <div class="oi @OneWireTrendIcon trendicon" aria-hidden="true"></div>
+                    <div><input type="text" readonly class="form-control-plaintext" value=@OneWireTrend.ToString("0.##")></div>
+                </div>
+            </div>
+            <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+    </div>
 
-Welcome to your new app.
+    @*<form>
+            <div class="form-group row">
+                <label for="HttpValue" class="col-sm-2 col-form-label">HttpValue:</label>
+                <div class="col-sm-10">
+                    <input type="text" readonly class="form-control-plaintext" value=@HttpValue.ToString()>
+                </div>
+            </div>
+        </form>*@
+</div>
 
-<SurveyPrompt Title="Simple Blazor Template" />
+@*@using Radzen.Blazor*@
+
+@*@inject NavigationManager NavigationManager
+    @implements IAsyncDisposable*@
+
+@*<div class="form-group">
+        <label>
+            User:
+            <input @bind="userInput" />
+        </label>
+    </div>
+    <div class="form-group">
+        <label>
+            Message:
+            <input @bind="messageInput" size="50" />
+        </label>
+    </div>
+    <button @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
+    <hr>
+
+    <ul id="messagesList">
+        @foreach (var message in messages)
+        {
+            <li>@message</li>
+        }
+    </ul>*@
+
+@*<div class="py-4">
+        <div class=" row form-group ">
+            <div class="col-6 offset-3 ">
+                <div class="card border">
+                    <div class="card-body px-lg-5 pt-4">
+                        <h3 class="col-12 text-success text-center py-2">
+                            <strong>Heizungssteuerung</strong>
+                        </h3>
+                        <div class="row" style="margin-bottom: 8px">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="NtcValue:" class="measurementlabel mb-2" />
+                                <RadzenNumeric class="measurementtext" ShowUpDown="false" TValue="double" Format="0.00" @bind-Value=@NtcValue ReadOnly="true" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 8px">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="HttpValue:" class="measurementlabel" />
+                                <RadzenNumeric class="measurementtext" ShowUpDown="false" TValue="double" Format="0.00" @bind-Value=@HttpValue ReadOnly="true" />
+                            </div>
+                        </div>
+                        <div class="row" style="margin-bottom: 8px">
+                            <div class="col-md-4 align-items-center d-flex">
+                                <RadzenLabel Text="NtcValue:" class="measurementlabel" />
+                                <RadzenNumeric class="measurementtext" ShowUpDown="false" TValue="double" Format="0.00" @bind-Value=@OneWireValue ReadOnly="true" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>*@

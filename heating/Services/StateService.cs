@@ -1,11 +1,10 @@
 ﻿
 using Common.Helper;
 
-using Core.Entities;
+using Core.DataTransferObjects;
 
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 using Serilog;
 
@@ -16,54 +15,92 @@ using Services.Hubs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace Services
 {
 
-    public class StateService : BackgroundService
+    public class StateService : IStateService
     {
-        public ConcurrentDictionary<string, SensorWithHistory> Sensors { get; set; } = new ConcurrentDictionary<string, SensorWithHistory>();
-        public SerialCommunicationService SerialCommunicationService { get; }
-        public IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
-        private readonly IServiceScopeFactory _serviceScopeFactory;
+        ConcurrentDictionary<string, SensorWithHistory> Sensors { get; set; } = new ConcurrentDictionary<string, SensorWithHistory>();
+
+        protected ISerialCommunicationService SerialCommunicationService { get; private set; }
+        protected IHttpCommunicationService HttpCommunicationService { get; private set; }
+        IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
 
         public SensorWithHistory GetSensor(string sensorName) => Sensors[sensorName];
 
-        public StateService(IServiceProvider serviceProvider,
-            IHubContext<MeasurementsHub> measurementsHubContext)
+        public event EventHandler<MeasurementDto> NewMeasurement;
+
+        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
         {
-            //SerialCommunicationService = serialCommunicationService;
-            SerialCommunicationService = serviceProvider.GetService<SerialCommunicationService>();
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var x = scope.ServiceProvider.GetService<SerialCommunicationService>();
-            }
             MeasurementsHubContext = measurementsHubContext;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService)
         {
             Log.Information("StateService started");
+            //SerialCommunicationService = serialCommunicationService;
+            SerialCommunicationService = serialCommunicationService;
             SerialCommunicationService.MessageReceived += SerialCommunicationService_MessageReceived;
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(100, stoppingToken);
-            }
-            //return Task.CompletedTask;
+            SerialCommunicationService.StartCommunication();
+            HttpCommunicationService = httpCommunicationService;
+            HttpCommunicationService.MeasurementReceived += HttpCommunicationService_MeasurementReceived;
+            HttpCommunicationService.StartCommunication();
         }
 
-
-        private void SerialCommunicationService_MessageReceived(object sender, string message)
+        private async void HttpCommunicationService_MeasurementReceived(object sender, string message)
         {
-            Log.Information($"message received: {message}");
-            AddMeasurementFromSerial(message);
-            //MeasurementsHubContext.Clients.All.SendAsync("ReceiveMessage", message);
+            Log.Information($"StateService; message received from http: {message}");
+            await AddMeasurementFromHttpAsync(message);
+            await Task.CompletedTask;
         }
 
-        public void AddMeasurementFromSerial(string message)
+        private async void SerialCommunicationService_MessageReceived(object sender, string message)
+        {
+            Log.Information($"StateService; message received from serial: {message}");
+            await AddMeasurementFromSerialAsync(message);
+            // await Clients.All.SendAsync("ReceiveMessage", user, message);
+            // MeasurementsHubContext.Clients.All.SendAsync("ReceiveMessage", "StateService", message);
+        }
+
+        private async Task AddMeasurementFromHttpAsync(string message)
+        {
+            //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
+            message = message.RemoveChars(" ");
+            int startPos = message.IndexOf(':') + 1;
+            string sensorName = message.Substring(startPos, message.IndexOf(',')-startPos);
+            if (!Sensors.ContainsKey(sensorName))
+            {
+                Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
+            }
+            var sensor = Sensors[sensorName];
+            startPos = message.IndexOf("time") + 6;
+            var endPos = message.IndexOf("value")-2;
+            string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
+            DateTime time = DateTime.Parse(timeString);
+            startPos = message.IndexOf("value") + 7;
+            endPos = message.IndexOf("Grad");
+            var length = endPos - startPos;
+            string valueString = message.Substring(startPos, length);
+            double? value = NumberConverters.ParseInvariantDouble(valueString);
+            if (value != null)
+            {
+                sensor.AddMeasurement(time, value.Value);
+                var measurement = new MeasurementDto
+                {
+                    SensorName = sensorName,
+                    Time = time,
+                    Trend = sensor.Trend,
+                    Value = value.Value
+                };
+                NewMeasurement?.Invoke(this, measurement);
+                await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+            }
+        }
+
+        private async Task AddMeasurementFromSerialAsync(string message)
         {
             // temperature_01/state/{"timestamp":1625917023,"value":25.17}
             string sensorName = message.Substring(0, message.IndexOf('/'));
@@ -77,6 +114,15 @@ namespace Services
             if (value != null)
             {
                 sensor.AddMeasurement(time, value.Value);
+                var measurement = new MeasurementDto
+                {
+                    SensorName = sensorName,
+                    Time = time,
+                    Trend = sensor.Trend,
+                    Value = value.Value
+                };
+                NewMeasurement?.Invoke(this, measurement);
+                await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
         }
 
@@ -112,6 +158,14 @@ namespace Services
             }
             return (time, value);
         }
+
+    }
+
+    public class HttpMeasurementDto
+    {
+        public string Sensor { get; set; }
+        public DateTime Time { get; set; }
+        public double Value { get; set; }
 
     }
 

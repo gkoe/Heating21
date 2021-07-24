@@ -1,4 +1,26 @@
-﻿
+﻿/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.measurementlabel {
+    width: 120px;
+}
+
+.measurementtext {
+    width: 50px;
+    display: inline-block;
+}
+
+.trendicon {
+    /*vertical-align:text-bottom;*/
+    margin-right: 20px;
+    top: 10px;
+}
+
+
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }

@@ -10,7 +10,7 @@ using Services.Contracts;
 
 namespace Services
 {
-    public class SerialCommunicationService : BackgroundService
+    public class SerialCommunicationService : ISerialCommunicationService
     {
         private const string UART_PORT = "COM3"; //"/dev/ttyUSB0"; // "COM7";
         private const int BAUDRATE = 115200;
@@ -18,48 +18,49 @@ namespace Services
 
         public event EventHandler<string> MessageReceived;
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public void StartCommunication()
         {
             Log.Information("SerialCommunicationService started");
             _serialPort = new SerialPort(UART_PORT, BAUDRATE) { ReadTimeout = 1500, WriteTimeout = 1500 };
             StringBuilder receivedChars = new StringBuilder();
-            _serialPort.Open();
-            Log.Information("SerialCommunicationService, Port is open!");
-            _serialPort.DataReceived += (sender, eventArgs) =>
+            try
             {
-                var uart = sender as SerialPort;
-                int charsToRead = _serialPort.BytesToRead;
-                for (int i = 0; i < charsToRead; i++)
+                _serialPort.Open();
+                Log.Information("SerialCommunicationService, Port is open!");
+                _serialPort.DataReceived += (sender, eventArgs) =>
                 {
-                    var readChar = _serialPort.ReadChar();
-                    if (readChar == '\n')
+                    var uart = sender as SerialPort;
+                    int charsToRead = _serialPort.BytesToRead;
+                    for (int i = 0; i < charsToRead; i++)
                     {
-                        Log.Information($"SerialCommunicationService; data received: {receivedChars}");
-                        MessageReceived?.Invoke(this, receivedChars.ToString());
-                        //Console.Write($">>>>>>>>>>>>> {receivedChars}");
-                        receivedChars.Clear();
+                        var readChar = _serialPort.ReadChar();
+                        if (readChar == '\n')
+                        {
+                            Log.Information($"SerialCommunicationService; data received: {receivedChars}");
+                            MessageReceived?.Invoke(this, receivedChars.ToString());
+                            //Console.Write($">>>>>>>>>>>>> {receivedChars}");
+                            receivedChars.Clear();
+                        }
+                        else
+                        {
+                            receivedChars.Append((char)readChar);
+                        }
                     }
-                    else
-                    {
-                        receivedChars.Append((char)readChar);
-                    }
-                }
-            };
-            while (!stoppingToken.IsCancellationRequested)
-            {
-                await Task.Delay(100, stoppingToken);
+                };
             }
-            //return Task.CompletedTask;
+            catch (Exception ex)
+            {
+                Log.Error($"SerialCommunication; Exception: {ex.Message}");
+            }
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
+        public void StopCommunication()
         {
             if (_serialPort != null && _serialPort.IsOpen)
             {
                 Log.Information("SerialCommunicationService, Port is closed!");
                 _serialPort.Close();
             }
-            return base.StopAsync(cancellationToken);
         }
     }
 }
