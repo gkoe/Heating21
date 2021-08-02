@@ -15,20 +15,25 @@ namespace Services
 
         public GpioController GpioController = new GpioController(PinNumberingScheme.Board);
 
-        public RaspberryIoService()
+        //public RaspberryIoService()
+        //{
+        //    if (GpioController.IsPinOpen(_resetPin))
+        //    {
+        //        GpioController.ClosePin(_resetPin);
+        //    }
+        //}
+
+        public async Task ResetEspAsync()
         {
             if (GpioController.IsPinOpen(_resetPin))
             {
                 GpioController.ClosePin(_resetPin);
             }
-        }
-
-        public async Task ResetEsp()
-        {
             GpioController.OpenPin(_resetPin, PinMode.Output);
             GpioController.Write(_resetPin, PinValue.Low);
             await Task.Delay(1000);
             GpioController.Write(_resetPin, PinValue.High);
+            GpioController.ClosePin(_resetPin);
             GpioController.OpenPin(_resetPin, PinMode.Input);
         }
     }

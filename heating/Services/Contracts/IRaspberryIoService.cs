@@ -5,6 +5,6 @@ namespace Services.Contracts
 {
     public interface IRaspberryIoService
     {
-        Task ResetEsp();
+        Task ResetEspAsync();
     }
 }

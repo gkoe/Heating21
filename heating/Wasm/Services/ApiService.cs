@@ -48,6 +48,13 @@ namespace Wasm.Services
             return result;
         }
 
+        public async Task ResetEspAsync()
+        {
+            var request = $"api/maintenance/resetesp";
+            var response = await _client.GetAsync(request);
+            System.Console.WriteLine($"ApiService;ResetEsp");
+        }
+
 
     }
 

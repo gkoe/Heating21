@@ -14,7 +14,7 @@ namespace Services
     {
         private const string UART_PORT = "/dev/ttyUSB0"; // "COM3";
         private const int BAUDRATE = 115200;
-        SerialPort _serialPort;
+        private SerialPort _serialPort;
 
         public event EventHandler<string> MessageReceived;
 
