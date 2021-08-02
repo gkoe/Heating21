@@ -119,6 +119,7 @@ namespace Wasm.Pages
                     case "ssr00":
                         {
                             ButtonSwitchDisabled = false;
+                            _switchIsOn = measurement.Value == 1;
                             break;
                         }
 
