@@ -17,7 +17,7 @@ namespace Services
         private const string URL_LIVINGROOM = "http://192.168.0.52/sensor?temperature";
         private readonly IHttpClientFactory _httpClientFactory;
         private HttpClient _httpClient;
-        private readonly JsonSerializerOptions _options;
+        //private readonly JsonSerializerOptions _options;
 
         public HttpCommunicationService(IHttpClientFactory httpClientFactory)
         {
@@ -55,15 +55,15 @@ namespace Services
             }
         }
 
-        private async Task<string> GetMeasurementAsync()
-        {
-            using var response = await _httpClient.GetAsync(URL_LIVINGROOM, HttpCompletionOption.ResponseHeadersRead);
-            response.EnsureSuccessStatusCode();
-            var text = await response.Content.ReadAsStringAsync();
-            var x = JsonSerializer.Deserialize< HttpMeasurementDto>(text);
-            //var measurement = await JsonSerializer.DeserializeAsync<HttpMeasurementDto>(text, _options);
-            return text;
-        }
+        //private async Task<string> GetMeasurementAsync()
+        //{
+        //    using var response = await _httpClient.GetAsync(URL_LIVINGROOM, HttpCompletionOption.ResponseHeadersRead);
+        //    response.EnsureSuccessStatusCode();
+        //    var text = await response.Content.ReadAsStringAsync();
+        //    var x = JsonSerializer.Deserialize< HttpMeasurementDto>(text);
+        //    //var measurement = await JsonSerializer.DeserializeAsync<HttpMeasurementDto>(text, _options);
+        //    return text;
+        //}
 
         public void StopCommunication()
         {

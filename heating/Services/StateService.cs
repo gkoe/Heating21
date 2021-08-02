@@ -70,7 +70,7 @@ namespace Services
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
             message = message.RemoveChars(" ");
             int startPos = message.IndexOf(':') + 1;
-            string sensorName = message.Substring(startPos, message.IndexOf(',')-startPos);
+            string sensorName = message[startPos..message.IndexOf(',')];
             if (!Sensors.ContainsKey(sensorName))
             {
                 Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
@@ -78,11 +78,22 @@ namespace Services
             var sensor = Sensors[sensorName];
             startPos = message.IndexOf("time") + 6;
             var endPos = message.IndexOf("value")-2;
+            var length = endPos - startPos;
+            if (length < 18)
+            {
+                Log.Error($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
+                return;
+            }
             string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
             DateTime time = DateTime.Parse(timeString);
             startPos = message.IndexOf("value") + 7;
             endPos = message.IndexOf("Grad");
-            var length = endPos - startPos;
+            length = endPos - startPos;
+            if (length < 1)
+            {
+                Log.Error($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
+                return;
+            }
             string valueString = message.Substring(startPos, length);
             double? value = NumberConverters.ParseInvariantDouble(valueString);
             if (value != null)
@@ -98,18 +109,28 @@ namespace Services
                 NewMeasurement?.Invoke(this, measurement);
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
+            else
+            {
+                Log.Error($"AddMeasurementFromHttpAsync; Illegal valueString: {valueString}");
+            }
         }
 
         private async Task AddMeasurementFromSerialAsync(string message)
         {
             // temperature_01/state/{"timestamp":1625917023,"value":25.17}
-            string sensorName = message.Substring(0, message.IndexOf('/'));
+            var startIndex = message.IndexOf('/');
+            if (startIndex < 0)
+            {
+                return;
+            }
+            string sensorName = message.Substring(0, startIndex);
             if (!Sensors.ContainsKey(sensorName))
             {
                 Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
             }
             var sensor = Sensors[sensorName];
-            var payload = message[message.IndexOf('{')..];
+            startIndex = message.IndexOf('{');
+            var payload = message[startIndex..];
             (DateTime time, double? value) = ParseSerialPayload(payload);
             if (value != null)
             {

@@ -12,7 +12,7 @@ namespace Services
 {
     public class SerialCommunicationService : ISerialCommunicationService
     {
-        private const string UART_PORT = "COM3"; //"/dev/ttyUSB0"; // "COM7";
+        private const string UART_PORT = "/dev/ttyUSB0"; // "COM3";
         private const int BAUDRATE = 115200;
         SerialPort _serialPort;
 

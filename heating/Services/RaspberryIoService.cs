@@ -11,7 +11,7 @@ namespace Services
 {
     public class RaspberryIoService : IRaspberryIoService
     {
-        const int _resetPin = 26;
+        const int _resetPin = 16;
 
         public GpioController GpioController = new GpioController(PinNumberingScheme.Board);
 
