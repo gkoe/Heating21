@@ -38,6 +38,11 @@ namespace Services
             MeasurementsHubContext = measurementsHubContext;
         }
 
+        public void OnNewClientConnected()
+        {
+
+        }
+
         public void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService)
         {
             Log.Information("StateService started");
@@ -181,6 +186,20 @@ namespace Services
             return (time, value);
         }
 
+        public async Task SendSensorsAndActors()
+        {
+            foreach (var sensor in Sensors.Values)
+            {
+                var measurement = new MeasurementDto
+                {
+                    SensorName = sensor.SensorName,
+                    Time = sensor.Time,
+                    Trend = sensor.Trend,
+                    Value = sensor.Value
+                };
+                await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+            }
+        }
     }
 
     public class HttpMeasurementDto

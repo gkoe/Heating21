@@ -3,6 +3,7 @@
 using Services.DataTransferObjects;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Services.Contracts
 {
@@ -10,6 +11,8 @@ namespace Services.Contracts
     {
         SensorWithHistory GetSensor(string sensorName);
         void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService);
+
+        Task SendSensorsAndActors();
 
         public event EventHandler<MeasurementDto> NewMeasurement;
     }

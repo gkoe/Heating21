@@ -18,10 +18,18 @@ namespace Services.Hubs
     // https://docs.microsoft.com/en-us/aspnet/core/signalr/hubcontext?view=aspnetcore-2.1
     public class MeasurementsHub : Hub
     {
+        public IStateService StateService { get; }
+
+        public MeasurementsHub(IStateService stateService)
+        {
+            StateService = stateService;
+        }
+
         public async override Task OnConnectedAsync()
         {
             // https://consultwithgriff.com/signalr-connection-ids/
             Log.Information($"client connected, connectionid: {Context.ConnectionId}");
+            await StateService.SendSensorsAndActors();
             //await Clients.All.SendAsync("ReceiveMessage", "Hello by SignalR");
             await base.OnConnectedAsync();
         }
