@@ -40,10 +40,17 @@ namespace Services
             Log.Information("HttpCommunicationService started");
             while (!StopGetByHttp)
             {
-                using var response = await _httpClient.GetAsync(URL_LIVINGROOM, HttpCompletionOption.ResponseHeadersRead);
-                response.EnsureSuccessStatusCode();
-                var text = await response.Content.ReadAsStringAsync();
-                MeasurementReceived?.Invoke(this, text);
+                try
+                {
+                    using var response = await _httpClient.GetAsync(URL_LIVINGROOM, HttpCompletionOption.ResponseHeadersRead);
+                    response.EnsureSuccessStatusCode();
+                    var text = await response.Content.ReadAsStringAsync();
+                    MeasurementReceived?.Invoke(this, text);
+                }
+                catch (Exception ex)
+                {
+                    Log.Error("GetHttpMeasurement; Exception: {Exception}", ex.Message);
+                }
                 await Task.Delay(10000);
             }
         }

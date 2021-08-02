@@ -29,7 +29,14 @@ namespace Services.DataTransferObjects
                 double timeFactorToHour = 3600.0 / (time - lastTimeStamp).TotalSeconds;
                 int ind = (_actIndex -1 +10) % 10;
                 double delta = value - Measurements[ind].Value;
-                Trend = (Trend * 0.5 + delta / value * timeFactorToHour)/1.5;
+                if (value == 0)
+                {
+                    Trend = 1000.0;
+                }
+                else
+                {
+                    Trend = (Trend * 0.5 + delta / value * timeFactorToHour) / 1.5;
+                }
             }
             Measurements[_actIndex] = new MeasurementValue(time, value);
             Log.Information($"Add SensorWithHistory; Sensor: {SensorName}, Value: {value}, Index: {_actIndex}, Trend: {Trend}");

@@ -5,14 +5,24 @@
     flex-direction: row;
 }
 
-.measurementlabel {
+.measurement-label {
     width: 120px;
 }
 
-.measurementtext {
+.measurement-text {
     width: 50px;
     display: inline-block;
 }
+
+.switch-label {
+    width: 120px;
+    vertical-align: middle;
+}
+
+.switch-symbol {
+    vertical-align: middle;
+}
+
 
 .trendicon {
     /*vertical-align:text-bottom;*/

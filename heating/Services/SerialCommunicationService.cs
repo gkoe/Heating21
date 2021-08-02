@@ -62,5 +62,10 @@ namespace Services
                 _serialPort.Close();
             }
         }
+
+        public void Send(string message)
+        {
+            _serialPort.WriteLine(message);
+        }
     }
 }

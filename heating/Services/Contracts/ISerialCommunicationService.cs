@@ -9,5 +9,6 @@ namespace Services.Contracts
 
         void StartCommunication();
         void StopCommunication();
+        void Send(string message);
     }
 }
