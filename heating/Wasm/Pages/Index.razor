@@ -19,9 +19,9 @@
             <div>
                 <div class="flex-container">
                     <div><input type="text" readonly class="form-control-plaintext measurement-label" value="HttpValue:"></div>
-                    <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@HttpValue.ToString()></div>
+                    <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@HttpValue.ToString("F2")></div>
                     <div class="oi @HttpTrendIcon trendicon" aria-hidden="true"></div>
-                    <div><input type="text" readonly class="form-control-plaintext" value=@HttpTrend.ToString("0.##")></div>
+                    <div><input type="text" readonly class="form-control-plaintext" value=@HttpTrend.ToString("F2")></div>
                 </div>
                 <div class="flex-container">
                     <div><input type="text" readonly class="form-control-plaintext measurement-label" value="NtcValue:"></div>
