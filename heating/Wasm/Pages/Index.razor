@@ -36,8 +36,12 @@
                     <div><input type="text" readonly class="form-control-plaintext" value=@OneWireTrend.ToString("0.##")></div>
                 </div>
                 <div class="flex-container">
-                    <div><input type="text" readonly class="form-control-plaintext switch-label" value="Switch:"></div>
-                    <div><RadzenSwitch @bind-Value=@SwitchIsOn Disabled="@ButtonSwitchDisabled" class="switch-symbol" /></div>
+                    <div><input type="text" readonly class="form-control-plaintext switch-label" value="SSR00:"></div>
+                    <div><RadzenSwitch @bind-Value=@SSR00IsOn Disabled="@SSR00Disabled" class="switch-symbol" /></div>
+                </div>
+                <div class="flex-container">
+                    <div><input type="text" readonly class="form-control-plaintext switch-label" value="SSR01:"></div>
+                    <div><RadzenSwitch @bind-Value=@SSR01IsOn Disabled="@SSR01Disabled" class="switch-symbol" /></div>
                 </div>
                 <div class="flex-container">
                     <RadzenButton style="margin: 0 1rem 1rem 0" class="col-md-2 justify-content-end" Click="@ResetEsp" Text="Reset Esp" ButtonStyle="ButtonStyle.Secondary" />

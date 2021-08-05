@@ -37,23 +37,19 @@ namespace Wasm.Pages
         public double HttpTrend { get; set; }
         public string HttpTrendIcon { get; set; }
 
-        bool _switchIsOn = false;
-        public bool SwitchIsOn
+        public bool SSR00Disabled { get; set; }
+        bool _ssr00IsOn = false;
+        public bool SSR00IsOn
         {
             get
             {
-                return _switchIsOn;
+                return _ssr00IsOn;
             }
             set
             {
-                ButtonSwitchDisabled = true;
-                _switchIsOn = value;
-                //if (_switchIsOn == null)
-                //{
-                //    Console.WriteLine("_switchIsOn is null");
-                //    return;
-                //}
-                if (_switchIsOn)
+                SSR00Disabled = true;
+                _ssr00IsOn = value;
+                if (_ssr00IsOn)
                 {
                     ApiService.ChangeSwitchAsync("ssr00", true);
                 }
@@ -65,7 +61,29 @@ namespace Wasm.Pages
             }
         }
 
-        public bool ButtonSwitchDisabled { get; set; }
+        public bool SSR01Disabled { get; set; }
+        bool _ssr01IsOn = false;
+        public bool SSR01IsOn
+        {
+            get
+            {
+                return _ssr01IsOn;
+            }
+            set
+            {
+                SSR01Disabled = true;
+                _ssr01IsOn = value;
+                if (_ssr01IsOn)
+                {
+                    ApiService.ChangeSwitchAsync("ssr01", true);
+                }
+                else
+                {
+                    ApiService.ChangeSwitchAsync("ssr01", false);
+                }
+            }
+        }
+
 
         protected override async Task OnInitializedAsync()
         {
@@ -118,8 +136,14 @@ namespace Wasm.Pages
                         }
                     case "ssr00":
                         {
-                            ButtonSwitchDisabled = false;
-                            _switchIsOn = measurement.Value == 1;
+                            SSR00Disabled = false;
+                            _ssr00IsOn = measurement.Value == 1;
+                            break;
+                        }
+                    case "ssr01":
+                        {
+                            SSR01Disabled = false;
+                            _ssr01IsOn = measurement.Value == 1;
                             break;
                         }
 
