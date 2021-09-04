@@ -55,7 +55,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> Change(string actorName, int state)
         {
-            Log.Information("Change Actor {actor} to state: {state}", actorName, state);
+            Log.Error("Change Actor {actor} to state: {state}", actorName, state);
             await Task.Run(() => _serialCommunicationService.Send($"heating/{actorName}/command:{state}"));
             return Ok(true);
         }

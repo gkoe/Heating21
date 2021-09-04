@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Components;
 using Wasm.Services.Contracts;
 using Radzen;
 using Wasm.Helper;
+using Wasm.DataTransferObjects;
 
 namespace Wasm.Pages
 {
@@ -21,75 +22,50 @@ namespace Wasm.Pages
 
         //static readonly string[] list = new string[] { "oi-account-login", "oi-account-logout", "oi-action-redo", "oi-action-undo", "oi-align-center", "oi-align-left", "oi-align-right", "oi-aperture", "oi-arrow-bottom", "oi-arrow-circle-bottom", "oi-arrow-circle-left", "oi-arrow-circle-right", "oi-arrow-circle-top", "oi-arrow-left", "oi-arrow-right", "oi-arrow-thick-bottom", "oi-arrow-thick-left", "oi-arrow-thick-right", "oi-arrow-thick-top", "oi-arrow-top", "oi-audio-spectrum", "oi-audio", "oi-badge", "oi-ban", "oi-bar-chart", "oi-basket", "oi-battery-empty", "oi-battery-full", "oi-beaker", "oi-bell", "oi-bluetooth", "oi-bold", "oi-bolt", "oi-book", "oi-bookmark", "oi-box", "oi-briefcase", "oi-british-pound", "oi-browser", "oi-brush", "oi-bug", "oi-bullhorn", "oi-calculator", "oi-calendar", "oi-camera-slr", "oi-caret-bottom", "oi-caret-left", "oi-caret-right", "oi-caret-top", "oi-cart", "oi-chat", "oi-check", "oi-chevron-bottom", "oi-chevron-left", "oi-chevron-right", "oi-chevron-top", "oi-circle-check", "oi-circle-x", "oi-clipboard", "oi-clock", "oi-cloud-download", "oi-cloud-upload", "oi-cloud", "oi-cloudy", "oi-code", "oi-cog", "oi-collapse-down", "oi-collapse-left", "oi-collapse-right", "oi-collapse-up", "oi-command", "oi-comment-square", "oi-compass", "oi-contrast", "oi-copywriting", "oi-credit-card", "oi-crop", "oi-dashboard", "oi-data-transfer-download", "oi-data-transfer-upload", "oi-delete", "oi-dial", "oi-document", "oi-dollar", "oi-double-quote-sans-left", "oi-double-quote-sans-right", "oi-double-quote-serif-left", "oi-double-quote-serif-right", "oi-droplet", "oi-eject", "oi-elevator", "oi-ellipses", "oi-envelope-closed", "oi-envelope-open", "oi-euro", "oi-excerpt", "oi-expand-down", "oi-expand-left", "oi-expand-right", "oi-expand-up", "oi-external-link", "oi-eye", "oi-eyedropper", "oi-file", "oi-fire", "oi-flag", "oi-flash", "oi-folder", "oi-fork", "oi-fullscreen-enter", "oi-fullscreen-exit", "oi-globe", "oi-graph", "oi-grid-four-up", "oi-grid-three-up", "oi-grid-two-up", "oi-hard-drive", "oi-header", "oi-headphones", "oi-heart", "oi-home", "oi-image", "oi-inbox", "oi-infinity", "oi-info", "oi-italic", "oi-justify-center", "oi-justify-left", "oi-justify-right", "oi-key", "oi-laptop", "oi-layers", "oi-lightbulb", "oi-link-broken", "oi-link-intact", "oi-list-rich", "oi-list", "oi-location", "oi-lock-locked", "oi-lock-unlocked", "oi-loop-circular", "oi-loop-square", "oi-loop", "oi-magnifying-glass", "oi-map-marker", "oi-map", "oi-media-pause", "oi-media-play", "oi-media-record", "oi-media-skip-backward", "oi-media-skip-forward", "oi-media-step-backward", "oi-media-step-forward", "oi-media-stop", "oi-medical-cross", "oi-menu", "oi-microphone", "oi-minus", "oi-monitor", "oi-moon", "oi-move", "oi-musical-note", "oi-paperclip", "oi-pencil", "oi-people", "oi-person", "oi-phone", "oi-pie-chart", "oi-pin", "oi-play-circle", "oi-plus", "oi-power-standby", "oi-print", "oi-project", "oi-pulse", "oi-puzzle-piece", "oi-question-mark", "oi-rain", "oi-random", "oi-reload", "oi-resize-both", "oi-resize-height", "oi-resize-width", "oi-rss-alt", "oi-rss", "oi-script", "oi-share-boxed", "oi-share", "oi-shield", "oi-signal", "oi-signpost", "oi-sort-ascending", "oi-sort-descending", "oi-spreadsheet", "oi-star", "oi-sun", "oi-tablet", "oi-tag", "oi-tags", "oi-target", "oi-task", "oi-terminal", "oi-text", "oi-thumb-down", "oi-thumb-up", "oi-timer", "oi-transfer", "oi-trash", "oi-underline", "oi-vertical-align-bottom", "oi-vertical-align-center", "oi-vertical-align-top", "oi-video", "oi-volume-high", "oi-volume-low", "oi-volume-off", "oi-warning", "oi-wifi", "oi-wrench", "oi-x", "oi-yen", "oi-zoom-in", "oi-zoom-out" };
         private HubConnection hubConnection;
-        private readonly List<string> messages = new List<string>();
+        //private readonly List<string> messages = new List<string>();
         //private string userInput;
         //private string messageInput;
 
-        public double NtcValue { get; set; }
-        public double NtcTrend { get; set; }
-        public string NtcTrendIcon { get; set; }
+        private readonly Dictionary<string, ActorUiDto> actors = new Dictionary<string, ActorUiDto>();
+        private readonly Dictionary<string, SensorWithLastValueUiDto> sensors = new Dictionary<string, SensorWithLastValueUiDto>();
 
-        public double OneWireValue { get; set; }
-        public double OneWireTrend { get; set; }
-        public string OneWireTrendIcon { get; set; }
+        public bool InManualMode { get; set; }
 
-        public double HttpValue { get; set; }
-        public double HttpTrend { get; set; }
-        public string HttpTrendIcon { get; set; }
+        // OilBurner
+        public SensorWithLastValueUiDto OilBurnerTemperature { get; set; } = new SensorWithLastValueUiDto(nameof(OilBurnerTemperature));
+        public ActorUiDto OilBurnerSwitch { get; set; } = new ActorUiDto(nameof(OilBurnerSwitch));
 
-        public bool SSR00Disabled { get; set; }
-        bool _ssr00IsOn = false;
-        public bool SSR00IsOn
-        {
-            get
-            {
-                return _ssr00IsOn;
-            }
-            set
-            {
-                SSR00Disabled = true;
-                _ssr00IsOn = value;
-                if (_ssr00IsOn)
-                {
-                    ApiService.ChangeSwitchAsync("ssr00", true);
-                }
-                else
-                {
-                    ApiService.ChangeSwitchAsync("ssr00", false);
-                }
+        // Warmwasser
+        public SensorWithLastValueUiDto BoilerTop { get; set; } = new SensorWithLastValueUiDto(nameof(BoilerTop));
+        public SensorWithLastValueUiDto BoilerBottom { get; set; } = new SensorWithLastValueUiDto(nameof(BoilerBottom));
+        public SensorWithLastValueUiDto SolarCollector { get; set; } = new SensorWithLastValueUiDto(nameof(SolarCollector));
+        public SensorWithLastValueUiDto BufferTop { get; set; } = new SensorWithLastValueUiDto(nameof(BufferTop));
+        public SensorWithLastValueUiDto BufferBottom { get; set; } = new SensorWithLastValueUiDto(nameof(BufferBottom));
 
-            }
-        }
+        public ActorUiDto PumpBoiler { get; set; } = new ActorUiDto(nameof(PumpBoiler));
+        public ActorUiDto PumpSolar { get; set; } = new ActorUiDto(nameof(PumpSolar));
+        public ActorUiDto ValveBoilerBuffer { get; set; } = new ActorUiDto(nameof(ValveBoilerBuffer));
 
-        public bool SSR01Disabled { get; set; }
-        bool _ssr01IsOn = false;
-        public bool SSR01IsOn
-        {
-            get
-            {
-                return _ssr01IsOn;
-            }
-            set
-            {
-                SSR01Disabled = true;
-                _ssr01IsOn = value;
-                if (_ssr01IsOn)
-                {
-                    ApiService.ChangeSwitchAsync("ssr01", true);
-                }
-                else
-                {
-                    ApiService.ChangeSwitchAsync("ssr01", false);
-                }
-            }
-        }
+        // Heizung
+        public SensorWithLastValueUiDto LivingroomFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(LivingroomFirstFloor));
+        public SensorWithLastValueUiDto LivingroomGroundFloor { get; set; } = new SensorWithLastValueUiDto(nameof(LivingroomGroundFloor));
+        public SensorWithLastValueUiDto TemperatureBefore { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureBefore));
+        public SensorWithLastValueUiDto TemperatureAfter { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureAfter));
+        public SensorWithLastValueUiDto TemperatureFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureFirstFloor));
+        public SensorWithLastValueUiDto TemperatureGroundFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureGroundFloor));
 
+        public ActorUiDto PumpFirstFloor { get; set; } = new ActorUiDto(nameof(PumpFirstFloor));
+        public ActorUiDto MixerFirstFloorPlus { get; set; } = new ActorUiDto(nameof(MixerFirstFloorPlus));
+        public ActorUiDto MixerFirstFloorMinus { get; set; } = new ActorUiDto(nameof(MixerFirstFloorMinus));
+        public ActorUiDto PumpGroundFloor { get; set; } = new ActorUiDto(nameof(PumpGroundFloor));
+        public ActorUiDto MixerGroundFloorPlus { get; set; } = new ActorUiDto(nameof(MixerGroundFloorPlus));
+        public ActorUiDto MixerGroundFloorMinus { get; set; } = new ActorUiDto(nameof(MixerGroundFloorMinus));
 
         protected override async Task OnInitializedAsync()
         {
             hubConnection = new HubConnectionBuilder()
-                //.WithUrl("https://localhost:5001/measurementshub")
-                .WithUrl("https://heatingapi.dynv6.net/measurementshub")
+                .WithUrl("https://localhost:5001/measurementshub")
+                //.WithUrl("https://heatingapi.dynv6.net/measurementshub")
                 .Build();
 
             //hubConnection.On<string, string>("ReceiveMessage", (user, message) =>
@@ -99,6 +75,35 @@ namespace Wasm.Pages
             //    //StateHasChanged();
             //});
 
+            actors.Add(nameof(OilBurnerSwitch), OilBurnerSwitch);
+            actors.Add(nameof(PumpBoiler), PumpBoiler);
+            actors.Add(nameof(PumpSolar), PumpSolar);
+            actors.Add(nameof(PumpFirstFloor), PumpFirstFloor);
+            actors.Add(nameof(PumpGroundFloor), PumpGroundFloor);
+            actors.Add(nameof(ValveBoilerBuffer), ValveBoilerBuffer);
+            actors.Add(nameof(MixerFirstFloorMinus), MixerFirstFloorMinus);
+            actors.Add(nameof(MixerFirstFloorPlus), MixerFirstFloorPlus);
+            actors.Add(nameof(MixerGroundFloorMinus), MixerGroundFloorMinus);
+            actors.Add(nameof(MixerGroundFloorPlus), MixerGroundFloorPlus);
+
+            foreach (var item in actors.Values)
+            {
+                item.ApiService = ApiService;
+            }
+
+            sensors.Add(nameof(OilBurnerTemperature), OilBurnerTemperature);
+            sensors.Add(nameof(BoilerTop), BoilerTop);
+            sensors.Add(nameof(BoilerBottom), BoilerBottom);
+            sensors.Add(nameof(BufferTop), BufferTop);
+            sensors.Add(nameof(BufferBottom), BufferBottom);
+            sensors.Add(nameof(LivingroomFirstFloor), LivingroomFirstFloor);
+            sensors.Add(nameof(LivingroomGroundFloor), LivingroomGroundFloor);
+            sensors.Add(nameof(TemperatureAfter), TemperatureAfter);
+            sensors.Add(nameof(TemperatureBefore), TemperatureBefore);
+            sensors.Add(nameof(TemperatureFirstFloor), TemperatureFirstFloor);
+            sensors.Add(nameof(TemperatureGroundFloor), TemperatureGroundFloor);
+            sensors.Add(nameof(SolarCollector), SolarCollector);
+
             hubConnection.On<MeasurementDto>("ReceiveMeasurement", (measurement) =>
             {
                 var trendPercent = 0.0;
@@ -106,49 +111,25 @@ namespace Wasm.Pages
                 {
                     trendPercent = measurement.Trend / measurement.Value * 100;
                 }
-                
+
                 var encodedMsg = $"{measurement.SensorName},  {measurement.Time}, {measurement.Value}, {trendPercent:F2}%";
                 //            var encodedMsg = $"{measurement.SensorName},  {measurement.Time}, {measurement.Value}, {measurement.Trend}";
-                messages.Add(encodedMsg);
+                //messages.Add(encodedMsg);
                 Console.WriteLine(encodedMsg);
-                switch (measurement.SensorName)
+                if (sensors.ContainsKey(measurement.SensorName))
                 {
-                    case "temperature":
-                        {
-                            HttpValue = measurement.Value;
-                            HttpTrend = measurement.Trend;
-                            HttpTrendIcon = GetTrendIconForTrend(measurement.Trend);
-                            break;
-                        }
-                    case "temperature_ntc":
-                        {
-                            NtcValue = measurement.Value;
-                            NtcTrend = measurement.Trend;
-                            NtcTrendIcon = GetTrendIconForTrend(measurement.Trend);
-                            break;
-                        }
-                    case "temperature_onewire":
-                        {
-                            OneWireValue = measurement.Value;
-                            OneWireTrend = measurement.Trend;
-                            OneWireTrendIcon = GetTrendIconForTrend(measurement.Trend);
-                            break;
-                        }
-                    case "ssr00":
-                        {
-                            SSR00Disabled = false;
-                            _ssr00IsOn = measurement.Value == 1;
-                            break;
-                        }
-                    case "ssr01":
-                        {
-                            SSR01Disabled = false;
-                            _ssr01IsOn = measurement.Value == 1;
-                            break;
-                        }
-
-                    default:
-                        break;
+                    var sensor = sensors[measurement.SensorName];
+                    sensor.Value = measurement.Value;
+                    sensor.Trend = trendPercent;
+                }
+                else if (actors.ContainsKey(measurement.SensorName))
+                {
+                    var actor = actors[measurement.SensorName];
+                    actor.NewActorValueReceived(measurement);
+                }
+                else
+                {
+                    throw new Exception($"{measurement.SensorName} is not a known sensor or actor");
                 }
                 StateHasChanged();
             });
@@ -156,17 +137,48 @@ namespace Wasm.Pages
             await hubConnection.StartAsync();
         }
 
-        private static string GetTrendIconForTrend(double trend)
+
+        protected async Task MixerChangedAysnc(string mixerName)
         {
-            if (trend > 0.02)
+            if (!actors.ContainsKey(mixerName))
             {
-                return "oi-arrow-circle-top";
+                throw new ArgumentException($"Actor: {mixerName} existiert nicht");
             }
-            else if (trend < -0.02)
+            var mixer = actors[mixerName];
+            string otherMixerName = mixerName switch
             {
-                return "oi-arrow-circle-bottom";
+                nameof(MixerFirstFloorMinus) => nameof(MixerFirstFloorPlus),
+                nameof(MixerFirstFloorPlus) => nameof(MixerFirstFloorMinus),
+                nameof(MixerGroundFloorMinus) => nameof(MixerGroundFloorPlus),
+                nameof(MixerGroundFloorPlus) => nameof(MixerGroundFloorMinus),
+                _ => throw new NotImplementedException()
+            };
+            var otherMixer = actors[otherMixerName];
+            if (otherMixer.IsOn)
+            {
+                otherMixer.IsOn = false;
+                Console.WriteLine($"OtherMixer {otherMixer.Name} abschalten");
+                await otherMixer.SwitchActorPerApiAsync();
             }
-                return "oi-arrow-circle-right";
+            await mixer.SwitchActorPerApiAsync();
+        }
+
+        protected async Task SwitchChangedAsync(string actorName)
+        {
+            if (!actors.ContainsKey(actorName))
+            {
+                throw new ArgumentException($"Actor: {actorName} existiert nicht");
+            }
+            var actor = actors[actorName];
+            await actor.SwitchActorPerApiAsync();
+        }
+
+        protected void IsManualModeChanged()
+        {
+            foreach (var actor in actors.Values)
+            {
+                actor.InManualMode = InManualMode;
+            }
         }
 
         //async Task Send() =>

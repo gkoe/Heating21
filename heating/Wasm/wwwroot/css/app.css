@@ -6,7 +6,7 @@
 }
 
 .measurement-label {
-    width: 120px;
+    width: 140px;
 }
 
 .measurement-text {
@@ -16,11 +16,11 @@
 
 .switch-label {
     width: 120px;
-    vertical-align: middle;
+    vertical-align: baseline;
 }
 
 .switch-symbol {
-    vertical-align: middle;
+    vertical-align: baseline;
 }
 
 

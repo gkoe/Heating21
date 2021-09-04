@@ -38,10 +38,10 @@ namespace Services
             MeasurementsHubContext = measurementsHubContext;
         }
 
-        public void OnNewClientConnected()
-        {
+        //public void OnNewClientConnected()
+        //{
 
-        }
+        //}
 
         public void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService)
         {
@@ -75,7 +75,8 @@ namespace Services
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
             message = message.RemoveChars(" ");
             int startPos = message.IndexOf(':') + 1;
-            string sensorName = message[startPos..message.IndexOf(',')];
+            //string sensorName = message[startPos..message.IndexOf(',')];
+            string sensorName = "LivingroomFirstFloor";
             if (!Sensors.ContainsKey(sensorName))
             {
                 Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
@@ -122,7 +123,12 @@ namespace Services
 
         private async Task AddMeasurementFromSerialAsync(string message)
         {
+            // heating/OilBurnerSwitch/command:1}
             // temperature_01/state/{"timestamp":1625917023,"value":25.17}
+            if (message.Contains("command"))
+            {
+                return;
+            }
             var startIndex = message.IndexOf('/');
             if (startIndex < 0)
             {
@@ -148,7 +154,7 @@ namespace Services
                     Value = value.Value
                 };
                 NewMeasurement?.Invoke(this, measurement);
-                Log.Information("Send measurement by SignalR: {Name} {Time} {Trend} {Value}", measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value);
+                Log.Error("Send measurement by SignalR: {Name} {Time} {Trend} {Value}", measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value);
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
         }

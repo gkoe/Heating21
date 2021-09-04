@@ -52,7 +52,7 @@ namespace Wasm.Services
         {
             var request = $"api/maintenance/resetesp";
             var response = await _client.GetAsync(request);
-            System.Console.WriteLine($"ApiService;ResetEsp");
+            System.Console.WriteLine($"ApiService;ResetEsp; response: {response.StatusCode}");
         }
 
 
