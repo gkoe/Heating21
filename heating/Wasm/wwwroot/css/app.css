@@ -5,8 +5,20 @@
     flex-direction: row;
 }
 
+.header {
+    font-size: large;
+    font-weight: bold;
+    align-self: flex-start;
+}
+
 .measurement-label {
     width: 140px;
+}
+
+.fsm-info {
+    margin-left: 20px;
+    width: 250px;
+    font-size: small;
 }
 
 .measurement-text {

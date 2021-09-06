@@ -5,11 +5,9 @@ using System;
 
 namespace Services.DataTransferObjects
 {
-
-
-    public class SensorWithHistory : Item
+    public class Actor : Item
     {
-        public SensorWithHistory(ItemEnum itemName) : base(itemName)
+        public Actor(ItemEnum itemEnum) : base(itemEnum)
         {
         }
     }

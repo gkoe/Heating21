@@ -34,6 +34,7 @@ namespace Wasm.Pages
         // OilBurner
         public SensorWithLastValueUiDto OilBurnerTemperature { get; set; } = new SensorWithLastValueUiDto(nameof(OilBurnerTemperature));
         public ActorUiDto OilBurnerSwitch { get; set; } = new ActorUiDto(nameof(OilBurnerSwitch));
+        public string OilBurnerFsmInfo { get; set; } = "";
 
         // Warmwasser
         public SensorWithLastValueUiDto BoilerTop { get; set; } = new SensorWithLastValueUiDto(nameof(BoilerTop));
@@ -130,6 +131,16 @@ namespace Wasm.Pages
                 else
                 {
                     throw new Exception($"{measurement.SensorName} is not a known sensor or actor");
+                }
+                StateHasChanged();
+            });
+
+            hubConnection.On<FsmStateChangedInfoDto>("ReceiveFsmStateChanged", (fsmInfo) =>
+            {
+                if (fsmInfo.Fsm == "OilBurner")
+                {
+                    OilBurnerFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    Console.WriteLine(OilBurnerFsmInfo);
                 }
                 StateHasChanged();
             });

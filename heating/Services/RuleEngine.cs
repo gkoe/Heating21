@@ -5,6 +5,8 @@ using Microsoft.Extensions.Hosting;
 using Serilog;
 
 using Services.Contracts;
+using Services.ControlComponents;
+using Services.DataTransferObjects;
 using Services.Hubs;
 
 using System;
@@ -22,6 +24,7 @@ namespace Services
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         protected IStateService StateService { get; private set; }
+        public OilBurner OilBurner { get; private set; }
 
         public RuleEngine(IServiceProvider serviceProvider)
         {
@@ -38,6 +41,9 @@ namespace Services
                 HttpCommunicationService = scope.ServiceProvider.GetService<IHttpCommunicationService>();
                 StateService = scope.ServiceProvider.GetService<IStateService>();
                 StateService.Init(SerialCommunicationService, HttpCommunicationService);
+                OilBurner = new OilBurner(StateService);
+                OilBurner.Fsm.StateChanged += Fsm_StateChanged;
+                StartFiniteStateMachines();
             }
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -45,6 +51,16 @@ namespace Services
                 // Auf Änderungen des States reagieren, Timeouts bearbeiten, ...
             }
             //return Task.CompletedTask;
+        }
+
+        private async void Fsm_StateChanged(object sender, Core.DataTransferObjects.FsmStateChangedInfoDto fsmStateChangedInfoDto)
+        {
+            await StateService.SendFsmStateChangedAsync(fsmStateChangedInfoDto);
+        }
+
+        private void StartFiniteStateMachines()
+        {
+            OilBurner.Start();
         }
 
         public async override Task StopAsync(CancellationToken cancellationToken)

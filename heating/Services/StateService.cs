@@ -23,18 +23,32 @@ namespace Services
 
     public class StateService : IStateService
     {
-        ConcurrentDictionary<string, SensorWithHistory> Sensors { get; set; } = new ConcurrentDictionary<string, SensorWithHistory>();
+        ConcurrentDictionary<string, SensorWithHistory> Sensors { get; init; }
+        ConcurrentDictionary<string, Actor> Actors { get; init; }
 
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
 
-        public SensorWithHistory GetSensor(string sensorName) => Sensors[sensorName];
+        public SensorWithHistory GetSensor(ItemEnum itemEnum) => Sensors[itemEnum.ToString()];
+        public Actor GetActor(ItemEnum itemEnum) => Actors[itemEnum.ToString()];
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
         public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
         {
+            Sensors = new ConcurrentDictionary<string, SensorWithHistory>();
+            foreach (var item in Enum.GetValues(typeof(ItemEnum)))
+            {
+                var sensorName = (ItemEnum)item;
+                Sensors[sensorName.ToString()] = new SensorWithHistory(sensorName);
+            }
+            Actors = new ConcurrentDictionary<string, Actor>();
+            foreach (var item in Enum.GetValues(typeof(ItemEnum)))
+            {
+                var actorName = (ItemEnum)item;
+                Actors[actorName.ToString()] = new Actor(actorName);
+            }
             MeasurementsHubContext = measurementsHubContext;
         }
 
@@ -53,6 +67,11 @@ namespace Services
             HttpCommunicationService = httpCommunicationService;
             HttpCommunicationService.MeasurementReceived += HttpCommunicationService_MeasurementReceived;
             HttpCommunicationService.StartCommunication();
+        }
+
+        public async Task SetActorBySerialCommunication(Actor actor, double value)
+        {
+            await Task.Run(() => SerialCommunicationService.Send($"heating/{actor.ItemEnum}/command:{value}"));
         }
 
         private async void HttpCommunicationService_MeasurementReceived(object sender, string message)
@@ -79,7 +98,7 @@ namespace Services
             string sensorName = "LivingroomFirstFloor";
             if (!Sensors.ContainsKey(sensorName))
             {
-                Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
+                return;
             }
             var sensor = Sensors[sensorName];
             startPos = message.IndexOf("time") + 6;
@@ -137,7 +156,7 @@ namespace Services
             string sensorName = message.Substring(0, startIndex);
             if (!Sensors.ContainsKey(sensorName))
             {
-                Sensors[sensorName] = new SensorWithHistory { SensorName = sensorName };
+                return;
             }
             var sensor = Sensors[sensorName];
             startIndex = message.IndexOf('{');
@@ -198,13 +217,18 @@ namespace Services
             {
                 var measurement = new MeasurementDto
                 {
-                    SensorName = sensor.SensorName,
+                    SensorName = sensor.ItemEnum.ToString(),
                     Time = sensor.Time,
                     Trend = sensor.Trend,
                     Value = sensor.Value
                 };
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
+        }
+
+        public async Task SendFsmStateChangedAsync(FsmStateChangedInfoDto fsmStateChangedInfoDto)
+        {
+            await MeasurementsHubContext.Clients.All.SendAsync("ReceiveFsmStateChanged", fsmStateChangedInfoDto);
         }
     }
 
