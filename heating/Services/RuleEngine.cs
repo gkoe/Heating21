@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Core.DataTransferObjects;
+
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -25,6 +27,8 @@ namespace Services
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         protected IStateService StateService { get; private set; }
         public OilBurner OilBurner { get; private set; }
+        public HeatingCircuit HeatingCircuit { get; private set; }
+        public HotWater HotWater { get; private set; }
 
         public RuleEngine(IServiceProvider serviceProvider)
         {
@@ -41,8 +45,13 @@ namespace Services
                 HttpCommunicationService = scope.ServiceProvider.GetService<IHttpCommunicationService>();
                 StateService = scope.ServiceProvider.GetService<IStateService>();
                 StateService.Init(SerialCommunicationService, HttpCommunicationService);
-                OilBurner = new OilBurner(StateService);
+                OilBurner = new OilBurner(StateService, SerialCommunicationService);
                 OilBurner.Fsm.StateChanged += Fsm_StateChanged;
+                HeatingCircuit = new HeatingCircuit(StateService, SerialCommunicationService, OilBurner);
+                HeatingCircuit.Fsm.StateChanged += Fsm_StateChanged;
+                HotWater = new HotWater(StateService, SerialCommunicationService, OilBurner);
+                HotWater.Fsm.StateChanged += Fsm_StateChanged;
+
                 StartFiniteStateMachines();
             }
             while (!stoppingToken.IsCancellationRequested)
@@ -53,7 +62,7 @@ namespace Services
             //return Task.CompletedTask;
         }
 
-        private async void Fsm_StateChanged(object sender, Core.DataTransferObjects.FsmStateChangedInfoDto fsmStateChangedInfoDto)
+        private async void Fsm_StateChanged(object sender, FsmStateChangedInfoDto fsmStateChangedInfoDto)
         {
             await StateService.SendFsmStateChangedAsync(fsmStateChangedInfoDto);
         }
@@ -61,6 +70,8 @@ namespace Services
         private void StartFiniteStateMachines()
         {
             OilBurner.Start();
+            HotWater.Start();
+            HeatingCircuit.Start();
         }
 
         public async override Task StopAsync(CancellationToken cancellationToken)

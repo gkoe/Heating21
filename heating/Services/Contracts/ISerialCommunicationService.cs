@@ -1,5 +1,8 @@
 ﻿
+using Services.DataTransferObjects;
+
 using System;
+using System.Threading.Tasks;
 
 namespace Services.Contracts
 {
@@ -9,6 +12,7 @@ namespace Services.Contracts
 
         void StartCommunication();
         void StopCommunication();
-        void Send(string message);
+        Task SendAsync(string message);
+        public Task SetActorAsync(string actor, double value);
     }
 }

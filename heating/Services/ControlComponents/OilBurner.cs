@@ -18,11 +18,17 @@ namespace Services.ControlComponents
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCold, IsCooledDown, IsReady, IsTooHot  };
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
+        public ISerialCommunicationService SerialCommunicationService { get; }
 
         public OilBurner(IStateService stateService)
         {
             StateService = stateService;
             InitFsm();
+        }
+
+        public OilBurner(IStateService stateService, ISerialCommunicationService serialCommunicationService) : this(stateService)
+        {
+            SerialCommunicationService = serialCommunicationService;
         }
 
         public void Start()
@@ -74,18 +80,14 @@ namespace Services.ControlComponents
         /// </summary>
         /// <returns></returns>
         public bool IsTooHot() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value >= 29.0; // >= 900;
-        private bool IsCold() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value < 27.0; //500;
+        public bool IsCold() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value < 27.0; //500;
 
         /// <summary>
         /// Abschalttemperatur erreicht
         /// </summary>
         /// <returns></returns>
-        private bool IsReady()
+        public bool IsReady()
         {
-            //if (IsTooHot())
-            //{
-            //    return false;
-            //}
             var temp = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
             return  temp >= 27.0; // 500;
         }
@@ -96,10 +98,6 @@ namespace Services.ControlComponents
         /// <returns></returns>
         public bool IsCooledDown()
         {
-            //if (!IsTooHot())
-            //{
-            //    return false;
-            //}
             return StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value <= 28.0; // 600;
         }
 
@@ -121,13 +119,13 @@ namespace Services.ControlComponents
         async void DoBurnerOn(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            //await StateService.SetActorBySerialCommunication(oilBurnerSwitch, 1);
+            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemEnum.ToString(), 1);
         }
 
         async void DoBurnerOff(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            await StateService.SetActorBySerialCommunication(oilBurnerSwitch, 0);
+            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemEnum.ToString(), 0);
         }
         #endregion
 

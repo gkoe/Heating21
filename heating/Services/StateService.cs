@@ -69,11 +69,6 @@ namespace Services
             HttpCommunicationService.StartCommunication();
         }
 
-        public async Task SetActorBySerialCommunication(Actor actor, double value)
-        {
-            await Task.Run(() => SerialCommunicationService.Send($"heating/{actor.ItemEnum}/command:{value}"));
-        }
-
         private async void HttpCommunicationService_MeasurementReceived(object sender, string message)
         {
             Log.Information($"StateService; message received from http: {message}");
@@ -106,7 +101,7 @@ namespace Services
             var length = endPos - startPos;
             if (length < 18)
             {
-                Log.Error($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
+                Log.Information($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
                 return;
             }
             string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
@@ -116,7 +111,7 @@ namespace Services
             length = endPos - startPos;
             if (length < 1)
             {
-                Log.Error($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
+                Log.Information($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
                 return;
             }
             string valueString = message.Substring(startPos, length);
@@ -173,7 +168,7 @@ namespace Services
                     Value = value.Value
                 };
                 NewMeasurement?.Invoke(this, measurement);
-                Log.Error("Send measurement by SignalR: {Name} {Time} {Trend} {Value}", measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value);
+                Log.Information("Send measurement by SignalR: {Name} {Time} {Trend} {Value}", measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value);
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
         }

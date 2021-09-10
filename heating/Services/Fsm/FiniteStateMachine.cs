@@ -59,7 +59,7 @@ namespace Services.Fsm
             ActState = states[0];
             Timer timer = new Timer
             {
-                Interval = 1000
+                Interval = 10000
             };
             timer.Elapsed += OnSecondChanged;
             timer.Start();

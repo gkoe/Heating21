@@ -1,8 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
-
-using System;
+﻿using System;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.IO.Ports;
 using Serilog;
@@ -63,9 +60,21 @@ namespace Services
             }
         }
 
-        public void Send(string message)
+        public async Task SendAsync(string message)
         {
-            _serialPort.WriteLine(message);
+            await Task.Run(() => _serialPort.Write(message + '\n'));
+            //_serialPort.WriteLine(message);
+            await Task.Delay(100);
         }
+
+        public async Task SetActorAsync(string actorName, double value)
+        {
+            int intValue = (int)value;
+            var message = $"heating/{actorName}/command:{intValue}";
+            await SendAsync(message);
+            Log.Error($"StateService; SetActorBySerialCommunication; message: {message}");
+        }
+
+
     }
 }

@@ -3,6 +3,8 @@ using System.Collections;
 
 using Common.Helper;
 
+using Serilog;
+
 using Services.Fsm;
 
 namespace HeatControl.Fsm
@@ -35,11 +37,13 @@ namespace HeatControl.Fsm
 
         public void Leave()
         {
+            //Log.Information($"Fsm: {Fsm} State {StateEnum};Leave");
             OnLeave?.Invoke(this, null);
         }
 
         public void Enter()
         {
+            //Log.Information($"Fsm: {Fsm} State {StateEnum};Enter");
             OnEnter?.Invoke(this, null);
         }
 

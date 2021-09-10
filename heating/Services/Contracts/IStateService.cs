@@ -17,7 +17,6 @@ namespace Services.Contracts
         Task SendSensorsAndActors();
 
         public event EventHandler<MeasurementDto> NewMeasurement;
-        public Task SetActorBySerialCommunication(Actor actor, double value);
 
         public Task SendFsmStateChangedAsync(FsmStateChangedInfoDto fsmStateChangedInfoDto);
     }

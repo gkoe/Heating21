@@ -124,6 +124,14 @@
                                       Change="@(_ => SwitchChangedAsync("ValveBoilerBuffer"))" />
                     </div>
                 </div>
+                @if (HotWaterFsmInfo.Length > 0)
+                {
+                    <div class="flex-container">
+                        <div class="d-flex">
+                            <div><input type="text" readonly class="form-control-plaintext fsm-info" value=@HotWaterFsmInfo></div>
+                        </div>
+                    </div>
+                }
             </div>
         </div>
 
@@ -218,6 +226,15 @@
                                       Change="@(_ => MixerChangedAysnc("MixerGroundFloorMinus"))" />
                     </div>
                 </div>
+                @if (HeatingCircuitFsmInfo.Length > 0)
+                {
+                    <div class="flex-container">
+                        <div class="d-flex">
+                            <div><input type="text" readonly class="form-control-plaintext fsm-info" value=@HeatingCircuitFsmInfo></div>
+                        </div>
+                    </div>
+                }
+
             </div>
         </div>
         <div class="flex-container mt-2">

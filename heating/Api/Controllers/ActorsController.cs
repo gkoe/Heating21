@@ -56,7 +56,8 @@ namespace Api.Controllers
         public async Task<IActionResult> Change(string actorName, int state)
         {
             Log.Error("Change Actor {actor} to state: {state}", actorName, state);
-            await Task.Run(() => _serialCommunicationService.Send($"heating/{actorName}/command:{state}"));
+            await _serialCommunicationService.SetActorAsync(actorName, state);
+            //await Task.Run(() => _serialCommunicationService.Send($"heating/{actorName}/command:{state}"));
             return Ok(true);
         }
 

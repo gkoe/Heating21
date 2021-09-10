@@ -35,6 +35,9 @@ namespace Wasm.Pages
         public SensorWithLastValueUiDto OilBurnerTemperature { get; set; } = new SensorWithLastValueUiDto(nameof(OilBurnerTemperature));
         public ActorUiDto OilBurnerSwitch { get; set; } = new ActorUiDto(nameof(OilBurnerSwitch));
         public string OilBurnerFsmInfo { get; set; } = "";
+        public string HeatingCircuitFsmInfo { get; set; } = "";
+        public string HotWaterFsmInfo { get; set; } = "";
+
 
         // Warmwasser
         public SensorWithLastValueUiDto BoilerTop { get; set; } = new SensorWithLastValueUiDto(nameof(BoilerTop));
@@ -141,6 +144,16 @@ namespace Wasm.Pages
                 {
                     OilBurnerFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
                     Console.WriteLine(OilBurnerFsmInfo);
+                }
+                if (fsmInfo.Fsm == "HeatingCircuit")
+                {
+                    HeatingCircuitFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    Console.WriteLine(HeatingCircuitFsmInfo);
+                }
+                if (fsmInfo.Fsm == "HotWater")
+                {
+                    HotWaterFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    Console.WriteLine(HotWaterFsmInfo);
                 }
                 StateHasChanged();
             });
