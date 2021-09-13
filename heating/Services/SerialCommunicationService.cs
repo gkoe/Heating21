@@ -4,21 +4,30 @@ using System.Threading.Tasks;
 using System.IO.Ports;
 using Serilog;
 using Services.Contracts;
+using Microsoft.Extensions.Configuration;
 
 namespace Services
 {
     public class SerialCommunicationService : ISerialCommunicationService
     {
-        private const string UART_PORT = "COM3"; // "/dev/ttyUSB0"; // "COM3";
+        //private const string UART_PORT = "COM3"; // "/dev/ttyUSB0"; // "COM3";
         private const int BAUDRATE = 115200;
         private SerialPort _serialPort;
 
+        public string SerialPortName { get; }
+
         public event EventHandler<string> MessageReceived;
+
+        public SerialCommunicationService(IConfiguration configuration)
+        {
+            var appSettingsSection = configuration.GetSection("Communication");
+            SerialPortName = appSettingsSection["SerialPort"];
+        }
 
         public void StartCommunication()
         {
             Log.Information("SerialCommunicationService started");
-            _serialPort = new SerialPort(UART_PORT, BAUDRATE) { ReadTimeout = 1500, WriteTimeout = 1500 };
+            _serialPort = new SerialPort(SerialPortName, BAUDRATE) { ReadTimeout = 1500, WriteTimeout = 1500 };
             StringBuilder receivedChars = new StringBuilder();
             try
             {

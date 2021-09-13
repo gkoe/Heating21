@@ -24,6 +24,7 @@ namespace Services
     {
         IServiceProvider ServiceProvider { get; }
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
+        public IRaspberryIoService RaspberryIoService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         protected IStateService StateService { get; private set; }
         public OilBurner OilBurner { get; private set; }
@@ -51,7 +52,15 @@ namespace Services
                 HeatingCircuit.Fsm.StateChanged += Fsm_StateChanged;
                 HotWater = new HotWater(StateService, SerialCommunicationService, OilBurner);
                 HotWater.Fsm.StateChanged += Fsm_StateChanged;
-
+                try
+                {
+                    RaspberryIoService = scope.ServiceProvider.GetService<IRaspberryIoService>();
+                    await RaspberryIoService.ResetEspAsync();  // Bei Neustart der RuleEngine auch ESP neu starten
+                }
+                catch (Exception)
+                {
+                    Log.Error("Raspberry IO not available!");
+                }
                 StartFiniteStateMachines();
             }
             while (!stoppingToken.IsCancellationRequested)

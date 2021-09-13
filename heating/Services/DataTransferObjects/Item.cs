@@ -14,13 +14,14 @@ namespace Services.DataTransferObjects
         OilBurnerTemperature,
         BoilerTop,
         BoilerBottom,
-        TemperatureFirstFloor,
-        TemperatureGroundFloor,
+        BufferTop,
+        BufferBottom,
         TemperatureBefore,
         TemperatureAfter,
         SolarCollector,
-        BufferTop,
-        BufferBottom,
+
+        TemperatureFirstFloor,
+        TemperatureGroundFloor,
         LivingroomFirstFloor,
         LivingroomGroundFloor,
 

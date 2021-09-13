@@ -9,20 +9,27 @@ using Serilog;
 using Services.Contracts;
 using System.Net.Http;
 using System.Text.Json;
+using Microsoft.Extensions.Configuration;
 
 namespace Services
 {
     public class HttpCommunicationService : IHttpCommunicationService
     {
         //private const string URL_LIVINGROOM = "http://192.168.0.52/sensor?temperature";
-        private const string URL_LIVINGROOM = "http://192.168.0.23/sensor?temperature";
+        //private const string URL_LIVINGROOM = "http://192.168.0.23/sensor?temperature";
         private readonly IHttpClientFactory _httpClientFactory;
         private HttpClient _httpClient;
         //private readonly JsonSerializerOptions _options;
 
-        public HttpCommunicationService(IHttpClientFactory httpClientFactory)
+        public string UrlFirstFloorLivingRoom { get; init; }
+        public string UrlGroundFloorLivingRoom { get; init; }
+
+        public HttpCommunicationService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
+            var appSettingsSection = configuration.GetSection("Communication");
+            UrlFirstFloorLivingRoom = appSettingsSection["UrlFirstFloorLivingRoom"];
+            UrlGroundFloorLivingRoom = appSettingsSection["UrlGroundFloorLivingRoom"];
         }
 
         public event EventHandler<string> MeasurementReceived;
@@ -43,7 +50,7 @@ namespace Services
             {
                 try
                 {
-                    using var response = await _httpClient.GetAsync(URL_LIVINGROOM, HttpCompletionOption.ResponseHeadersRead);
+                    using var response = await _httpClient.GetAsync(UrlFirstFloorLivingRoom, HttpCompletionOption.ResponseHeadersRead);
                     response.EnsureSuccessStatusCode();
                     var text = await response.Content.ReadAsStringAsync();
                     MeasurementReceived?.Invoke(this, text);
