@@ -71,9 +71,16 @@ namespace Services
 
         public async Task SendAsync(string message)
         {
-            await Task.Run(() => _serialPort.Write(message + '\n'));
-            //_serialPort.WriteLine(message);
-            await Task.Delay(100);
+            if (_serialPort.IsOpen)
+            {
+                await Task.Run(() => _serialPort.Write(message + '\n'));
+                //_serialPort.WriteLine(message);
+                await Task.Delay(100);
+            }
+            else
+            {
+                Log.Error("NO CONNECTION TO ESP");
+            }
         }
 
         public async Task SetActorAsync(string actorName, double value)
@@ -81,7 +88,7 @@ namespace Services
             int intValue = (int)value;
             var message = $"heating/{actorName}/command:{intValue}";
             await SendAsync(message);
-            Log.Error($"StateService; SetActorBySerialCommunication; message: {message}");
+            Log.Information($"SerialCommunicationService; SetActorBySerialCommunication; message: {message}");
         }
 
 

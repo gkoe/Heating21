@@ -48,6 +48,24 @@ namespace Wasm.Services
             return result;
         }
 
+        public async Task<bool> SetManualOperationAsync(bool on)
+        {
+            var onOffValue = 0;
+            if (on)
+            {
+                onOffValue = 1;
+            }
+            //setmanualoperation /
+            var request = $"api/ruleengine/setmanualoperation/{onOffValue}";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<bool>(contentTemp);
+            System.Console.WriteLine($"ApiService;SetManualOperation; Request: {request}; result: {result}");
+            return result;
+        }
+
+        
+
         public async Task ResetEspAsync()
         {
             var request = $"api/maintenance/resetesp";

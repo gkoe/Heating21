@@ -24,7 +24,7 @@ namespace Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    //[Authorize]
+    //[Authorize(Roles = "Admin")]
     public class MaintenanceController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -33,7 +33,7 @@ namespace Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly ISerialCommunicationService _serialCommunicationService;
-        private readonly IRaspberryIoService _raspberryIoService;
+        public IRaspberryIoService RaspberryIoService { get; }
 
         public MaintenanceController(SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
@@ -49,7 +49,7 @@ namespace Api.Controllers
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _serialCommunicationService = serialCommunicationService;
-            this._raspberryIoService = raspberryIoService;
+            RaspberryIoService = raspberryIoService;
         }
 
 
@@ -59,7 +59,7 @@ namespace Api.Controllers
         public async Task<IActionResult> ResetEsp()
         {
             Log.Information("ESP reseted");
-            await _raspberryIoService.ResetEspAsync();
+            await RaspberryIoService.ResetEspAsync();
             return Ok();
         }
 

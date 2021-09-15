@@ -36,6 +36,11 @@ namespace Services.ControlComponents
             Fsm.Start(State.Off);
         }
 
+        public void Stop()
+        {
+            Fsm.Stop();
+        }
+
         /// <summary>
         /// Fsm wird über Enums angelegt
         /// </summary>

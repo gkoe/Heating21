@@ -8,8 +8,10 @@ namespace Wasm.Services.Contracts
 {
     public interface IApiService
     {
-        
+
         Task<bool> ChangeSwitchAsync(string name, bool on);
+        Task<bool> SetManualOperationAsync(bool on);
+
         Task ResetEspAsync();
     }
 }

@@ -202,11 +202,28 @@ namespace Wasm.Pages
             await actor.SwitchActorPerApiAsync();
         }
 
-        protected void IsManualModeChanged()
+        protected async Task IsManualModeChanged()
         {
             foreach (var actor in actors.Values)
             {
                 actor.InManualMode = InManualMode;
+            }
+
+            bool ok = await ApiService.SetManualOperationAsync(InManualMode);
+            if (ok)
+            {
+                if (InManualMode)
+                {
+                    NotificationService.ShowNotification(NotificationSeverity.Info, "MANUAL mode activated");
+                }
+                else
+                {
+                    NotificationService.ShowNotification(NotificationSeverity.Info, "AUTOMATIC mode activated");
+                }
+            }
+            else
+            {
+                NotificationService.ShowNotification(NotificationSeverity.Error, "Error response from server");
             }
         }
 

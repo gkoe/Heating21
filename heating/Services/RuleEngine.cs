@@ -22,6 +22,7 @@ namespace Services
 {
     public class RuleEngine : BackgroundService
     {
+        public static RuleEngine Instance { get; private set; }
         IServiceProvider ServiceProvider { get; }
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         public IRaspberryIoService RaspberryIoService { get; private set; }
@@ -63,12 +64,25 @@ namespace Services
                 }
                 StartFiniteStateMachines();
             }
+            Instance = this;  // ab jetzt Zugriff über Singleton erlauben
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(100, stoppingToken);
                 // Auf Änderungen des States reagieren, Timeouts bearbeiten, ...
             }
             //return Task.CompletedTask;
+        }
+
+        public void SetManualOperation(bool on)
+        {
+            if (on)  // manueller Betrieb
+            {
+                StopFiniteStateMachines();
+            }
+            else
+            {
+                StartFiniteStateMachines();
+            }
         }
 
         private async void Fsm_StateChanged(object sender, FsmStateChangedInfoDto fsmStateChangedInfoDto)
@@ -81,6 +95,13 @@ namespace Services
             OilBurner.Start();
             HotWater.Start();
             HeatingCircuit.Start();
+        }
+
+        private void StopFiniteStateMachines()
+        {
+            OilBurner.Stop();
+            HotWater.Stop();
+            HeatingCircuit.Stop();
         }
 
         public async override Task StopAsync(CancellationToken cancellationToken)

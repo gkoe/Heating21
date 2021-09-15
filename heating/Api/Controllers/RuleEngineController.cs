@@ -18,6 +18,7 @@ using Microsoft.Extensions.Options;
 
 using Serilog;
 
+using Services;
 using Services.Contracts;
 
 namespace Api.Controllers
@@ -25,7 +26,7 @@ namespace Api.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
     //[Authorize]
-    public class ActorsController : Controller
+    public class RuleEngineController : Controller
     {
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly UserManager<IdentityUser> _userManager;
@@ -33,13 +34,16 @@ namespace Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly ISerialCommunicationService _serialCommunicationService;
+        public IRaspberryIoService RaspberryIoService { get; }
 
-        public ActorsController(SignInManager<IdentityUser> signInManager,
+        public RuleEngineController(SignInManager<IdentityUser> signInManager,
             UserManager<IdentityUser> userManager,
             IOptions<ApiSettings> options,
             IUnitOfWork unitOfWork,
             IConfiguration configuration,
-            ISerialCommunicationService serialCommunicationService)
+            ISerialCommunicationService serialCommunicationService,
+            IRaspberryIoService raspberryIoService
+            )
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -47,17 +51,19 @@ namespace Api.Controllers
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _serialCommunicationService = serialCommunicationService;
+            RaspberryIoService = raspberryIoService;
+            //_ruleEngine = ruleEngine;
         }
 
 
-        [HttpGet("{actorName},{state}")]
+        [HttpGet("{on}")]
         //[Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> Change(string actorName, int state)
+        public async Task<IActionResult> SetManualOperation([FromRoute] int on)
         {
-            Log.Information("Change Actor {actor} to state: {state}", actorName, state);
-            await _serialCommunicationService.SetActorAsync(actorName, state);
-            //await Task.Run(() => _serialCommunicationService.Send($"heating/{actorName}/command:{state}"));
+            Log.Information("Change manual operation to: {on}");
+            RuleEngine.Instance.SetManualOperation(on>0);
+            await RaspberryIoService.ResetEspAsync();
             return Ok(true);
         }
 
