@@ -113,7 +113,7 @@ namespace Services.ControlComponents
 
         private bool IsBoilerVeryHot()
         {
-            return StateService.GetSensor(ItemEnum.BoilerTop).Value <= BOILER_VERY_HOT;
+            return StateService.GetSensor(ItemEnum.BoilerTop).Value >= BOILER_VERY_HOT;
         }
 
         private bool IsntBufferToHeatBySolar()
@@ -122,8 +122,6 @@ namespace Services.ControlComponents
             var bufferBottom = StateService.GetSensor(ItemEnum.BufferBottom).Value;
             return solar < (bufferBottom + 3.0);
         }
-
-
         
         #endregion
 
