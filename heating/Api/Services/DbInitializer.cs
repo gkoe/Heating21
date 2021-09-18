@@ -49,40 +49,24 @@ namespace Api.Services
 
             _userManager.CreateAsync(new ApplicationUser
             {
-                Name = "admin",
-                UserName = "admin@htl.at",
-                Email = "admin@htl.at",
+                Name = "Gerald",
+                UserName = "gerald.koeck@aon.at",
+                Email = "gerald.koeck@aon.at",
                 EmailConfirmed = true
-            }, "Admin123*").GetAwaiter().GetResult();
+            }, "gerald.koeck@aon.at").GetAwaiter().GetResult();
             _userManager.CreateAsync(new ApplicationUser
             {
-                Name = "user",
-                UserName = "user@htl.at",
-                Email = "user@htl.at",
+                Name = "Sieglinde",
+                UserName = "sieglinde.koeck@aon.at",
+                Email = "sieglinde.koeck@aon.at",
                 EmailConfirmed = true
-            }, "User123*").GetAwaiter().GetResult();
-            _userManager.CreateAsync(new ApplicationUser
-            {
-                Name = "guest",
-                UserName = "guest@htl.at",
-                Email = "guest@htl.at",
-                EmailConfirmed = true
-            }, "Guest123*").GetAwaiter().GetResult();
-            _userManager.CreateAsync(new ApplicationUser
-            {
-                Name = "norole",
-                UserName = "norole@htl.at",
-                Email = "norole@htl.at",
-                EmailConfirmed = true
-            }, "Norole123*").GetAwaiter().GetResult();
+            }, "sieglinde.koeck@aon.at").GetAwaiter().GetResult();
 
-            var user = _userManager.FindByEmailAsync("admin@htl.at").GetAwaiter().GetResult();
+            var user = _userManager.FindByEmailAsync("gerald.koeck@aon.at").GetAwaiter().GetResult();
             //IdentityUser user = _unitOfWork.Users.FirstOrDefault(u => u.Email == "admin@htl.at") as IdentityUser;
             _userManager.AddToRoleAsync(user, MagicStrings.Role_Admin).GetAwaiter().GetResult();
-            user = _userManager.FindByEmailAsync("user@htl.at").GetAwaiter().GetResult();
+            user = _userManager.FindByEmailAsync("sieglinde.koeck@aon.at").GetAwaiter().GetResult();
             _userManager.AddToRoleAsync(user, MagicStrings.Role_User).GetAwaiter().GetResult();
-            user = _userManager.FindByEmailAsync("guest@htl.at").GetAwaiter().GetResult();
-            _userManager.AddToRoleAsync(user, MagicStrings.Role_Guest).GetAwaiter().GetResult();
         }
     }
 }

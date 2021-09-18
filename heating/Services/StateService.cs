@@ -1,6 +1,7 @@
 ﻿
 using Common.Helper;
 
+using Core.Contracts;
 using Core.DataTransferObjects;
 
 using Microsoft.AspNetCore.SignalR;
@@ -29,14 +30,17 @@ namespace Services
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
+        public IUnitOfWork UnitOfWork { get; private set; }
 
         public SensorWithHistory GetSensor(ItemEnum itemEnum) => Sensors[itemEnum.ToString()];
         public Actor GetActor(ItemEnum itemEnum) => Actors[itemEnum.ToString()];
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
+        public StateService(IHubContext<MeasurementsHub> measurementsHubContext,
+            IUnitOfWork unitOfWork)
         {
+            UnitOfWork = unitOfWork;
             Sensors = new ConcurrentDictionary<string, SensorWithHistory>();
             foreach (var item in Enum.GetValues(typeof(ItemEnum)))
             {

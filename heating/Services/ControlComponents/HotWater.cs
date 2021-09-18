@@ -73,7 +73,7 @@ namespace Services.ControlComponents
                 Fsm.AddTransition(State.HeatBoilerBySolar, State.AllOff, Input.IsntBoilerToHeatBySolar);
                 Fsm.AddTransition(State.HeatBoilerBySolar, State.HeatBufferBySolar, Input.IsBoilerVeryHot);
                 Fsm.AddTransition(State.HeatBoilerBySolar, State.CoolBurner, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.CoolBurner, State.AllOff, Input.IsntBurnerToCool);
+                Fsm.AddTransition(State.HeatBoilerBySolar, State.AllOff, Input.IsntBoilerToHeatBySolar);
                 Fsm.AddTransition(State.HeatBufferBySolar, State.AllOff, Input.IsntBufferToHeatBySolar);
                 Fsm.AddTransition(State.HeatBufferBySolar, State.CoolBurner, Input.IsBurnerToCool);
                 // Aktionen festlegen
@@ -138,6 +138,7 @@ namespace Services.ControlComponents
             await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 0);
             await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 0);
             await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 0);
+            OilBurner.IsBurnerNeededByHotWater = false;
         }
 
         async void DoHeatBoilerByBurner(object sender, EventArgs e)
@@ -148,6 +149,7 @@ namespace Services.ControlComponents
             await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 1);
             await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 0);
             await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 0);
+            OilBurner.IsBurnerNeededByHotWater = true;
         }
 
         async void DoHeatBoilerBySolar(object sender, EventArgs e)

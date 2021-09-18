@@ -19,6 +19,8 @@ namespace Services.ControlComponents
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
         public ISerialCommunicationService SerialCommunicationService { get; }
+        public bool IsBurnerNeededByHotWater { get; internal set; }
+        public bool IsBurnerNeededByHeatingCircuit { get; internal set; }
 
         public OilBurner(IStateService stateService)
         {
@@ -109,8 +111,7 @@ namespace Services.ControlComponents
 
         private bool IsNeededOilBurner()
         {
-            //bool isNeeded = MainControl.Instance.IsBurnerNeeded();
-            return true;
+            return IsBurnerNeededByHeatingCircuit || IsBurnerNeededByHotWater;
         }
 
         private bool IsntNeededOilBurner()
