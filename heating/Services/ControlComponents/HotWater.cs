@@ -94,7 +94,7 @@ namespace Services.ControlComponents
         {
             var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
             var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
-            return solar > (boilerBottom + 3.0);
+            return solar > (boilerBottom + 10.0) || solar > 80.0;
         }
 
         private bool IsBurnerToCool() => OilBurner.IsTooHot();
