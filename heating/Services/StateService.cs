@@ -37,8 +37,7 @@ namespace Services
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public StateService(IHubContext<MeasurementsHub> measurementsHubContext,
-            IUnitOfWork unitOfWork)
+        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
         {
             //UnitOfWork = unitOfWork;
             Sensors = new ConcurrentDictionary<string, SensorWithHistory>();

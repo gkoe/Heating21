@@ -53,14 +53,14 @@ namespace Api.Services
                 UserName = "gerald.koeck@aon.at",
                 Email = "gerald.koeck@aon.at",
                 EmailConfirmed = true
-            }, "gerald.koeck@aon.at").GetAwaiter().GetResult();
+            }, "Gerald123*").GetAwaiter().GetResult();
             _userManager.CreateAsync(new ApplicationUser
             {
                 Name = "Sieglinde",
                 UserName = "sieglinde.koeck@aon.at",
                 Email = "sieglinde.koeck@aon.at",
                 EmailConfirmed = true
-            }, "sieglinde.koeck@aon.at").GetAwaiter().GetResult();
+            }, "Sieglinde123*").GetAwaiter().GetResult();
 
             var user = _userManager.FindByEmailAsync("gerald.koeck@aon.at").GetAwaiter().GetResult();
             //IdentityUser user = _unitOfWork.Users.FirstOrDefault(u => u.Email == "admin@htl.at") as IdentityUser;
