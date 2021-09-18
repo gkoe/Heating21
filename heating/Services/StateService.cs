@@ -30,7 +30,7 @@ namespace Services
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
-        public IUnitOfWork UnitOfWork { get; private set; }
+        //public IUnitOfWork UnitOfWork { get; private set; }
 
         public SensorWithHistory GetSensor(ItemEnum itemEnum) => Sensors[itemEnum.ToString()];
         public Actor GetActor(ItemEnum itemEnum) => Actors[itemEnum.ToString()];
@@ -40,7 +40,7 @@ namespace Services
         public StateService(IHubContext<MeasurementsHub> measurementsHubContext,
             IUnitOfWork unitOfWork)
         {
-            UnitOfWork = unitOfWork;
+            //UnitOfWork = unitOfWork;
             Sensors = new ConcurrentDictionary<string, SensorWithHistory>();
             foreach (var item in Enum.GetValues(typeof(ItemEnum)))
             {
