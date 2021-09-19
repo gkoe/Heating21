@@ -61,6 +61,7 @@ namespace Services.ControlComponents
                 Fsm.GetInput(Input.IsBurnerToCool).TriggerMethod = IsBurnerToCool;
                 Fsm.GetInput(Input.IsntBurnerToCool).TriggerMethod = IsntBurnerToCool;
                 Fsm.GetInput(Input.IsBoilerToHeatBySolar).TriggerMethod = IsBoilerToHeatBySolar;
+                Fsm.GetInput(Input.IsntBoilerToHeatBySolar).TriggerMethod = IsntBoilerToHeatBySolar;
 
                 Fsm.GetInput(Input.IsBoilerVeryHot).TriggerMethod = IsBoilerVeryHot;
                 Fsm.GetInput(Input.IsntBufferToHeatBySolar).TriggerMethod = IsntBufferToHeatBySolar;
@@ -95,6 +96,13 @@ namespace Services.ControlComponents
             var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
             var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
             return solar > (boilerBottom + 10.0) || solar > 80.0;
+        }
+
+        public bool IsntBoilerToHeatBySolar()
+        {
+            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
+            var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
+            return solar < boilerBottom + 5.0;
         }
 
         private bool IsBurnerToCool() => OilBurner.IsTooHot();
