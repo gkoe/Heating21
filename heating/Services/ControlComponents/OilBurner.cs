@@ -14,6 +14,10 @@ namespace Services.ControlComponents
 {
     public sealed class OilBurner
     {
+        const double BURNER_TOO_HOT = 80.0;
+        const double BURNER_READY = 50.0;
+        const double BURNER_COOLED_DOWN = 60.0;
+
         public enum State {  Off, Cold, Ready, TooHot};
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCold, IsCooledDown, IsReady, IsTooHot  };
         public IStateService StateService { get; }
@@ -86,7 +90,7 @@ namespace Services.ControlComponents
         /// Ist der Ölbrenner zu heiß?
         /// </summary>
         /// <returns></returns>
-        public bool IsTooHot() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value >= 29.0; // >= 900;
+        public bool IsTooHot() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value >= BURNER_TOO_HOT; 
         public bool IsCold() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value < 27.0; //500;
 
         /// <summary>
@@ -96,7 +100,7 @@ namespace Services.ControlComponents
         public bool IsReady()
         {
             var temp = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
-            return  temp >= 27.0; // 500;
+            return temp >= BURNER_READY;
         }
 
         /// <summary>
@@ -105,7 +109,7 @@ namespace Services.ControlComponents
         /// <returns></returns>
         public bool IsCooledDown()
         {
-            return StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value <= 28.0; // 600;
+            return StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value <= BURNER_COOLED_DOWN;
         }
 
 
