@@ -45,19 +45,22 @@ namespace Services
             // temperature_01/state/{"timestamp":1625917023,"value":25.17}
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
             _httpClient = _httpClientFactory.CreateClient();
-            Log.Information("HttpCommunicationService started");
+            Log.Information("HttpCommunicationService;started");
             while (!StopGetByHttp)
             {
                 try
                 {
                     using var response = await _httpClient.GetAsync(UrlFirstFloorLivingRoom, HttpCompletionOption.ResponseHeadersRead);
-                    response.EnsureSuccessStatusCode();
-                    var text = await response.Content.ReadAsStringAsync();
-                    MeasurementReceived?.Invoke(this, text);
+                    //response.EnsureSuccessStatusCode();  //!
+                    if (response.StatusCode == System.Net.HttpStatusCode.OK)
+                    {
+                        var text = await response.Content.ReadAsStringAsync();
+                        MeasurementReceived?.Invoke(this, text);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    Log.Error("GetHttpMeasurement; Exception: {Exception}", ex.Message);
+                    Log.Error("HttpCommunicationService;GetHttpMeasurement; Exception: {Exception}", ex.Message);
                 }
                 await Task.Delay(10000);
             }

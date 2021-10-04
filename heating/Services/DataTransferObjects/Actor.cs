@@ -7,7 +7,7 @@ namespace Services.DataTransferObjects
 {
     public class Actor : Item
     {
-        public Actor(ItemEnum itemEnum) : base(itemEnum)
+        public Actor(string actorName, int id) : base(actorName, id)
         {
         }
     }

@@ -14,9 +14,9 @@ namespace Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "5.0.5");
+                .HasAnnotation("ProductVersion", "5.0.10");
 
-            modelBuilder.Entity("Common.Persistence.Entities.Session", b =>
+            modelBuilder.Entity("Base.Entities.Session", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -43,6 +43,37 @@ namespace Persistence.Migrations
                     b.ToTable("Sessions");
                 });
 
+            modelBuilder.Entity("Core.Entities.FsmTransition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ActState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Fsm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Input")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FsmTransitions");
+                });
+
             modelBuilder.Entity("Core.Entities.Measurement", b =>
                 {
                     b.Property<int>("Id")
@@ -62,6 +93,9 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("TEXT");
+
+                    b.Property<double>("Trend")
+                        .HasColumnType("REAL");
 
                     b.Property<double>("Value")
                         .HasColumnType("REAL");
@@ -86,9 +120,6 @@ namespace Persistence.Migrations
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("BLOB");
-
-                    b.Property<double>("Trend")
-                        .HasColumnType("REAL");
 
                     b.Property<string>("Unit")
                         .HasColumnType("TEXT");
@@ -296,7 +327,7 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("Common.Persistence.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Base.Entities.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
 
@@ -306,9 +337,9 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Common.Persistence.Entities.Session", b =>
+            modelBuilder.Entity("Base.Entities.Session", b =>
                 {
-                    b.HasOne("Common.Persistence.Entities.ApplicationUser", "ApplicationUser")
+                    b.HasOne("Base.Entities.ApplicationUser", "ApplicationUser")
                         .WithMany("Sessions")
                         .HasForeignKey("ApplicationUserId");
 
@@ -382,7 +413,7 @@ namespace Persistence.Migrations
                     b.Navigation("Measurements");
                 });
 
-            modelBuilder.Entity("Common.Persistence.Entities.ApplicationUser", b =>
+            modelBuilder.Entity("Base.Entities.ApplicationUser", b =>
                 {
                     b.Navigation("Sessions");
                 });

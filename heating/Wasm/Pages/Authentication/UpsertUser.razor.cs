@@ -1,7 +1,7 @@
 ﻿using Blazored.FluentValidation;
 using Blazored.LocalStorage;
 
-using Common.DataTransferObjects;
+using Base.DataTransferObjects;
 
 using FluentValidation;
 using FluentValidation.Results;
@@ -20,7 +20,7 @@ using Wasm.Services;
 using Wasm.Services.Contracts;
 using Wasm.Validations;
 using Wasm.Helper;
-using Common.Helper;
+using Base.Helper;
 
 namespace Wasm.Pages.Authentication
 {
@@ -66,7 +66,7 @@ namespace Wasm.Pages.Authentication
             HasChanges = MiniMapper.AnyPropertyValuesDifferent(OriginalUser, FormUser);
             StateHasChanged();
 
-            UserValidator userValidator = new UserValidator();
+            UserValidator userValidator = new ();
             ValidationResult results = userValidator.Validate(FormUser);
             ModelError = "";
             HasErrors = !results.IsValid;

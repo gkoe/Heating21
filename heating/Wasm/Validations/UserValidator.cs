@@ -1,4 +1,4 @@
-﻿using Common.DataTransferObjects;
+﻿using Base.DataTransferObjects;
 
 using FluentValidation;
 

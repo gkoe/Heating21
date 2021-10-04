@@ -39,21 +39,24 @@ namespace Services.DataTransferObjects
 
     }
 
-      public class Item
+    public class Item
     {
+        //const ItemEnum StartActors = ItemEnum.OilBurnerSwitch;
         int _actIndex = 0;
         DateTime lastTimeStamp = DateTime.MinValue;
 
-        public ItemEnum ItemEnum { get; private set; }
+        public int Id { get; set; }
+        public string ItemName { get; private set; }
         public MeasurementValue[] Measurements = new MeasurementValue[10];
         public double Trend { get; set; }  // umgerechnet in Delta/Stunde
 
         public DateTime Time { get; private set; }
         public double Value { get; private set; }
 
-        public Item(ItemEnum itemName)
+        public Item(string itemName, int id)
         {
-            ItemEnum = itemName;
+            ItemName = itemName;
+            Id = id;
         }
 
         public void AddMeasurement(DateTime time, double value)
@@ -78,7 +81,7 @@ namespace Services.DataTransferObjects
                 }
             }
             Measurements[_actIndex] = new MeasurementValue(time, value);
-            Log.Information($"Add SensorWithHistory; Sensor: {ItemEnum}, Value: {value}, Index: {_actIndex}, Trend: {Trend}");
+            Log.Information($"Add SensorWithHistory; Sensor: {ItemName}, Value: {value}, Index: {_actIndex}, Trend: {Trend}");
             _actIndex = (_actIndex + 1) % 10;
             // letzte Werte als aktuelle Werte speichern
             Time = time;

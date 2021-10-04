@@ -9,7 +9,7 @@ namespace Services.DataTransferObjects
 
     public class SensorWithHistory : Item
     {
-        public SensorWithHistory(ItemEnum itemName) : base(itemName)
+        public SensorWithHistory(string sensorName, int id) : base(sensorName, id)
         {
         }
     }

@@ -1,6 +1,6 @@
 ﻿using Blazored.LocalStorage;
 
-using Common.Helper;
+using Base.Helper;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;

@@ -1,4 +1,6 @@
-﻿using Core.DataTransferObjects;
+﻿
+using Core.DataTransferObjects;
+using Core.Entities;
 
 using Services.DataTransferObjects;
 
@@ -18,6 +20,6 @@ namespace Services.Contracts
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public Task SendFsmStateChangedAsync(FsmStateChangedInfoDto fsmStateChangedInfoDto);
+        public Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto);
     }
 }

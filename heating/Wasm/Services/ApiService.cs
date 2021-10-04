@@ -1,7 +1,7 @@
 ﻿using Blazored.LocalStorage;
 
-using Common.DataTransferObjects;
-using Common.Helper;
+using Base.DataTransferObjects;
+using Base.Helper;
 
 using Core.DataTransferObjects;
 using Core.Entities;
@@ -23,14 +23,14 @@ namespace Wasm.Services
     public class ApiService : IApiService
     {
         private readonly HttpClient _client;
-        private readonly ILocalStorageService _localStorage;
-        private readonly AuthenticationStateProvider _authStateProvider;
+        //private readonly ILocalStorageService _localStorage;
+        //private readonly AuthenticationStateProvider _authStateProvider;
 
-        public ApiService(HttpClient client, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider)
+        public ApiService(HttpClient client/*, ILocalStorageService localStorage, AuthenticationStateProvider authStateProvider */)
         {
             _client = client;
-            _authStateProvider = authStateProvider;
-            _localStorage = localStorage;
+            //_authStateProvider = authStateProvider;
+            //_localStorage = localStorage;
         }
 
         public async Task<bool> ChangeSwitchAsync(string name, bool on)

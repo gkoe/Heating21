@@ -1,33 +1,24 @@
-using System;
-using System.Linq;
-using System.Text;
-
-using Api.Helper;
-using Api.Middlewares;
-using Api.Services;
-
-using Common.Persistence;
-
-using Core.Contracts;
-
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.ResponseCompression;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Microsoft.EntityFrameworkCore;
 
 using Newtonsoft.Json.Serialization;
 
 using Persistence;
-
-using Services;
+using Core.Contracts;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System;
+using Base.Contracts.Persistence;
+using Base.Helper;
 using Services.Contracts;
+using Services;
 using Services.Hubs;
 
 namespace Api
@@ -51,30 +42,24 @@ namespace Api
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite($"Data Source={dbFileName}"));
 
-            //services.AddDbContext<ApplicationDbContext>(options =>
-            //    options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            //services.AddDbContext<ApplicationDbContext>();
-            //services.AddScoped<ApplicationDbContext>();
-            services.AddScoped<IUnitOfWork, UnitOfWork>();
-            services.AddScoped<CommonUnitOfWork, UnitOfWork>();
-            services.AddScoped<CheckIfLoggedOutMiddleware>();
-            services.AddSingleton<IHttpCommunicationService, HttpCommunicationService>();
-            services.AddSingleton<ISerialCommunicationService, SerialCommunicationService>();
-            services.AddSingleton<IRaspberryIoService, RaspberryIoService>();
-            services.AddSingleton<IStateService,StateService>();
-            services.AddHostedService<RuleEngine>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();      // Anwendungsschicht
+            services.AddScoped<IBaseUnitOfWork, UnitOfWork>();  // Auth-Schicht kennt IUnitOfWork nicht
+            services.AddScoped<DbInitializer>();
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders()
-                .AddDefaultUI();
-            appSettingsSection = Configuration.GetSection("APISettings");
-            services.Configure<ApiSettings>(appSettingsSection);
+            services.AddIdentity<IdentityUser, IdentityRole>(config =>
+            {
+                config.Password.RequiredLength = 4;
+                config.Password.RequireDigit = true;
+                config.Password.RequireUppercase = true;
+                config.Password.RequireLowercase = true;
+                config.Password.RequireNonAlphanumeric = true;
+            })
+                .AddEntityFrameworkStores<ApplicationDbContext>();
+                //.AddDefaultTokenProviders()
+                //.AddDefaultUI();
 
-            services.Configure<MailJetSettings>(Configuration.GetSection("MailJetSettings"));
-
-            var apiSettings = appSettingsSection.Get<ApiSettings>();
-            var key = Encoding.ASCII.GetBytes(apiSettings.SecretKey);
-
+            appSettingsSection = Configuration.GetSection("AuthSettings");
+            var key = Encoding.ASCII.GetBytes(appSettingsSection["SecretKey"]);
             services.AddAuthentication(opt =>
             {
                 opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -91,25 +76,17 @@ namespace Api
                         IssuerSigningKey = new SymmetricSecurityKey(key),
                         ValidateAudience = true,
                         ValidateIssuer = true,
-                        ValidAudience = apiSettings.ValidAudience,
-                        ValidIssuer = apiSettings.ValidIssuer,
-                        ClockSkew = TimeSpan.Zero
+                        ValidAudience = appSettingsSection["ValidAudience"],  // Zieldomäne
+                        ValidIssuer = appSettingsSection["ValidIssuer"],      // Aussteller
+                        ClockSkew = TimeSpan.Zero  // keine Überprüfung von Zeitabweichungen
                     };
                 });
-
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddScoped<DbInitializer>();
-
-            services.AddResponseCompression(opts =>
-            {
-                opts.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat(
-                    new[] { "application/octet-stream" });
-            });
 
             services.AddCors(o => o.AddPolicy("DefaultCors", builder =>
             {
                 builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
             }));
+
             services.AddRouting(option => option.LowercaseUrls = true);
             services.AddControllers().AddJsonOptions(opt => opt.JsonSerializerOptions.PropertyNamingPolicy = null)
                 .AddNewtonsoftJson(opt =>
@@ -119,7 +96,7 @@ namespace Api
                 });
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Template", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Htl.net", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
                     In = ParameterLocation.Header,
@@ -142,18 +119,17 @@ namespace Api
                 });
             });
 
+            //services.AddSingleton<IHttpCommunicationService, HttpCommunicationService>();
+            //services.AddSingleton<ISerialCommunicationService, SerialCommunicationService>();
+            //services.AddSingleton<IRaspberryIoService, RaspberryIoService>();
+            //services.AddSingleton<IStateService, StateService>();
+            services.AddHostedService<RuleEngine>();
 
-            //services.AddControllers();
-            //services.AddSwaggerGen(c =>
-            //{
-            //    c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api", Version = "v1" });
-            //});
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, DbInitializer dbInitializer)
         {
-            app.UseResponseCompression();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -161,42 +137,20 @@ namespace Api
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
             }
 
+            dbInitializer.Initalize();  // legt, falls erforderlich Defaultuser und Rollen an
+
             app.UseHttpsRedirection();
-
             app.UseCors("DefaultCors");
-            //app.UseSerilogRequestLogging();
             app.UseRouting();
-
-            app.UseMiddleware<CheckIfLoggedOutMiddleware>();
 
             app.UseAuthentication();
             app.UseAuthorization();
 
-            dbInitializer.Initalize();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
                 endpoints.MapHub<MeasurementsHub>("/measurementshub");
             });
-
-
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //    app.UseSwagger();
-            //    app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Api v1"));
-            //}
-
-            //app.UseHttpsRedirection();
-
-            //app.UseRouting();
-
-            //app.UseAuthorization();
-
-            //app.UseEndpoints(endpoints =>
-            //{
-            //    endpoints.MapControllers();
-            //});
         }
     }
 }

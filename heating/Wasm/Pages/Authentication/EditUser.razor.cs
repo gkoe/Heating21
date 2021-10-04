@@ -1,5 +1,5 @@
 ﻿using Blazored.LocalStorage;
-using Common.DataTransferObjects;
+using Base.DataTransferObjects;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Forms;
 using System;
@@ -11,7 +11,7 @@ using Wasm.Services;
 using Wasm.Services.Contracts;
 using Wasm.Validations;
 using Radzen;
-using Common.Helper;
+using Base.Helper;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Authorization;
 
@@ -75,7 +75,7 @@ namespace Wasm.Pages.Authentication
             HasChanges = MiniMapper.AnyPropertyValuesDifferent(AuthenticatedUser, FormUser);
             StateHasChanged();
 
-            UserValidator userValidator = new UserValidator();
+            UserValidator userValidator = new ();
             ValidationResult results = userValidator.Validate(FormUser);
             ModelError = "";
             HasErrors = !results.IsValid;

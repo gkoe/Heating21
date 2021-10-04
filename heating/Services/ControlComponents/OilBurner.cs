@@ -16,7 +16,7 @@ namespace Services.ControlComponents
     {
         const double BURNER_TOO_HOT = 80.0;
         const double BURNER_READY = 50.0;
-        const double BURNER_COOLED_DOWN = 60.0;
+        const double BURNER_COOLED_DOWN = 75.0;
 
         public enum State {  Off, Cold, Ready, TooHot};
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCold, IsCooledDown, IsReady, IsTooHot  };
@@ -81,7 +81,7 @@ namespace Services.ControlComponents
             }
             catch (Exception ex)
             {
-                Log.Error("Fehler bei Init FsmOilBurner");
+                Log.Error($"Fehler bei Init FsmOilBurner, ex: {ex.Message}");
             }
         }
         #region TriggerMethoden
@@ -129,13 +129,13 @@ namespace Services.ControlComponents
         async void DoBurnerOn(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemEnum.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 1);
         }
 
         async void DoBurnerOff(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 0);
         }
         #endregion
 

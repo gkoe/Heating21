@@ -1,4 +1,4 @@
-﻿using Common.Persistence.Entities;
+﻿using Base.Entities;
 using System.Collections.Generic;
 
 namespace Core.Entities
@@ -8,7 +8,6 @@ namespace Core.Entities
         //public string ThingName { get; set; }
         public string Name { get; set; }
         public string Unit { get; set; }
-        public double Trend { get; set; }
 
         public List<Measurement> Measurements { get; set; }
 

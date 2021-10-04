@@ -31,7 +31,7 @@ namespace Wasm
             builder.Services.AddOptions();
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, MyAuthenticationStateProvider>();
-            builder.Services.AddScoped<IAuthenticationApiService, AccountApiService>();
+            builder.Services.AddScoped<IAuthenticationApiService, AuthApiService>();
             builder.Services.AddScoped<IApiService, ApiService>();
             builder.Services.AddScoped<DialogService>();
             builder.Services.AddScoped<NotificationService>();

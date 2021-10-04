@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 
-using Common.Persistence.Repositories;
+using Base.Persistence.Repositories;
 
 using Core.Contracts;
 using Core.Entities;
@@ -13,24 +13,34 @@ namespace Persistence
 {
     public class SensorRepository : GenericRepository<Sensor>, ISensorRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private ApplicationDbContext DbContext { get; }
 
         public SensorRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
         }
 
         public Sensor GetByName(string sensorName)
         {
-            return _dbContext.Sensors.FirstOrDefault(s => s.Name == sensorName);
+            return DbContext.Sensors.FirstOrDefault(s => s.Name == sensorName);
         }
 
         public async Task<Sensor[]> GetAsync()
         {
-            var sensors = await _dbContext.Sensors
+            var sensors = await DbContext.Sensors
                 .OrderBy(s => s.Name)
                 .ToArrayAsync();
             return sensors;
+        }
+
+        public async Task UpsertAsync(string sensorName)
+        {
+            var sensor = await DbContext.Sensors.FirstOrDefaultAsync(s => s.Name == sensorName);
+            if (sensor == null)
+            {
+                sensor = new Sensor { Name = sensorName };
+                await DbContext.AddAsync(sensor);
+            }
         }
     }
 }

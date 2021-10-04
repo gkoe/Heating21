@@ -1,9 +1,10 @@
 ﻿using System.Linq;
 using System.Threading.Tasks;
 
-using Common.Persistence.Repositories;
+using Base.Persistence.Repositories;
 
 using Core.Contracts;
+using Core.DataTransferObjects;
 using Core.Entities;
 
 using Microsoft.EntityFrameworkCore;
@@ -12,16 +13,16 @@ namespace Persistence
 {
     public class MeasurementRepository : GenericRepository<Measurement>, IMeasurementRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private ApplicationDbContext DbContext { get; }
 
         public MeasurementRepository(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
+            DbContext = dbContext;
         }
 
         public async Task<Measurement> GetLastAsync()
         {
-            var measurement = await _dbContext.Measurements
+            var measurement = await DbContext.Measurements
                 .OrderByDescending(m => m.Time)
                 .FirstOrDefaultAsync();
             return measurement;
@@ -29,7 +30,7 @@ namespace Persistence
 
         public async Task<Measurement[]> GetLast100(int sensorId)
         {
-            var measurements = await _dbContext
+            var measurements = await DbContext
                 .Measurements
                 .Where(m => m.SensorId == sensorId)
                 .OrderByDescending(m => m.Time)
@@ -40,12 +41,25 @@ namespace Persistence
 
         public async Task<Measurement> GetLastAsync(string sensorName)
         {
-            var measurement = await _dbContext
+            var measurement = await DbContext
                 .Measurements
                 .Where(m => m.Sensor.Name == sensorName)
                 .OrderByDescending(m => m.Time)
                 .FirstOrDefaultAsync();
             return measurement;
+        }
+
+        public async Task AddAsync(MeasurementDto measurementDto)
+        {
+            var measurement = new Measurement
+            {
+                Id = 0,
+                SensorId = measurementDto.SensorId,
+                Value = measurementDto.Value,
+                Time = measurementDto.Time,
+                Trend = measurementDto.Trend
+            };
+            await DbContext.Measurements.AddAsync(measurement);
         }
     }
 }

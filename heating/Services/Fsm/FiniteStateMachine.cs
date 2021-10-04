@@ -1,6 +1,7 @@
-﻿using Common.Helper;
+﻿using Base.Helper;
 
 using Core.DataTransferObjects;
+using Core.Entities;
 
 using HeatControl.Fsm;
 
@@ -28,13 +29,25 @@ namespace Services.Fsm
         readonly State[] states;
         readonly Input[] inputs;
 
+        private bool _isRunning;
+
         public State ActState { get; private set; }
         public string Name { get; private set; }
-        public bool IsRunning { get; set; }
+        public bool IsRunning { 
+            get 
+            { 
+                return _isRunning;  
+            }
+            set 
+            {
+                Log.Information($"Fsm;IsRunning;set to {value}");
+                _isRunning = value;
+            }
+        }
 
-        public event EventHandler<FsmStateChangedInfoDto> StateChanged;
+        public event EventHandler<FsmTransition> StateChanged;
 
-        private Enum _actInput;
+        //private Enum _actInput;
 
         /// <summary>
         /// Die Enums für States und Transitions werden übergeben.
@@ -57,7 +70,7 @@ namespace Services.Fsm
                 inputs[i] = new Input(inputEnums[i]);
             }
             ActState = states[0];
-            Timer timer = new Timer
+            var timer = new Timer
             {
                 Interval = 10000
             };
@@ -97,7 +110,7 @@ namespace Services.Fsm
         public void AddTransition(Enum fromState, Enum toState, Enum @input)
         {
             int fromStateIndex = (int)Convert.ChangeType(fromState, typeof(int));
-            Transition transition = new Transition(GetState(fromState), GetState(toState), GetInput(input));
+            var transition = new Transition(GetState(fromState), GetState(toState), GetInput(input));
             states[fromStateIndex].Transitions.Add(transition);
         }
 
@@ -111,8 +124,8 @@ namespace Services.Fsm
             if (IsRunning)
             {
                 CheckActStateInputs();
-                var x = ActState;
-                var y = _actInput;
+                //var x = ActState;
+                //var y = _actInput;
             }
         }
 
@@ -129,17 +142,15 @@ namespace Services.Fsm
                 {
                     if (HandleInput(transition.Input.InputEnum))
                     {
-                        if (StateChanged != null)
-                        {
-                            StateChanged(this,
-                                new FsmStateChangedInfoDto
-                                {
-                                    Fsm = Name,
-                                    LastState = lastState.StateEnum.ToString(),
-                                    ActState = ActState.StateEnum.ToString(),
-                                    Input = transition.Input.InputEnum.ToString()
-                                });
-                        }
+                        StateChanged?.Invoke(this,
+                            new FsmTransition
+                            {
+                                Time = DateTime.Now,
+                                Fsm = Name,
+                                LastState = lastState.StateEnum.ToString(),
+                                ActState = ActState.StateEnum.ToString(),
+                                Input = transition.Input.InputEnum.ToString()
+                            });
                         return;
                     }
                 }
@@ -176,9 +187,10 @@ namespace Services.Fsm
                 return;
             }
             ActState = states[stateNumber];
-            StateChanged(this,
-                new FsmStateChangedInfoDto
+            StateChanged?.Invoke(this,
+                new FsmTransition
                 {
+                    Time = DateTime.Now,
                     Fsm = Name,
                     LastState = "",
                     ActState = ActState.StateEnum.ToString(),
@@ -216,7 +228,7 @@ namespace Services.Fsm
             {
                 return false; // Input ignorieren
             }
-            _actInput = input;
+            //_actInput = input;
             Transition transition = ActState.GetTransitionByInput(input);
             if (transition == null)
             {

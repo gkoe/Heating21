@@ -1,23 +1,19 @@
-﻿
-using Common.Helper;
+﻿using Base.Helper;
 
-using Core.Contracts;
 using Core.DataTransferObjects;
+using Core.Entities;
+using Base.Entities;
 
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.Extensions.DependencyInjection;
-
 using Serilog;
-
 using Services.Contracts;
 using Services.DataTransferObjects;
 using Services.Hubs;
-
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Text.Json;
 using System.Threading.Tasks;
+using Base.Helper.ExtensionMethods;
 
 namespace Services
 {
@@ -37,20 +33,20 @@ namespace Services
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
+        public StateService(IHubContext<MeasurementsHub> measurementsHubContext, Sensor[] sensorsActors)
         {
             //UnitOfWork = unitOfWork;
             Sensors = new ConcurrentDictionary<string, SensorWithHistory>();
-            foreach (var item in Enum.GetValues(typeof(ItemEnum)))
+            foreach (var item in sensorsActors)
             {
-                var sensorName = (ItemEnum)item;
-                Sensors[sensorName.ToString()] = new SensorWithHistory(sensorName);
+                var sensorName = item.Name;
+                Sensors[sensorName.ToString()] = new SensorWithHistory(sensorName, item.Id);
             }
             Actors = new ConcurrentDictionary<string, Actor>();
-            foreach (var item in Enum.GetValues(typeof(ItemEnum)))
+            foreach (var item in sensorsActors)
             {
-                var actorName = (ItemEnum)item;
-                Actors[actorName.ToString()] = new Actor(actorName);
+                var actorName = item.Name;
+                Actors[actorName.ToString()] = new Actor(actorName, item.Id);
             }
             MeasurementsHubContext = measurementsHubContext;
         }
@@ -63,7 +59,6 @@ namespace Services
         public void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService)
         {
             Log.Information("StateService started");
-            //SerialCommunicationService = serialCommunicationService;
             SerialCommunicationService = serialCommunicationService;
             SerialCommunicationService.MessageReceived += SerialCommunicationService_MessageReceived;
             SerialCommunicationService.StartCommunication();
@@ -91,7 +86,7 @@ namespace Services
         {
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
             message = message.RemoveChars(" ");
-            int startPos = message.IndexOf(':') + 1;
+            //int startPos = message.IndexOf(':') + 1;
             //string sensorName = message[startPos..message.IndexOf(',')];
             string sensorName = "LivingroomFirstFloor";
             if (!Sensors.ContainsKey(sensorName))
@@ -99,7 +94,7 @@ namespace Services
                 return;
             }
             var sensor = Sensors[sensorName];
-            startPos = message.IndexOf("time") + 6;
+            var startPos = message.IndexOf("time") + 6;
             var endPos = message.IndexOf("value")-2;
             var length = endPos - startPos;
             if (length < 18)
@@ -118,12 +113,14 @@ namespace Services
                 return;
             }
             string valueString = message.Substring(startPos, length);
-            double? value = NumberConverters.ParseInvariantDouble(valueString);
+            //double? value = NumberConverters.ParseInvariantDouble(valueString);
+            double? value = valueString.TryParseToDouble();
             if (value != null)
             {
                 sensor.AddMeasurement(time, value.Value);
                 var measurement = new MeasurementDto
                 {
+                    SensorId = sensor.Id,
                     SensorName = sensorName,
                     Time = time,
                     Trend = sensor.Trend,
@@ -165,6 +162,7 @@ namespace Services
                 sensor.AddMeasurement(time, value.Value);
                 var measurement = new MeasurementDto
                 {
+                    SensorId = sensor.Id,
                     SensorName = sensorName,
                     Time = time,
                     Trend = sensor.Trend,
@@ -180,7 +178,7 @@ namespace Services
         {
             var text = payload.RemoveChars("\"{}\\");
             var properties = text.ToString().Split(',');
-            Dictionary<string, string> propertyValues = new Dictionary<string, string>();
+            var propertyValues = new Dictionary<string, string>();
             foreach (var property in properties)
             {
                 var keyValuePairs = property.Split(':');
@@ -195,7 +193,8 @@ namespace Services
             if (propertyValues.ContainsKey("value"))
             {
                 string valueString = propertyValues["value"];
-                value = NumberConverters.ParseInvariantDouble(valueString);
+                value = valueString.TryParseToDouble();
+                //value = NumberConverters.ParseInvariantDouble(valueString);
                 if (value != null)
                 {
                     value = value.Value;
@@ -215,7 +214,8 @@ namespace Services
             {
                 var measurement = new MeasurementDto
                 {
-                    SensorName = sensor.ItemEnum.ToString(),
+                    SensorId = sensor.Id,
+                    SensorName = sensor.ItemName.ToString(),
                     Time = sensor.Time,
                     Trend = sensor.Trend,
                     Value = sensor.Value
@@ -224,7 +224,7 @@ namespace Services
             }
         }
 
-        public async Task SendFsmStateChangedAsync(FsmStateChangedInfoDto fsmStateChangedInfoDto)
+        public async Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto)
         {
             await MeasurementsHubContext.Clients.All.SendAsync("ReceiveFsmStateChanged", fsmStateChangedInfoDto);
         }

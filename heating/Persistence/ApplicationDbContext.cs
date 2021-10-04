@@ -1,38 +1,38 @@
-﻿using Common.Persistence;
+﻿using Base.Persistence;
+
 using Core.Entities;
+
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 
 namespace Persistence
 {
-    public class ApplicationDbContext : CommonApplicationDbContext
+    public class ApplicationDbContext : BaseApplicationDbContext
     {
         public DbSet<Sensor> Sensors { get; set; }
         public DbSet<Measurement> Measurements { get; set; }
-
+        public DbSet<FsmTransition> FsmTransitions { get; set; }
+        public string ConnectionString { get; }
 
         public ApplicationDbContext():base()
         {
-
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         { }
 
-
-        ///// <summary>
-        ///// Für InMemory-DB in UnitTests
-        ///// </summary>
-        ///// <param name="options"></param>
-        //public ApplicationDbContext(DbContextOptions<BaseApplicationDbContext> options) : base(options)
-        //{
-        //}
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        public ApplicationDbContext(string connectionString)
         {
-            base.OnModelCreating(modelBuilder);
-            //modelBuilder.Entity<ShotGoals>()
-            //    .HasIndex(gt => new { gt.Round, gt.TeamId })
-            //    .IsUnique(true);
+            ConnectionString = connectionString;
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+               
+                optionsBuilder.UseSqlite(ConnectionString);
+            }
         }
 
     }

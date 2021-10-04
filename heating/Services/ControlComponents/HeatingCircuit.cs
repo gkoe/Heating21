@@ -78,7 +78,7 @@ namespace Services.ControlComponents
             }
             catch (Exception ex)
             {
-                Log.Error("Fehler bei Init FsmHeatingCircuit");
+                Log.Error($"HeatingCircuit;Fehler bei Init FsmHeatingCircuit, ex: {ex.Message}");
             }
         }
         #region TriggerMethoden
@@ -109,18 +109,18 @@ namespace Services.ControlComponents
         async void DoPumpOn(object sender, EventArgs e)
         {
             var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
-            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemEnum.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 1);
             var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
-            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemEnum.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemName.ToString(), 1);
         }
 
         async void DoPumpOff(object sender, EventArgs e)
         {
             OilBurner.IsBurnerNeededByHeatingCircuit = false;
             var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
-            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 0);
             var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
-            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemName.ToString(), 0);
         }
 
         void OilBurnerNeeded(object sender, EventArgs e)

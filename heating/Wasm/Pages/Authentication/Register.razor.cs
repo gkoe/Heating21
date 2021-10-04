@@ -1,4 +1,4 @@
-﻿using Common.DataTransferObjects;
+﻿using Base.DataTransferObjects;
 using Microsoft.AspNetCore.Components;
 using System.Collections.Generic;
 using System.Threading.Tasks;

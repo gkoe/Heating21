@@ -1,4 +1,5 @@
-﻿using Common.Contracts;
+﻿using Base.Contracts.Persistence;
+
 using Core.Entities;
 using System.Threading.Tasks;
 
@@ -8,5 +9,6 @@ namespace Core.Contracts
     {
         Task<Sensor[]> GetAsync();
         Sensor GetByName(string sensorName);
+        Task UpsertAsync(string sensorName);
     }
 }

@@ -1,16 +1,9 @@
-﻿
-using Core.DataTransferObjects;
-
-using Microsoft.AspNetCore.SignalR;
-
+﻿using Microsoft.AspNetCore.SignalR;
 using Serilog;
-
 using Services.Contracts;
-
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
+using Core.DataTransferObjects;
 
 namespace Services.Hubs
 {
@@ -20,9 +13,9 @@ namespace Services.Hubs
     {
         public IStateService StateService { get; }
 
-        public MeasurementsHub(IStateService stateService)
+        public MeasurementsHub()
         {
-            StateService = stateService;
+            StateService = RuleEngine.Instance.StateService;
         }
 
         public async override Task OnConnectedAsync()

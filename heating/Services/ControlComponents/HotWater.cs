@@ -86,7 +86,7 @@ namespace Services.ControlComponents
             }
             catch (Exception ex)
             {
-                Log.Error("Fehler bei Init FsmHeatingCircuit");
+                Log.Error($"HotWater;Fehler bei Init FsmHeatingCircuit, ex: {ex.Message}");
             }
         }
         #region TriggerMethoden
@@ -141,9 +141,9 @@ namespace Services.ControlComponents
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
             OilBurner.IsBurnerNeededByHotWater = false;
         }
 
@@ -152,9 +152,9 @@ namespace Services.ControlComponents
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
             OilBurner.IsBurnerNeededByHotWater = true;
         }
 
@@ -163,9 +163,9 @@ namespace Services.ControlComponents
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
         }
 
         async void DoHeatBufferBySolar(object sender, EventArgs e)
@@ -173,9 +173,9 @@ namespace Services.ControlComponents
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemEnum.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemEnum.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemEnum.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 1);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 1);
         }
 
         #endregion

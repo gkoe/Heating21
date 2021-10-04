@@ -8,7 +8,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Microsoft.JSInterop;
 using Blazored.LocalStorage;
-using Common.DataTransferObjects;
+using Base.DataTransferObjects;
 using Microsoft.AspNetCore.Components.Authorization;
 using Wasm.Services;
 

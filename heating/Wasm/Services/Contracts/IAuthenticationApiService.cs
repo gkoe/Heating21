@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Common.DataTransferObjects;
+using Base.DataTransferObjects;
 
 namespace Wasm.Services.Contracts
 {

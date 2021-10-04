@@ -1,4 +1,4 @@
-﻿using Common.Persistence.Entities;
+﻿using Base.Entities;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,6 +14,8 @@ namespace Core.Entities
         [ForeignKey(nameof(SensorId))]
         public Sensor Sensor { get; set; }
         public int SensorId { get; set; }
+        public double Trend { get; set; }
+
 
         public override string ToString()
         {
