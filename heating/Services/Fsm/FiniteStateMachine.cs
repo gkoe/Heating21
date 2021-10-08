@@ -107,11 +107,12 @@ namespace Services.Fsm
         }
 
 
-        public void AddTransition(Enum fromState, Enum toState, Enum @input)
+        public Transition AddTransition(Enum fromState, Enum toState, Enum @input)
         {
             int fromStateIndex = (int)Convert.ChangeType(fromState, typeof(int));
             var transition = new Transition(GetState(fromState), GetState(toState), GetInput(input));
             states[fromStateIndex].Transitions.Add(transition);
+            return transition;
         }
 
         /// <summary>

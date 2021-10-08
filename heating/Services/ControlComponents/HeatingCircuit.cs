@@ -14,7 +14,7 @@ namespace Services.ControlComponents
 {
     public sealed class HeatingCircuit
     {
-        public enum State {  Off, PumpIsOff, OilBurnerNeeded, PumpIsOn, CoolBurner};
+        public enum State {  Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, CoolBurnerByCircuit};
         public enum Input { IsInHeatingTime, IsntInHeatingTime, IsBurnerToCool, IsntBurnerToCool, IsBurnerReady, 
             IsBurnerCold, IsHot, IsCold  };
         public IStateService StateService { get; }
@@ -62,25 +62,27 @@ namespace Services.ControlComponents
                 Fsm.GetInput(Input.IsCold).TriggerMethod = IsCold;
                 // Übergänge definieren
                 Fsm.AddTransition(State.Off, State.PumpIsOff, Input.IsInHeatingTime);
-                Fsm.AddTransition(State.Off, State.CoolBurner, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.CoolBurner, State.Off, Input.IsntBurnerToCool);
+                Fsm.AddTransition(State.Off, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
+                Fsm.AddTransition(State.CoolBurnerByCircuit, State.Off, Input.IsntBurnerToCool);
                 Fsm.AddTransition(State.PumpIsOff, State.Off, Input.IsntInHeatingTime);
-                Fsm.AddTransition(State.PumpIsOff, State.CoolBurner, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.PumpIsOff, State.OilBurnerNeeded, Input.IsCold);
-                Fsm.AddTransition(State.OilBurnerNeeded, State.PumpIsOn, Input.IsBurnerReady);
+                Fsm.AddTransition(State.PumpIsOff, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
+                Fsm.AddTransition(State.PumpIsOff, State.WaitBurnerReadyToHeat, Input.IsCold)
+                    .OnSelect += Select_Transition_PumpIsOff_WaitBurnerReadyToHeat_IsCold;
+                Fsm.AddTransition(State.WaitBurnerReadyToHeat, State.PumpIsOn, Input.IsBurnerReady);
                 Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsBurnerCold);
-                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsHot);
+                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsHot)
+                    .OnSelect += Select_Transition_PumpIsOn_PumpIsOff_IsHot; ;
                 // Aktionen festlegen
                 Fsm.GetState(State.PumpIsOn).OnEnter += DoPumpOn;
                 Fsm.GetState(State.PumpIsOff).OnEnter += DoPumpOff;
-                Fsm.GetState(State.CoolBurner).OnEnter += DoPumpOn;
-                Fsm.GetState(State.OilBurnerNeeded).OnEnter += OilBurnerNeeded;
+                Fsm.GetState(State.CoolBurnerByCircuit).OnEnter += DoPumpOn;
             }
             catch (Exception ex)
             {
                 Log.Error($"HeatingCircuit;Fehler bei Init FsmHeatingCircuit, ex: {ex.Message}");
             }
         }
+
         #region TriggerMethoden
 
         public bool IsBurnerCold() => OilBurner.IsCold();
@@ -104,6 +106,18 @@ namespace Services.ControlComponents
         }
         #endregion
 
+        #region Triggermethoden Transitionen
+
+        private void Select_Transition_PumpIsOff_WaitBurnerReadyToHeat_IsCold(object sender, EventArgs e)
+        {
+            OilBurner.IsBurnerNeededByHeatingCircuit = true;
+        }
+
+        private void Select_Transition_PumpIsOn_PumpIsOff_IsHot(object sender, EventArgs e)
+        {
+            OilBurner.IsBurnerNeededByHeatingCircuit = true;
+        }
+        #endregion
 
         #region Aktionen
         async void DoPumpOn(object sender, EventArgs e)
@@ -116,17 +130,17 @@ namespace Services.ControlComponents
 
         async void DoPumpOff(object sender, EventArgs e)
         {
-            OilBurner.IsBurnerNeededByHeatingCircuit = false;
+            //OilBurner.IsBurnerNeededByHeatingCircuit = false;
             var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
             await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 0);
             var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
             await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemName.ToString(), 0);
         }
 
-        void OilBurnerNeeded(object sender, EventArgs e)
-        {
-            OilBurner.IsBurnerNeededByHeatingCircuit = true;
-        }
+        //void OilBurnerNeeded(object sender, EventArgs e)
+        //{
+        //    OilBurner.IsBurnerNeededByHeatingCircuit = true;
+        //}
         #endregion
 
     }
