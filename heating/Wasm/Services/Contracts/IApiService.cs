@@ -11,6 +11,7 @@ namespace Wasm.Services.Contracts
 
         Task<bool> ChangeSwitchAsync(string name, bool on);
         Task<bool> SetManualOperationAsync(bool on);
+        Task<string[]> GetFsmStatesAsync();
 
         Task ResetEspAsync();
     }

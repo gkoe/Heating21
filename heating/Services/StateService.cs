@@ -13,7 +13,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Base.Helper.ExtensionMethods;
+using Base.ExtensionMethods;
 
 namespace Services
 {
@@ -169,7 +169,8 @@ namespace Services
                     Value = value.Value
                 };
                 NewMeasurement?.Invoke(this, measurement);
-                Log.Information("Send measurement by SignalR: {Name} {Time} {Trend} {Value}", measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value);
+                Log.Information("Send measurement by SignalR: {Name};{Time};{Trend};{Value}", 
+                    measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value.ToGermanString());
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
         }

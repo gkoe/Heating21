@@ -1,7 +1,7 @@
 ﻿using System;
 
 using Base.Helper;
-using Base.Helper.ExtensionMethods;
+using Base.ExtensionMethods;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -181,6 +181,22 @@ namespace Tests.ExtensionMethodsTests
         public void TryParseToDouble_OnlySeparators_ShouldReturnNull()
         {
             string text = ".,.";
+            var actual = text.TryParseToDouble();
+            Assert.IsNull(actual);
+        }
+
+        [TestMethod()]
+        public void TryParseToDouble_NegativeNumber_ShouldReturnNull()
+        {
+            string text = "-123,456";
+            var actual = text.TryParseToDouble();
+            Assert.AreEqual(-123.456, actual);
+        }
+
+        [TestMethod()]
+        public void TryParseToDouble_MinusWrongPosition_ShouldReturnNull()
+        {
+            string text = "3-123,456";
             var actual = text.TryParseToDouble();
             Assert.IsNull(actual);
         }

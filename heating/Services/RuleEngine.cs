@@ -1,22 +1,16 @@
 ﻿using Core.Contracts;
 using Core.DataTransferObjects;
 using Core.Entities;
-
 using Microsoft.AspNetCore.SignalR;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-
 using Persistence;
-
 using Serilog;
-
 using Services.Contracts;
 using Services.ControlComponents;
 using Services.DataTransferObjects;
 using Services.Hubs;
-
 using System;
 using System.Linq;
 using System.Net.Http;
@@ -35,7 +29,7 @@ namespace Services
         public string ConnectionString { get; set; }
 
         public IConfiguration Configuration { get; set; }
-        protected ISerialCommunicationService SerialCommunicationService { get; private set; }
+        public ISerialCommunicationService SerialCommunicationService { get; private set; }
         public IRaspberryIoService RaspberryIoService { get; private set; }
         protected IHttpCommunicationService HttpCommunicationService { get; private set; }
 
@@ -68,7 +62,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine; DB not ready, ex: {ex.Message}");
+                Log.Error($"Constructor; DB not ready, ex: {ex.Message}");
             }
         }
 
@@ -88,7 +82,7 @@ namespace Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            Log.Information("Ruleengine;started");
+            Log.Information("ExecuteAsync;started");
             //SerialCommunicationService = serialCommunicationService;
             using (var scope = ServiceProvider.CreateScope())
             {
@@ -102,12 +96,11 @@ namespace Services
                 HotWater.Fsm.StateChanged += Fsm_StateChanged;
                 try
                 {
-                    RaspberryIoService = scope.ServiceProvider.GetService<IRaspberryIoService>();
                     await RaspberryIoService.ResetEspAsync();  // Bei Neustart der RuleEngine auch ESP neu starten
                 }
                 catch (Exception)
                 {
-                    Log.Error("RuleEngine;Raspberry IO not available!");
+                    Log.Error("ExecuteAsync;Raspberry IO not available!");
                 }
                 StartFiniteStateMachines();
             }
@@ -131,7 +124,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine;StateService_NewMeasurement;Failed to save measurement; ex: {ex.Message}");
+                Log.Error($"StateService_NewMeasurement;Failed to save measurement; ex: {ex.Message}");
             }
         }
 
@@ -167,7 +160,7 @@ namespace Services
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine;Fsm_StateChanged;Failed to save transition; ex: {ex.Message}");
+                Log.Error($"Fsm_StateChanged;Failed to save transition; ex: {ex.Message}");
             }
         }
 

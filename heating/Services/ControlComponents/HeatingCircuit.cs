@@ -115,7 +115,7 @@ namespace Services.ControlComponents
 
         private void Select_Transition_PumpIsOn_PumpIsOff_IsHot(object sender, EventArgs e)
         {
-            OilBurner.IsBurnerNeededByHeatingCircuit = true;
+            OilBurner.IsBurnerNeededByHeatingCircuit = false;
         }
         #endregion
 

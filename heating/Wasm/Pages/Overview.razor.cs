@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR.Client;
 using Core.DataTransferObjects;
@@ -163,7 +162,10 @@ namespace Wasm.Pages
                 }
                 StateHasChanged();
             });
-
+            string[] states = await ApiService.GetFsmStatesAsync();
+            OilBurnerFsmInfo = states[0];
+            HotWaterFsmInfo = states[1];
+            HeatingCircuitFsmInfo = states[2];
             await hubConnection.StartAsync();
         }
 

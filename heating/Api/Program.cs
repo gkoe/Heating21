@@ -39,6 +39,7 @@ namespace Api
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
+                 .UseSystemd() // add this
                 .UseSerilog()
                 .ConfigureWebHostDefaults(webBuilder =>
                 {

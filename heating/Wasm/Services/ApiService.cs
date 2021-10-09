@@ -1,21 +1,6 @@
-﻿using Blazored.LocalStorage;
-
-using Base.DataTransferObjects;
-using Base.Helper;
-
-using Core.DataTransferObjects;
-using Core.Entities;
-
-using Microsoft.AspNetCore.Components.Authorization;
-
-using Newtonsoft.Json;
-
-using System.Linq;
+﻿using Newtonsoft.Json;
 using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Text;
 using System.Threading.Tasks;
-
 using Wasm.Services.Contracts;
 
 namespace Wasm.Services
@@ -64,7 +49,15 @@ namespace Wasm.Services
             return result;
         }
 
-        
+        public async Task<string[]> GetFsmStatesAsync()
+        {
+            var request = $"api/ruleengine/getfsmstates/";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<string[]>(contentTemp);
+            System.Console.WriteLine($"ApiService;GetFsmStates; result: {string.Join(';',result)}");
+            return result;
+        }
 
         public async Task ResetEspAsync()
         {

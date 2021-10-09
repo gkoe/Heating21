@@ -3,7 +3,7 @@ using System;
 using System.Globalization;
 using System.Text;
 
-namespace Base.Helper.ExtensionMethods
+namespace Base.ExtensionMethods
 {
     public static class StringExtensions
     {
@@ -92,7 +92,7 @@ namespace Base.Helper.ExtensionMethods
             for (int i = doubleText.Length - 1; i >= 0; i--)  // von hinten nach vorne, um letztes Trennzeichen zu erkennen
             {
                 var ch = doubleText[i];
-                if (char.IsDigit(ch))
+                if (char.IsDigit(ch) || (i == 0 && ch=='-'))
                 {
                     text.Append(ch);
                 }

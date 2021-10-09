@@ -1,18 +1,41 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Base.ExtensionMethods;
+
+using System;
 
 namespace Core.DataTransferObjects
 {
     public class MeasurementDto
     {
-        public double Value { get; set; }
+        private double _value;
+        private double _trend;
+
+        public double Value 
+        { 
+            get
+            {
+                return _value;
+            }
+            set
+            {
+                _value = value.ToLegalDouble();
+            }
+        }
+
         public DateTime Time { get; set; }
         public int SensorId { get; set; }
         public string SensorName { get; set; }
-        public double Trend { get; set; }
+        public double Trend 
+        {
+            get
+            {
+                return _trend;
+            }
+            set
+            {
+                _trend = value.ToLegalDouble();
+            }
+        }
+
 
         public override string ToString()
         {

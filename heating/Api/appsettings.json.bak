@@ -16,10 +16,7 @@
     },
     "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessId", "WithThreadId" ],
     "WriteTo": [
-      {
-        "Name": "Console",
-        "outputTemplate": "{Timestamp:G};{Level:u3};{Message};{NewLine}{Exception}"
-      },
+      { "Name": "Console" },
       {
         "Name": "File",
         "Args": {
@@ -38,11 +35,11 @@
   "AllowedHosts": "*",
   "Client_URL": "https://localhost:5003/",
   "Communication": {
-    //"UrlFirstFloorLivingRoom": "http://192.168.0.107/sensor?temperature",
-    "UrlFirstFloorLivingRoom": "http://10.0.0.11/sensor?temperature",
+    "UrlFirstFloorLivingRoom": "http://192.168.0.107/sensor?temperature",
+    //"UrlFirstFloorLivingRoom": "http://192.168.0.52/sensor?temperature",
     //"UrlGroundFloorLivingRoom": "http://192.168.0.23/sensor?temperature",
-    //"SerialPort": "COM3"
-    "SerialPort": "/dev/ttyUSB0"
+    "SerialPort": "COM3"
+    //"SerialPort": "/dev/ttyUSB0"
   }
 
 }
