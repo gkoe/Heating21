@@ -2,7 +2,7 @@
 
 namespace HeatControl.Fsm
 {
-    public delegate bool TriggerMethod();
+    public delegate (bool IsTriggered,string Message) TriggerMethod();
 
     /// <summary>
     /// Eingangssignal

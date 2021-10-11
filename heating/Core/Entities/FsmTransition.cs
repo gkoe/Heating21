@@ -10,8 +10,9 @@ namespace Core.Entities
         public string LastState { get; set; }
         public string ActState { get; set; }
         public string Input { get; set; }
+        public string InputMessage { get; set; }
 
-        public override string ToString() => $"Transition: {Time}, Input: {Input}, Fsm: {Fsm}, from {LastState} to {ActState}";
+        public override string ToString() => $"Transition: {Time}, Input: {Input}, Fsm: {Fsm}, from {LastState} to {ActState}, inputMessage: {InputMessage}";
 
     }
 }

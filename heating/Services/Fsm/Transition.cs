@@ -13,6 +13,9 @@ namespace HeatControl.Fsm
         public State FromState { get; private set; }
         public State ToState { get; private set; }
         public Input Input { get; private set; }
+
+        public string InputMessage { get; set; }
+
         public event EventHandler OnSelect;
 
         public Transition(State fromState, State toState, Input input, EventHandler onSelect = null)
@@ -33,7 +36,7 @@ namespace HeatControl.Fsm
         public void Select()
         {
             OnSelect?.Invoke(this, null);
-            Log.Information($"Fsm Select Transition; {FromState.Fsm.Name}; Input: {Input.InputEnum};  From: {FromState.StateEnum}; to {ToState.StateEnum}");
+            Log.Information($"Fsm Select Transition; {FromState.Fsm.Name}; Input: {Input.InputEnum};  From: {FromState.StateEnum}; to {ToState.StateEnum}; InputMessage: {InputMessage}");
             Input.DoOnInput();
         }
 

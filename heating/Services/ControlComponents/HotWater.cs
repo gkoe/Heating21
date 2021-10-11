@@ -91,44 +91,82 @@ namespace Services.ControlComponents
         }
         #region TriggerMethoden
 
-        public bool IsBoilerToHeatBySolar()
+        public (bool, string) IsBoilerToHeatBySolar()
         {
             var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
             var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
-            return solar > (boilerBottom + 10.0) || solar > 80.0;
-        }
-
-        public bool IsntBoilerToHeatBySolar()
-        {
-            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
-            var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
-            return solar < boilerBottom + 5.0;
-        }
-
-        private bool IsBurnerToCool() => OilBurner.IsTooHot();
-        public bool IsntBurnerToCool() => OilBurner.IsCooledDown();
-
-        private bool IsBoilerHot() => StateService.GetSensor(ItemEnum.BoilerTop).Value >= BOILER_HOT;
-
-        private bool IsBoilerToHeatByBurner()
-        {
-            if (!OilBurner.IsReady())
+            if (boilerBottom >= BOILER_VERY_HOT)
             {
-                return false;
+                return (false, $"Boiler is very hot (bottom: {boilerBottom})");
             }
-            return StateService.GetSensor(ItemEnum.BoilerTop).Value <= BOILER_COLD;
+            if (solar > (boilerBottom + 10.0))
+            {
+                return (true,$"Solar ({solar}) is ready to heat boiler (bottom: {boilerBottom})");
+            }
+            return  (false, "");
         }
 
-        private bool IsBoilerVeryHot()
+        public (bool, string) IsntBoilerToHeatBySolar()
         {
-            return StateService.GetSensor(ItemEnum.BoilerTop).Value >= BOILER_VERY_HOT;
+            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
+            var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
+            if (boilerBottom >= BOILER_VERY_HOT)
+            {
+                return (true, $"Boiler is very hot (bottom: {boilerBottom})");
+            }
+            if(solar < boilerBottom + 5.0)
+            {
+                return (true, $"Solar is too cold ({solar}) to heat boiler (bottom: {boilerBottom})");
+            }
+            return (false, "");
         }
 
-        private bool IsntBufferToHeatBySolar()
+        private (bool, string) IsBurnerToCool() => OilBurner.IsTooHot();
+        public (bool, string) IsntBurnerToCool() => OilBurner.IsCooledDown();
+
+        private (bool, string) IsBoilerHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            if (temperature >= BOILER_HOT)
+            {
+                return (true, $"Boiler is hot: {temperature})");
+            }
+            return (false, "");
+        }
+
+        private (bool, string) IsBoilerToHeatByBurner()
+        {
+            if (!OilBurner.IsReady().Item1)
+            {
+                return (false, "OilBurner isn't ready");
+            }
+            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            if (temperature <= BOILER_COLD)
+            {
+                return (true, $"Boiler is to heat by burner: {temperature})");
+            }
+            return (false, "");
+        }
+
+        private (bool, string) IsBoilerVeryHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            if (temperature >= BOILER_VERY_HOT)
+            {
+                return (true, $"Boiler is very hot: {temperature})");
+            }
+            return (false, "");
+        }
+
+        private (bool, string) IsntBufferToHeatBySolar()
         {
             var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
             var bufferBottom = StateService.GetSensor(ItemEnum.BufferBottom).Value;
-            return solar < (bufferBottom + 3.0);
+            if (solar < (bufferBottom + 3.0))
+            {
+                return (true, $"Solar ({solar}) is not hot enough to heat buffer: {bufferBottom})");
+            }
+            return (false, "");
         }
         
         #endregion

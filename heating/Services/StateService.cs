@@ -225,9 +225,9 @@ namespace Services
             }
         }
 
-        public async Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto)
+        public async Task SendFsmStateChangedAsync(FsmTransition fsmTransition)
         {
-            await MeasurementsHubContext.Clients.All.SendAsync("ReceiveFsmStateChanged", fsmStateChangedInfoDto);
+            await MeasurementsHubContext.Clients.All.SendAsync("ReceiveFsmStateChanged", fsmTransition);
         }
     }
 

@@ -149,7 +149,8 @@ namespace Services
                 Fsm = fsmStateChangedInfoDto.Fsm,
                 Input = fsmStateChangedInfoDto.Input,
                 LastState = fsmStateChangedInfoDto.LastState,
-                ActState = fsmStateChangedInfoDto.ActState
+                ActState = fsmStateChangedInfoDto.ActState,
+                InputMessage = fsmStateChangedInfoDto.InputMessage
             };
             using ApplicationDbContext dbContext = new (ConnectionString);
             using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);

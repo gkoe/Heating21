@@ -15,8 +15,9 @@ namespace Services.ControlComponents
     public sealed class OilBurner
     {
         const double BURNER_TOO_HOT = 80.0;
-        const double BURNER_READY = 50.0;
         const double BURNER_COOLED_DOWN = 75.0;
+        const double BURNER_READY = 50.0;
+        const double BURNER_COLD = 30.0;
 
         public enum State {  Off, Cold, Ready, TooHot};
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCold, IsCooledDown, IsReady, IsTooHot  };
@@ -90,37 +91,68 @@ namespace Services.ControlComponents
         /// Ist der Ölbrenner zu heiß?
         /// </summary>
         /// <returns></returns>
-        public bool IsTooHot() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value >= BURNER_TOO_HOT; 
-        public bool IsCold() => StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value < 27.0; //500;
+        public (bool, string) IsTooHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            bool isTooHot = temperature >= BURNER_TOO_HOT;
+            return (isTooHot, $"OilBurnerTemperature: {temperature}");
+        }
+
+        public (bool, string) IsCold() 
+        {
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            bool isCold = temperature < 27.0; //500;
+            return (isCold, $"OilBurnerTemperature: {temperature}");
+        }
 
         /// <summary>
         /// Abschalttemperatur erreicht
         /// </summary>
         /// <returns></returns>
-        public bool IsReady()
+        public (bool, string) IsReady()
         {
-            var temp = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
-            return temp >= BURNER_READY;
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            var isReady = temperature >= BURNER_READY;
+            return (isReady, $"OilBurnerTemperature: {temperature}");
         }
 
         /// <summary>
         /// Ist Ölkessel abgekühlt
         /// </summary>
         /// <returns></returns>
-        public bool IsCooledDown()
+        public (bool, string) IsCooledDown()
         {
-            return StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value <= BURNER_COOLED_DOWN;
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            var isCooledDown = temperature <= BURNER_COOLED_DOWN;
+            return (isCooledDown, $"OilBurnerTemperature: {temperature}");
         }
 
 
-        private bool IsNeededOilBurner()
+        private (bool,string) IsNeededOilBurner()
         {
-            return IsBurnerNeededByHeatingCircuit || IsBurnerNeededByHotWater;
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            if (IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater)
+            {
+                return (true, $"IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater, Oilburner: {temperature}");
+            }
+            if (IsBurnerNeededByHeatingCircuit)
+            {
+                return (true, $"IsBurnerNeededByHeatingCircuit, Oilburner: {temperature}");
+            }
+            if (IsBurnerNeededByHotWater)
+            {
+                return (true, $"IsBurnerNeededByHotWater, Oilburner: {temperature}");
+            }
+            return (false, "");
         }
 
-        private bool IsntNeededOilBurner()
+        private (bool,string) IsntNeededOilBurner()
         {
-            return !IsNeededOilBurner();
+            if (!IsBurnerNeededByHeatingCircuit && !IsBurnerNeededByHotWater)
+            {
+                return (true, "!IsBurnerNeededByHeatingCircuit && !IsBurnerNeededByHotWater");
+            }
+            return (false, "");
         }
         #endregion
 

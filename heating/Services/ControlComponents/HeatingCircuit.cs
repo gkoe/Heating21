@@ -1,22 +1,23 @@
-﻿using Serilog;
-
+﻿using HeatControl.Fsm;
+using Serilog;
 using Services.Contracts;
 using Services.DataTransferObjects;
 using Services.Fsm;
-
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.ControlComponents
 {
     public sealed class HeatingCircuit
     {
-        public enum State {  Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, CoolBurnerByCircuit};
-        public enum Input { IsInHeatingTime, IsntInHeatingTime, IsBurnerToCool, IsntBurnerToCool, IsBurnerReady, 
-            IsBurnerCold, IsHot, IsCold  };
+        const double OG_TEMP = 23.5;
+
+        public enum State { Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, CoolBurnerByCircuit };
+        public enum Input
+        {
+            IsInHeatingTime, IsntInHeatingTime, IsBurnerToCool, IsntBurnerToCool, IsBurnerReady,
+            IsBurnerCold, IsHot, IsCold
+        };
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
         public OilBurner OilBurner { get; }
@@ -85,24 +86,31 @@ namespace Services.ControlComponents
 
         #region TriggerMethoden
 
-        public bool IsBurnerCold() => OilBurner.IsCold();
-        private bool IsBurnerTooHot() => OilBurner.IsTooHot();
-        public bool IsCooledDown() => OilBurner.IsCooledDown();
+        public (bool, string) IsBurnerCold() => OilBurner.IsCold();
+        private (bool, string) IsBurnerTooHot() => OilBurner.IsTooHot();
+        public (bool, string) IsCooledDown() => OilBurner.IsCooledDown();
 
-        private bool IsHot() => StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value >= 23.5;
-        private bool IsCold() => StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value <= 23.0;
-
-        private bool IsBurnerReady() => OilBurner.IsReady();
-        
-        private bool IsInHeatingTime()
+        private (bool, string) IsHot()
         {
-            //bool isNeeded = MainControl.Instance.IsBurnerNeeded();
-            return DateTime.Now.Hour >= 6 && DateTime.Now.Hour <= 21;
+            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            bool isHot = temperature >= OG_TEMP;
+            return (isHot, $"LivingRoomTemperature: {temperature}");
         }
 
-        private bool IsntInHeatingTime()
+        private (bool, string) IsCold()
         {
-            return !IsInHeatingTime();
+            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            bool isCold = temperature <= OG_TEMP -0.5;
+            return (isCold, $"LivingRoomTemperature: {temperature}");
+        }
+
+        private (bool, string) IsBurnerReady() => OilBurner.IsReady();
+
+        private readonly TriggerMethod IsInHeatingTime = () => (DateTime.Now.Hour >= 6 && DateTime.Now.Hour <= 21, "");
+
+        private (bool, string) IsntInHeatingTime()
+        {
+            return (!IsInHeatingTime().IsTriggered, "");
         }
         #endregion
 

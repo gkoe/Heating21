@@ -147,17 +147,17 @@ namespace Wasm.Pages
             {
                 if (fsmInfo.Fsm == "OilBurner")
                 {
-                    OilBurnerFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    OilBurnerFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState} - InputMessage: {fsmInfo.InputMessage}";
                     Console.WriteLine(OilBurnerFsmInfo);
                 }
                 if (fsmInfo.Fsm == "HeatingCircuit")
                 {
-                    HeatingCircuitFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    HeatingCircuitFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState} - InputMessage: {fsmInfo.InputMessage}";
                     Console.WriteLine(HeatingCircuitFsmInfo);
                 }
                 if (fsmInfo.Fsm == "HotWater")
                 {
-                    HotWaterFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState}";
+                    HotWaterFsmInfo = $"{fsmInfo.LastState} > {fsmInfo.Input} > {fsmInfo.ActState} - InputMessage: {fsmInfo.InputMessage}";
                     Console.WriteLine(HotWaterFsmInfo);
                 }
                 StateHasChanged();

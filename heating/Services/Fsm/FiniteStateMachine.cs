@@ -1,16 +1,8 @@
 ﻿using Base.Helper;
-
-using Core.DataTransferObjects;
 using Core.Entities;
-
 using HeatControl.Fsm;
-
 using Serilog;
-
-using Services.ControlComponents;
-
 using System;
-using System.Linq;
 using System.Timers;
 
 namespace Services.Fsm
@@ -28,7 +20,6 @@ namespace Services.Fsm
     {
         readonly State[] states;
         readonly Input[] inputs;
-
         private bool _isRunning;
 
         public State ActState { get; private set; }
@@ -44,6 +35,8 @@ namespace Services.Fsm
                 _isRunning = value;
             }
         }
+
+        public string LastInputMessage { get; set; }
 
         public event EventHandler<FsmTransition> StateChanged;
 
@@ -139,20 +132,27 @@ namespace Services.Fsm
             var lastState = ActState;
             foreach (Transition transition in ActState.Transitions)
             {
-                if (transition.Input.TriggerMethod != null && transition.Input.TriggerMethod())
+                if (transition.Input.TriggerMethod != null)
                 {
-                    if (HandleInput(transition.Input.InputEnum))
+                    var (IsTriggered, Message) = transition.Input.TriggerMethod();
+                    if (IsTriggered)
                     {
-                        StateChanged?.Invoke(this,
-                            new FsmTransition
-                            {
-                                Time = DateTime.Now,
-                                Fsm = Name,
-                                LastState = lastState.StateEnum.ToString(),
-                                ActState = ActState.StateEnum.ToString(),
-                                Input = transition.Input.InputEnum.ToString()
-                            });
-                        return;
+                        if (HandleInput(transition.Input.InputEnum, Message))
+                        {
+                            LastInputMessage = Message;
+                            transition.InputMessage = Message;
+                            StateChanged?.Invoke(this,
+                                new FsmTransition
+                                {
+                                    Time = DateTime.Now,
+                                    Fsm = Name,
+                                    LastState = lastState.StateEnum.ToString(),
+                                    ActState = ActState.StateEnum.ToString(),
+                                    Input = transition.Input.InputEnum.ToString(),
+                                    InputMessage = Message
+                                });
+                            return;
+                        }
                     }
                 }
             }
@@ -223,7 +223,7 @@ namespace Services.Fsm
         /// </summary>
         /// <param name="input">Eingangssignal</param>
         /// <returns>true, wenn die Verarbeitung möglich war</returns>
-        public bool HandleInput(Enum input)
+        public bool HandleInput(Enum input, string inputMessage)
         {
             if (!IsRunning)
             {
@@ -231,6 +231,7 @@ namespace Services.Fsm
             }
             //_actInput = input;
             Transition transition = ActState.GetTransitionByInput(input);
+            transition.InputMessage = inputMessage;
             if (transition == null)
             {
                 Log.Error($"Fsm;HandleInput;{Name}; {input} im Zustand {ActState}");
