@@ -121,8 +121,8 @@ namespace Services.ControlComponents
             return (false, "");
         }
 
-        private (bool, string) IsBurnerToCool() => OilBurner.IsTooHot();
-        public (bool, string) IsntBurnerToCool() => OilBurner.IsCooledDown();
+        private (bool, string) IsBurnerToCool() => OilBurner.IsHeatedToTooHot();
+        public (bool, string) IsntBurnerToCool() => OilBurner.IsCooledToHot();
 
         private (bool, string) IsBoilerHot()
         {
@@ -136,7 +136,7 @@ namespace Services.ControlComponents
 
         private (bool, string) IsBoilerToHeatByBurner()
         {
-            if (!OilBurner.IsReady().Item1)
+            if (!OilBurner.IsHeatedToReady().Item1)
             {
                 return (false, "OilBurner isn't ready");
             }

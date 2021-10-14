@@ -14,18 +14,23 @@ namespace Services.ControlComponents
 {
     public sealed class OilBurner
     {
-        const double BURNER_TOO_HOT = 80.0;
-        const double BURNER_COOLED_DOWN = 75.0;
-        const double BURNER_READY = 50.0;
         const double BURNER_COLD = 30.0;
+        const double BURNER_READY = 50.0;
+        const double BURNER_HOT = 65.0;
+        const double BURNER_TOO_HOT = 80.0;
 
-        public enum State {  Off, Cold, Ready, TooHot};
-        public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCold, IsCooledDown, IsReady, IsTooHot  };
+        public enum State {  Off, Cold, Ready, Hot, TooHot};
+        public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCooledToCold, IsHeatedToReady, IsCooledToReady, IsHeatedToHot, 
+                            IsCooledToHot, IsHeatedToTooHot };
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
         public ISerialCommunicationService SerialCommunicationService { get; }
         public bool IsBurnerNeededByHotWater { get; internal set; }
         public bool IsBurnerNeededByHeatingCircuit { get; internal set; }
+
+        public bool IsBurnerReadyToHeat => (State)Fsm.ActState.StateEnum == State.Ready
+                                            || (State)Fsm.ActState.StateEnum == State.Hot
+                                            || (State)Fsm.ActState.StateEnum == State.TooHot;
 
         public OilBurner(IStateService stateService)
         {
@@ -62,46 +67,44 @@ namespace Services.ControlComponents
             try
             {
                 // Triggermethoden bei Inputs definieren
-                Fsm.GetInput(Input.IsNeededOilBurner).TriggerMethod = IsNeededOilBurner;
-                Fsm.GetInput(Input.IsntNeededOilBurner).TriggerMethod = IsntNeededOilBurner;
-                Fsm.GetInput(Input.IsCold).TriggerMethod = IsCold;
-                Fsm.GetInput(Input.IsCooledDown).TriggerMethod = IsCooledDown;
-                Fsm.GetInput(Input.IsReady).TriggerMethod = IsReady;
-                Fsm.GetInput(Input.IsTooHot).TriggerMethod = IsTooHot;
+                var inputIsNeededOilBurner = Fsm.GetInput(Input.IsNeededOilBurner);
+                inputIsNeededOilBurner.TriggerMethod = IsNeededOilBurner;
+                inputIsNeededOilBurner.OnInput += DoBurnerOn;
+                var inputIsntNeededOilBurner = Fsm.GetInput(Input.IsntNeededOilBurner);
+                inputIsntNeededOilBurner .TriggerMethod = IsntNeededOilBurner;
+                inputIsntNeededOilBurner.OnInput += DoBurnerOff;
+                Fsm.GetInput(Input.IsCooledToCold).TriggerMethod = IsCooledToCold;
+                Fsm.GetInput(Input.IsCooledToHot).TriggerMethod = IsCooledToHot;
+                Fsm.GetInput(Input.IsHeatedToReady).TriggerMethod = IsHeatedToReady;
+                Fsm.GetInput(Input.IsCooledToReady).TriggerMethod = IsCooledToReady;
+                Fsm.GetInput(Input.IsHeatedToHot).TriggerMethod = IsHeatedToHot;
+                Fsm.GetInput(Input.IsCooledToHot).TriggerMethod = IsCooledToHot;
+                Fsm.GetInput(Input.IsHeatedToTooHot).TriggerMethod = IsHeatedToTooHot;
                 // Übergänge definieren
                 Fsm.AddTransition(State.Off, State.Cold, Input.IsNeededOilBurner);
-                Fsm.AddTransition(State.Cold, State.Ready, Input.IsReady);
+                Fsm.AddTransition(State.Cold, State.Ready, Input.IsHeatedToReady);
                 Fsm.AddTransition(State.Cold, State.Off, Input.IsntNeededOilBurner);
-                Fsm.AddTransition(State.Ready, State.Cold, Input.IsCold);
-                Fsm.AddTransition(State.Ready, State.TooHot, Input.IsTooHot);
+                Fsm.AddTransition(State.Ready, State.Off, Input.IsCooledToCold);
+                Fsm.AddTransition(State.Ready, State.TooHot, Input.IsHeatedToTooHot);
                 Fsm.AddTransition(State.Ready, State.Off, Input.IsntNeededOilBurner);
-                Fsm.AddTransition(State.TooHot, State.Ready, Input.IsCooledDown);
+                Fsm.AddTransition(State.TooHot, State.Ready, Input.IsCooledToHot);
                 // Aktionen festlegen
                 Fsm.GetState(State.Off).OnLeave += DoBurnerOn;
                 Fsm.GetState(State.Off).OnEnter += DoBurnerOff;
+                Fsm.GetState(State.TooHot).OnEnter += DoBurnerOff;
             }
             catch (Exception ex)
             {
                 Log.Error($"Fehler bei Init FsmOilBurner, ex: {ex.Message}");
             }
         }
+
         #region TriggerMethoden
 
-        /// <summary>
-        /// Ist der Ölbrenner zu heiß?
-        /// </summary>
-        /// <returns></returns>
-        public (bool, string) IsTooHot()
+        public (bool, string) IsCooledToCold()
         {
             var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
-            bool isTooHot = temperature >= BURNER_TOO_HOT;
-            return (isTooHot, $"OilBurnerTemperature: {temperature}");
-        }
-
-        public (bool, string) IsCold() 
-        {
-            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
-            bool isCold = temperature < 27.0; //500;
+            bool isCold = temperature <= BURNER_COLD;
             return (isCold, $"OilBurnerTemperature: {temperature}");
         }
 
@@ -109,7 +112,7 @@ namespace Services.ControlComponents
         /// Abschalttemperatur erreicht
         /// </summary>
         /// <returns></returns>
-        public (bool, string) IsReady()
+        public (bool, string) IsHeatedToReady()
         {
             var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
             var isReady = temperature >= BURNER_READY;
@@ -117,16 +120,40 @@ namespace Services.ControlComponents
         }
 
         /// <summary>
-        /// Ist Ölkessel abgekühlt
+        /// Abschalttemperatur erreicht
         /// </summary>
         /// <returns></returns>
-        public (bool, string) IsCooledDown()
+        public (bool, string) IsCooledToReady()
         {
             var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
-            var isCooledDown = temperature <= BURNER_COOLED_DOWN;
-            return (isCooledDown, $"OilBurnerTemperature: {temperature}");
+            var isReady = temperature <= BURNER_READY;
+            return (isReady, $"OilBurnerTemperature: {temperature}");
         }
 
+        public (bool, string) IsHeatedToHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            bool isTooHot = temperature >= BURNER_HOT;
+            return (isTooHot, $"OilBurnerTemperature: {temperature}");
+        }
+
+        public (bool, string) IsCooledToHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            bool isTooHot = temperature <= BURNER_HOT;
+            return (isTooHot, $"OilBurnerTemperature: {temperature}");
+        }
+
+        /// <summary>
+        /// Ist der Ölbrenner zu heiß?
+        /// </summary>
+        /// <returns></returns>
+        public (bool, string) IsHeatedToTooHot()
+        {
+            var temperature = StateService.GetSensor(ItemEnum.OilBurnerTemperature).Value;
+            bool isTooHot = temperature >= BURNER_TOO_HOT;
+            return (isTooHot, $"OilBurnerTemperature: {temperature}");
+        }
 
         private (bool,string) IsNeededOilBurner()
         {
@@ -158,16 +185,16 @@ namespace Services.ControlComponents
 
 
         #region Aktionen
-        async void DoBurnerOn(object sender, EventArgs e)
+        void DoBurnerOn(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 1);
+            SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 1).Wait();
         }
 
-        async void DoBurnerOff(object sender, EventArgs e)
+        void DoBurnerOff(object sender, EventArgs e)
         {
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
-            await SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 0);
+            SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 0).Wait();
         }
         #endregion
 

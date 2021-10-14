@@ -12,11 +12,11 @@ namespace Services.ControlComponents
     {
         const double OG_TEMP = 23.5;
 
-        public enum State { Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, CoolBurnerByCircuit };
+        public enum State { Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, UseResidualHeat, CoolBurnerByCircuit };
         public enum Input
         {
-            IsInHeatingTime, IsntInHeatingTime, IsBurnerToCool, IsntBurnerToCool, IsBurnerReady,
-            IsBurnerCold, IsHot, IsCold
+            IsInHeatingTime, IsntInHeatingTime, IsBurnerToCool, IsntBurnerToCool, IsBurnerReadyToHeat,
+            IsntBurnerReadyToHeat, IsHot, IsCold, IsAllResidualHeatUsed
         };
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
@@ -57,10 +57,11 @@ namespace Services.ControlComponents
                 Fsm.GetInput(Input.IsntInHeatingTime).TriggerMethod = IsntInHeatingTime;
                 Fsm.GetInput(Input.IsBurnerToCool).TriggerMethod = IsBurnerTooHot;
                 Fsm.GetInput(Input.IsntBurnerToCool).TriggerMethod = IsCooledDown;
-                Fsm.GetInput(Input.IsBurnerReady).TriggerMethod = IsBurnerReady;
-                Fsm.GetInput(Input.IsBurnerCold).TriggerMethod = IsBurnerCold;
+                Fsm.GetInput(Input.IsBurnerReadyToHeat).TriggerMethod = IsBurnerReady;
+                Fsm.GetInput(Input.IsntBurnerReadyToHeat).TriggerMethod = IsBurnerCold;
                 Fsm.GetInput(Input.IsHot).TriggerMethod = IsHot;
                 Fsm.GetInput(Input.IsCold).TriggerMethod = IsCold;
+                Fsm.GetInput(Input.IsAllResidualHeatUsed).TriggerMethod = IsAllResidualHeatUsed;
                 // Übergänge definieren
                 Fsm.AddTransition(State.Off, State.PumpIsOff, Input.IsInHeatingTime);
                 Fsm.AddTransition(State.Off, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
@@ -69,14 +70,15 @@ namespace Services.ControlComponents
                 Fsm.AddTransition(State.PumpIsOff, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
                 Fsm.AddTransition(State.PumpIsOff, State.WaitBurnerReadyToHeat, Input.IsCold)
                     .OnSelect += Select_Transition_PumpIsOff_WaitBurnerReadyToHeat_IsCold;
-                Fsm.AddTransition(State.WaitBurnerReadyToHeat, State.PumpIsOn, Input.IsBurnerReady);
-                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsBurnerCold);
-                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsHot)
+                Fsm.AddTransition(State.WaitBurnerReadyToHeat, State.PumpIsOn, Input.IsBurnerReadyToHeat);
+                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsntBurnerReadyToHeat);
+                Fsm.AddTransition(State.PumpIsOn, State.UseResidualHeat, Input.IsHot)
                     .OnSelect += Select_Transition_PumpIsOn_PumpIsOff_IsHot; ;
+                Fsm.AddTransition(State.UseResidualHeat, State.PumpIsOff, Input.IsAllResidualHeatUsed);
                 // Aktionen festlegen
                 Fsm.GetState(State.PumpIsOn).OnEnter += DoPumpOn;
-                Fsm.GetState(State.PumpIsOff).OnEnter += DoPumpOff;
                 Fsm.GetState(State.CoolBurnerByCircuit).OnEnter += DoPumpOn;
+                Fsm.GetState(State.PumpIsOff).OnEnter += DoPumpOff;
             }
             catch (Exception ex)
             {
@@ -86,9 +88,9 @@ namespace Services.ControlComponents
 
         #region TriggerMethoden
 
-        public (bool, string) IsBurnerCold() => OilBurner.IsCold();
-        private (bool, string) IsBurnerTooHot() => OilBurner.IsTooHot();
-        public (bool, string) IsCooledDown() => OilBurner.IsCooledDown();
+        public (bool, string) IsBurnerCold() => OilBurner.IsCooledToCold();
+        private (bool, string) IsBurnerTooHot() => OilBurner.IsHeatedToTooHot();
+        public (bool, string) IsCooledDown() => OilBurner.IsCooledToHot();
 
         private (bool, string) IsHot()
         {
@@ -100,11 +102,21 @@ namespace Services.ControlComponents
         private (bool, string) IsCold()
         {
             var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
-            bool isCold = temperature <= OG_TEMP -0.5;
+            bool isCold = temperature <= OG_TEMP - 0.5;
             return (isCold, $"LivingRoomTemperature: {temperature}");
         }
 
-        private (bool, string) IsBurnerReady() => OilBurner.IsReady();
+        private (bool, string) IsAllResidualHeatUsed()
+        {
+            if(OilBurner.IsBurnerNeededByHotWater)
+            {
+                return (true, "No use of residual heat, because burner is used by HotWater");
+            }
+            var (isOilBurnerCooled, message) = OilBurner.IsCooledToReady();
+            return (isOilBurnerCooled, $"IsAllResidualHeatUsed: {isOilBurnerCooled}, {message}");
+        }
+
+        private (bool, string) IsBurnerReady() => OilBurner.IsHeatedToReady();
 
         private readonly TriggerMethod IsInHeatingTime = () => (DateTime.Now.Hour >= 6 && DateTime.Now.Hour <= 21, "");
 

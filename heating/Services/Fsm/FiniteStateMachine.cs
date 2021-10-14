@@ -130,12 +130,12 @@ namespace Services.Fsm
         public void CheckActStateInputs()
         {
             var lastState = ActState;
-            foreach (Transition transition in ActState.Transitions)
+            foreach (Transition transition in ActState.Transitions)  // alle aus dem Zustand möglichen Überführungen prüfen
             {
-                if (transition.Input.TriggerMethod != null)
+                if (transition.Input.TriggerMethod != null)  // ist für den Input der Transition eine Triggermethode verfügbar
                 {
-                    var (IsTriggered, Message) = transition.Input.TriggerMethod();
-                    if (IsTriggered)
+                    var (IsTriggered, Message) = transition.Input.TriggerMethod(); 
+                    if (IsTriggered)  // triggert die Triggermethode
                     {
                         if (HandleInput(transition.Input.InputEnum, Message))
                         {
