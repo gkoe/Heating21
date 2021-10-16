@@ -18,7 +18,7 @@ namespace Services.ControlComponents
         public enum Input
         {
             IsBoilerToHeatByBurner, IsBoilerHot, IsBurnerToCool, IsntBurnerToCool, IsBoilerToHeatBySolar,
-            IsBufferToHeatBySolar, IsBoilerVeryHot, IsntBufferToHeatBySolar, IsntBoilerToHeatBySolar
+            IsBoilerVeryHot, IsntBufferToHeatBySolar, IsntBoilerToHeatBySolar
         };
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
@@ -62,27 +62,24 @@ namespace Services.ControlComponents
                 Fsm.GetInput(Input.IsntBurnerToCool).TriggerMethod = IsntBurnerToCool;
                 Fsm.GetInput(Input.IsBoilerToHeatBySolar).TriggerMethod = IsBoilerToHeatBySolar;
                 Fsm.GetInput(Input.IsntBoilerToHeatBySolar).TriggerMethod = IsntBoilerToHeatBySolar;
-
                 Fsm.GetInput(Input.IsBoilerVeryHot).TriggerMethod = IsBoilerVeryHot;
                 Fsm.GetInput(Input.IsntBufferToHeatBySolar).TriggerMethod = IsntBufferToHeatBySolar;
                 // Übergänge definieren
                 Fsm.AddTransition(State.AllOff, State.HeatBoilerByBurner, Input.IsBoilerToHeatByBurner);
                 Fsm.AddTransition(State.AllOff, State.HeatBoilerBySolar, Input.IsBoilerToHeatBySolar);
-                Fsm.AddTransition(State.HeatBoilerByBurner, State.CoolBurner, Input.IsBurnerToCool);
+                Fsm.AddTransition(State.AllOff, State.CoolBurner, Input.IsBurnerToCool);
                 Fsm.AddTransition(State.HeatBoilerByBurner, State.AllOff, Input.IsBoilerHot);
                 Fsm.AddTransition(State.HeatBoilerByBurner, State.HeatBoilerBySolar, Input.IsBoilerToHeatBySolar);
                 Fsm.AddTransition(State.HeatBoilerBySolar, State.AllOff, Input.IsntBoilerToHeatBySolar);
                 Fsm.AddTransition(State.HeatBoilerBySolar, State.HeatBufferBySolar, Input.IsBoilerVeryHot);
-                Fsm.AddTransition(State.HeatBoilerBySolar, State.CoolBurner, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.HeatBoilerBySolar, State.AllOff, Input.IsntBoilerToHeatBySolar);
                 Fsm.AddTransition(State.HeatBufferBySolar, State.AllOff, Input.IsntBufferToHeatBySolar);
-                Fsm.AddTransition(State.HeatBufferBySolar, State.CoolBurner, Input.IsBurnerToCool);
+                Fsm.AddTransition(State.CoolBurner, State.AllOff, Input.IsntBurnerToCool);
                 // Aktionen festlegen
                 Fsm.GetState(State.HeatBoilerByBurner).OnEnter += DoHeatBoilerByBurner;
-                Fsm.GetState(State.AllOff).OnEnter += DoAllOff;
-                Fsm.GetState(State.CoolBurner).OnEnter += DoHeatBoilerByBurner;
                 Fsm.GetState(State.HeatBoilerBySolar).OnEnter += DoHeatBoilerBySolar;
                 Fsm.GetState(State.HeatBufferBySolar).OnEnter += DoHeatBufferBySolar;
+                Fsm.GetState(State.CoolBurner).OnEnter += DoHeatBoilerByBurner;
+                Fsm.GetState(State.AllOff).OnEnter += DoAllOff;
             }
             catch (Exception ex)
             {
@@ -176,6 +173,7 @@ namespace Services.ControlComponents
 
         async void DoAllOff(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HotWater;DoAllOff");
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
@@ -187,6 +185,7 @@ namespace Services.ControlComponents
 
         async void DoHeatBoilerByBurner(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HotWater;DoHeatBoilerByBurner");
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
@@ -198,6 +197,7 @@ namespace Services.ControlComponents
 
         async void DoHeatBoilerBySolar(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HotWater;DoHeatBoilerBySolar");
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
@@ -208,6 +208,7 @@ namespace Services.ControlComponents
 
         async void DoHeatBufferBySolar(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HotWater;DoHeatBufferBySolar");
             var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
             var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
             var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);

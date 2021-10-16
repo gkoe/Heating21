@@ -113,7 +113,8 @@ namespace Services.ControlComponents
                 return (true, "No use of residual heat, because burner is used by HotWater");
             }
             var (isOilBurnerCooled, message) = OilBurner.IsCooledToReady();
-            return (isOilBurnerCooled, $"IsAllResidualHeatUsed: {isOilBurnerCooled}, {message}");
+            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            return (isOilBurnerCooled, $"IsAllResidualHeatUsed: LivingRoom: {temperature}, {message}");
         }
 
         private (bool, string) IsBurnerReady() => OilBurner.IsHeatedToReady();
@@ -142,6 +143,7 @@ namespace Services.ControlComponents
         #region Aktionen
         async void DoPumpOn(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HeatingCircuit;DoPumpOn");
             var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
             await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 1);
             var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
@@ -150,6 +152,7 @@ namespace Services.ControlComponents
 
         async void DoPumpOff(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;HeatingCircuit;DoPumpOff");
             //OilBurner.IsBurnerNeededByHeatingCircuit = false;
             var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
             await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 0);

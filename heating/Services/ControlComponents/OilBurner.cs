@@ -187,12 +187,14 @@ namespace Services.ControlComponents
         #region Aktionen
         void DoBurnerOn(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;OilBurner;DoBurnerOn");
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
             SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 1).Wait();
         }
 
         void DoBurnerOff(object sender, EventArgs e)
         {
+            Log.Information($"Fsm;OilBurner;DoBurnerOff");
             var oilBurnerSwitch = StateService.GetActor(ItemEnum.OilBurnerSwitch);
             SerialCommunicationService.SetActorAsync(oilBurnerSwitch.ItemName.ToString(), 0).Wait();
         }
