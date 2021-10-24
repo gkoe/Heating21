@@ -23,6 +23,8 @@ namespace Services
     {
         public static RuleEngine Instance { get; private set; }
 
+        Timer SaveMeasurementsTimer;
+            
         IServiceProvider ServiceProvider { get; }
 
         //private UnitOfWork UnitOfWork { get; }
@@ -31,7 +33,8 @@ namespace Services
         public IConfiguration Configuration { get; set; }
         public ISerialCommunicationService SerialCommunicationService { get; private set; }
         public IRaspberryIoService RaspberryIoService { get; private set; }
-        protected IHttpCommunicationService HttpCommunicationService { get; private set; }
+        protected IEspHttpCommunicationService EspHttpCommunicationService { get; private set; }
+        protected IHomematicHttpCommunicationService HomematicHttpCommunicationService { get; private set; }
 
         public IStateService StateService { get; private set; }
 
@@ -41,6 +44,8 @@ namespace Services
 
         public RuleEngine(IServiceProvider serviceProvider)
         {
+            //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 60 * 1000, 900 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
+            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             ServiceProvider = serviceProvider;
             Configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var appSettingsSection = Configuration.GetSection("ConnectionStrings");
@@ -50,10 +55,6 @@ namespace Services
             //dbContext.ChangeTracker.QueryTrackingBehavior = QueryTrackingBehavior.NoTracking;
             //UnitOfWork = new UnitOfWork(dbContext);
 
-            IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-            SerialCommunicationService = new SerialCommunicationService(Configuration);
-            HttpCommunicationService = new HttpCommunicationService(httpClientFactory, Configuration);
-            RaspberryIoService = new RaspberryIoService();
             var measurementsHubContext = serviceProvider.GetRequiredService<IHubContext<MeasurementsHub>>();
             try
             {
@@ -63,6 +64,31 @@ namespace Services
             catch (Exception ex)
             {
                 Log.Error($"Constructor; DB not ready, ex: {ex.Message}");
+            }
+        }
+
+        private async void OnSaveMeasurements(object state)
+        {
+            try
+            {
+                var measurementsToSave = StateService.GetAverageSensorValuesForLast900Seconds();
+                Log.Information($"RuleEngine;OnSaveMeasurements;{measurementsToSave} Measurements to save");
+                using ApplicationDbContext dbContext = new(ConnectionString);
+                using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+                try
+                {
+                    await unitOfWork.Measurements.AddRangeAsync(measurementsToSave);
+                    var count = await unitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"RuleEngine,OnSaveMeasurements;Failed to save measurement; ex: {ex.Message}");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"RuleEngine,OnSaveMeasurements;failed to get measurements; ex: {ex.Message}");
             }
         }
 
@@ -86,14 +112,21 @@ namespace Services
             //SerialCommunicationService = serialCommunicationService;
             using (var scope = ServiceProvider.CreateScope())
             {
-                StateService.Init(SerialCommunicationService, HttpCommunicationService);
-                StateService.NewMeasurement += StateService_NewMeasurement;
+                IHttpClientFactory httpClientFactory = ServiceProvider.GetRequiredService<IHttpClientFactory>();
+                SerialCommunicationService = new SerialCommunicationService(Configuration);
+                EspHttpCommunicationService = new EspHttpCommunicationService(httpClientFactory, Configuration);
+                HomematicHttpCommunicationService = new HomematicHttpCommunicationService(httpClientFactory, Configuration);
+                RaspberryIoService = new RaspberryIoService();
+
+                StateService.Init(SerialCommunicationService, EspHttpCommunicationService, HomematicHttpCommunicationService);
+                //StateService.NewMeasurement += StateService_NewMeasurement;
                 OilBurner = new OilBurner(StateService, SerialCommunicationService);
                 OilBurner.Fsm.StateChanged += Fsm_StateChanged;
                 HeatingCircuit = new HeatingCircuit(StateService, SerialCommunicationService, OilBurner);
                 HeatingCircuit.Fsm.StateChanged += Fsm_StateChanged;
                 HotWater = new HotWater(StateService, SerialCommunicationService, OilBurner);
                 HotWater.Fsm.StateChanged += Fsm_StateChanged;
+
                 try
                 {
                     await RaspberryIoService.ResetEspAsync();  // Bei Neustart der RuleEngine auch ESP neu starten
@@ -113,20 +146,20 @@ namespace Services
             //return Task.CompletedTask;
         }
 
-        private async void StateService_NewMeasurement(object sender, MeasurementDto measurementDto)
-        {
-            using ApplicationDbContext dbContext = new (ConnectionString);
-            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
-            try
-            {
-                await unitOfWork.Measurements.AddAsync(measurementDto);
-                var count = await unitOfWork.SaveChangesAsync();
-            }
-            catch (Exception ex)
-            {
-                Log.Error($"StateService_NewMeasurement;Failed to save measurement; ex: {ex.Message}");
-            }
-        }
+        //private async void StateService_NewMeasurement(object sender, MeasurementDto measurementDto)
+        //{
+        //    //using ApplicationDbContext dbContext = new (ConnectionString);
+        //    //using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+        //    //try
+        //    //{
+        //    //    await unitOfWork.Measurements.AddAsync(measurementDto);
+        //    //    var count = await unitOfWork.SaveChangesAsync();
+        //    //}
+        //    //catch (Exception ex)
+        //    //{
+        //    //    Log.Error($"StateService_NewMeasurement;Failed to save measurement; ex: {ex.Message}");
+        //    //}
+        //}
 
         public void SetManualOperation(bool on)
         {

@@ -11,15 +11,18 @@ namespace Services.Contracts
 {
     public interface IStateService
     {
+        public event EventHandler<MeasurementDto> NewMeasurement;
+
         SensorWithHistory GetSensor(ItemEnum sensorName);
         public Actor GetActor(ItemEnum actorName);
 
-        void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService);
+        void Init(ISerialCommunicationService serialCommunicationService, IEspHttpCommunicationService espHttpCommunicationService, 
+            IHomematicHttpCommunicationService homematicHttpCommunicationService);
 
         Task SendSensorsAndActors();
 
-        public event EventHandler<MeasurementDto> NewMeasurement;
-
         public Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto);
+
+        public Measurement[] GetAverageSensorValuesForLast900Seconds();
     }
 }

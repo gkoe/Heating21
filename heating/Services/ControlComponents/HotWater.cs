@@ -107,10 +107,10 @@ namespace Services.ControlComponents
         {
             var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
             var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
-            if (boilerBottom >= BOILER_VERY_HOT)
-            {
-                return (true, $"Boiler is very hot (bottom: {boilerBottom})");
-            }
+            //if (boilerBottom >= BOILER_VERY_HOT)
+            //{
+            //    return (true, $"Boiler is very hot (bottom: {boilerBottom})");
+            //}
             if(solar < boilerBottom + 5.0)
             {
                 return (true, $"Solar is too cold ({solar}) to heat boiler (bottom: {boilerBottom})");

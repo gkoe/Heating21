@@ -14,17 +14,19 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Base.ExtensionMethods;
+using System.Linq;
 
 namespace Services
 {
 
     public class StateService : IStateService
     {
-        ConcurrentDictionary<string, SensorWithHistory> Sensors { get; init; }
-        ConcurrentDictionary<string, Actor> Actors { get; init; }
+        public ConcurrentDictionary<string, SensorWithHistory> Sensors { get; init; }
+        public ConcurrentDictionary<string, Actor> Actors { get; init; }
 
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
-        protected IHttpCommunicationService HttpCommunicationService { get; private set; }
+        protected IEspHttpCommunicationService EspHttpCommunicationService { get; private set; }
+        protected IHomematicHttpCommunicationService HomematicHttpCommunicationService { get; private set; }
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
         //public IUnitOfWork UnitOfWork { get; private set; }
 
@@ -56,158 +58,191 @@ namespace Services
 
         //}
 
-        public void Init(ISerialCommunicationService serialCommunicationService, IHttpCommunicationService httpCommunicationService)
+        public void Init(ISerialCommunicationService serialCommunicationService, IEspHttpCommunicationService espHttpCommunicationService,
+            IHomematicHttpCommunicationService homematicHttpCommunicationService)
         {
-            Log.Information("StateService started");
+            Log.Information("StateService;Init;StateService started");
             SerialCommunicationService = serialCommunicationService;
-            SerialCommunicationService.MessageReceived += SerialCommunicationService_MessageReceived;
+            SerialCommunicationService.MeasurementReceived += MeasurementReceivedAsync;
             SerialCommunicationService.StartCommunication();
-            HttpCommunicationService = httpCommunicationService;
-            HttpCommunicationService.MeasurementReceived += HttpCommunicationService_MeasurementReceived;
-            HttpCommunicationService.StartCommunication();
+            EspHttpCommunicationService = espHttpCommunicationService;
+            EspHttpCommunicationService.MeasurementReceived += MeasurementReceivedAsync;
+            EspHttpCommunicationService.StartCommunication();
+            HomematicHttpCommunicationService = homematicHttpCommunicationService;
+            HomematicHttpCommunicationService.MeasurementReceived += MeasurementReceivedAsync;
+            HomematicHttpCommunicationService.StartCommunication();
         }
 
-        private async void HttpCommunicationService_MeasurementReceived(object sender, string message)
+        private async void MeasurementReceivedAsync(object sender, MeasurementDto measurement)
         {
-            Log.Information($"StateService; message received from http: {message}");
-            await AddMeasurementFromHttpAsync(message);
-            await Task.CompletedTask;
-        }
-
-        private async void SerialCommunicationService_MessageReceived(object sender, string message)
-        {
-            Log.Information($"StateService; message received from serial: {message}");
-            await AddMeasurementFromSerialAsync(message);
-            // await Clients.All.SendAsync("ReceiveMessage", user, message);
-            // MeasurementsHubContext.Clients.All.SendAsync("ReceiveMessage", "StateService", message);
-        }
-
-        private async Task AddMeasurementFromHttpAsync(string message)
-        {
-            //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
-            message = message.RemoveChars(" ");
-            //int startPos = message.IndexOf(':') + 1;
-            //string sensorName = message[startPos..message.IndexOf(',')];
-            string sensorName = "LivingroomFirstFloor";
-            if (!Sensors.ContainsKey(sensorName))
+            if (measurement != null)
             {
-                return;
-            }
-            var sensor = Sensors[sensorName];
-            var startPos = message.IndexOf("time") + 6;
-            var endPos = message.IndexOf("value")-2;
-            var length = endPos - startPos;
-            if (length < 18)
-            {
-                Log.Information($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
-                return;
-            }
-            string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
-            DateTime time = DateTime.Parse(timeString);
-            startPos = message.IndexOf("value") + 7;
-            endPos = message.IndexOf("Grad");
-            length = endPos - startPos;
-            if (length < 1)
-            {
-                Log.Information($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
-                return;
-            }
-            string valueString = message.Substring(startPos, length);
-            //double? value = NumberConverters.ParseInvariantDouble(valueString);
-            double? value = valueString.TryParseToDouble();
-            if (value != null)
-            {
-                sensor.AddMeasurement(time, value.Value);
-                var measurement = new MeasurementDto
-                {
-                    SensorId = sensor.Id,
-                    SensorName = sensorName,
-                    Time = time,
-                    Trend = sensor.Trend,
-                    Value = value.Value
-                };
                 NewMeasurement?.Invoke(this, measurement);
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+                Log.Information($"StateService;MeasurementReceivedAsync; measurement received: {measurement}");
             }
             else
             {
-                Log.Error($"AddMeasurementFromHttpAsync; Illegal valueString: {valueString}");
+                Log.Error($"StateService;MeasurementReceived; measurement is null");
             }
+            await Task.CompletedTask;
         }
 
-        private async Task AddMeasurementFromSerialAsync(string message)
+        //private async void SerialCommunicationService_MessageReceived(object sender, string message)
+        //{
+        //    Log.Information($"StateService; message received from serial: {message}");
+        //    await AddMeasurementFromSerialAsync(message);
+        //    // await Clients.All.SendAsync("ReceiveMessage", user, message);
+        //    // MeasurementsHubContext.Clients.All.SendAsync("ReceiveMessage", "StateService", message);
+        //}
+
+        //private async Task AddMeasurementFromHttpAsync(string message)
+        //{
+        //    //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
+        //    message = message.RemoveChars(" ");
+        //    //int startPos = message.IndexOf(':') + 1;
+        //    //string sensorName = message[startPos..message.IndexOf(',')];
+        //    string sensorName = "LivingroomFirstFloor";
+        //    if (!Sensors.ContainsKey(sensorName))
+        //    {
+        //        return;
+        //    }
+        //    var sensor = Sensors[sensorName];
+        //    var startPos = message.IndexOf("time") + 6;
+        //    var endPos = message.IndexOf("value")-2;
+        //    var length = endPos - startPos;
+        //    if (length < 18)
+        //    {
+        //        Log.Information($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
+        //        return;
+        //    }
+        //    string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
+        //    DateTime time = DateTime.Parse(timeString);
+        //    startPos = message.IndexOf("value") + 7;
+        //    endPos = message.IndexOf("Grad");
+        //    length = endPos - startPos;
+        //    if (length < 1)
+        //    {
+        //        Log.Information($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
+        //        return;
+        //    }
+        //    string valueString = message.Substring(startPos, length);
+        //    //double? value = NumberConverters.ParseInvariantDouble(valueString);
+        //    double? value = valueString.TryParseToDouble();
+        //    if (value != null)
+        //    {
+        //        sensor.AddMeasurement(time, value.Value);
+        //        var measurement = new MeasurementDto
+        //        {
+        //            SensorId = sensor.Id,
+        //            SensorName = sensorName,
+        //            Time = time,
+        //            Trend = sensor.Trend,
+        //            Value = value.Value
+        //        };
+        //        NewMeasurement?.Invoke(this, measurement);
+        //        await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+        //    }
+        //    else
+        //    {
+        //        Log.Error($"AddMeasurementFromHttpAsync; Illegal valueString: {valueString}");
+        //    }
+        //}
+
+        //private async Task AddMeasurementFromSerialAsync(string message)
+        //{
+            //// heating/OilBurnerSwitch/command:1}
+            //// temperature_01/state/{"timestamp":1625917023,"value":25.17}
+            //if (message.Contains("command"))
+            //{
+            //    return;
+            //}
+            //var startIndex = message.IndexOf('/');
+            //if (startIndex < 0)
+            //{
+            //    return;
+            //}
+            //string sensorName = message.Substring(0, startIndex);
+            //if (!Sensors.ContainsKey(sensorName))
+            //{
+            //    return;
+            //}
+            //var sensor = Sensors[sensorName];
+            //startIndex = message.IndexOf('{');
+            //var payload = message[startIndex..];
+            //(DateTime time, double? value) = ParseSerialPayload(payload);
+            //if (value != null)
+            //{
+            //    sensor.AddMeasurement(time, value.Value);
+            //    var measurement = new MeasurementDto
+            //    {
+            //        SensorId = sensor.Id,
+            //        SensorName = sensorName,
+            //        Time = time,
+            //        Trend = sensor.Trend,
+            //        Value = value.Value
+            //    };
+            //    NewMeasurement?.Invoke(this, measurement);
+            //    Log.Information("Send measurement by SignalR: {Name};{Time};{Trend};{Value}", 
+            //        measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value.ToGermanString());
+            //    await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+            //}
+        //}
+
+        //private static (DateTime, double?) ParseSerialPayload(string payload)
+        //{
+        //    var text = payload.RemoveChars("\"{}\\");
+        //    var properties = text.ToString().Split(',');
+        //    var propertyValues = new Dictionary<string, string>();
+        //    foreach (var property in properties)
+        //    {
+        //        var keyValuePairs = property.Split(':');
+        //        propertyValues.Add(keyValuePairs[0].ToLower(), keyValuePairs[1]);
+        //    }
+        //    DateTime time = DateTime.MinValue;
+        //    if (propertyValues.ContainsKey("timestamp"))
+        //    {
+        //        time = TimeConverters.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
+        //    }
+        //    double? value = null;
+        //    if (propertyValues.ContainsKey("value"))
+        //    {
+        //        string valueString = propertyValues["value"];
+        //        value = valueString.TryParseToDouble();
+        //        //value = NumberConverters.ParseInvariantDouble(valueString);
+        //        if (value != null)
+        //        {
+        //            value = value.Value;
+        //        }
+        //        else
+        //        {
+        //            Log.Error("ParseSerialPayload, double.TryParse: '{ValueString}', Length: {Length}, FormatException",
+        //                    valueString, valueString.Length);
+        //        }
+        //    }
+        //    return (time, value);
+        //}
+
+        public Measurement[] GetAverageSensorValuesForLast900Seconds()
         {
-            // heating/OilBurnerSwitch/command:1}
-            // temperature_01/state/{"timestamp":1625917023,"value":25.17}
-            if (message.Contains("command"))
-            {
-                return;
-            }
-            var startIndex = message.IndexOf('/');
-            if (startIndex < 0)
-            {
-                return;
-            }
-            string sensorName = message.Substring(0, startIndex);
-            if (!Sensors.ContainsKey(sensorName))
-            {
-                return;
-            }
-            var sensor = Sensors[sensorName];
-            startIndex = message.IndexOf('{');
-            var payload = message[startIndex..];
-            (DateTime time, double? value) = ParseSerialPayload(payload);
-            if (value != null)
-            {
-                sensor.AddMeasurement(time, value.Value);
-                var measurement = new MeasurementDto
+            var sensors = Sensors
+                .Where(s => s.Value.Measurements.Any(m => m != null && m.Time > DateTime.Now.AddMinutes(-15)))
+                .ToArray();
+            Log.Information($"StateService;GetAverageSensorValuesForLast900Seconds;{sensors.Length} sensors with measurements in last 900 secs");
+            var measurements = sensors
+                .Select(s => new Measurement
                 {
-                    SensorId = sensor.Id,
-                    SensorName = sensorName,
-                    Time = time,
-                    Trend = sensor.Trend,
-                    Value = value.Value
-                };
-                NewMeasurement?.Invoke(this, measurement);
-                Log.Information("Send measurement by SignalR: {Name};{Time};{Trend};{Value}", 
-                    measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value.ToGermanString());
-                await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
-            }
+                    SensorId = s.Value.Id,
+                    Value = s.Value
+                        .Measurements
+                        .Where(m => m != null && m.Time > DateTime.Now.AddMinutes(-15))
+                        .Average(m => m.Value),
+                    Time = DateTime.Now
+                })
+                .ToArray();
+            return measurements;
         }
 
-        private static (DateTime, double?) ParseSerialPayload(string payload)
-        {
-            var text = payload.RemoveChars("\"{}\\");
-            var properties = text.ToString().Split(',');
-            var propertyValues = new Dictionary<string, string>();
-            foreach (var property in properties)
-            {
-                var keyValuePairs = property.Split(':');
-                propertyValues.Add(keyValuePairs[0].ToLower(), keyValuePairs[1]);
-            }
-            DateTime time = DateTime.MinValue;
-            if (propertyValues.ContainsKey("timestamp"))
-            {
-                time = TimeConverters.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
-            }
-            double? value = null;
-            if (propertyValues.ContainsKey("value"))
-            {
-                string valueString = propertyValues["value"];
-                value = valueString.TryParseToDouble();
-                //value = NumberConverters.ParseInvariantDouble(valueString);
-                if (value != null)
-                {
-                    value = value.Value;
-                }
-                else
-                {
-                    Log.Error("ParseSerialPayload, double.TryParse: '{ValueString}', Length: {Length}, FormatException",
-                            valueString, valueString.Length);
-                }
-            }
-            return (time, value);
-        }
 
         public async Task SendSensorsAndActors()
         {
@@ -231,13 +266,13 @@ namespace Services
         }
     }
 
-    public class HttpMeasurementDto
-    {
-        public string Sensor { get; set; }
-        public DateTime Time { get; set; }
-        public double Value { get; set; }
+    //public class HttpMeasurementDto
+    //{
+    //    public string Sensor { get; set; }
+    //    public DateTime Time { get; set; }
+    //    public double Value { get; set; }
 
-    }
+    //}
 
 
 

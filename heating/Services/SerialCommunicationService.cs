@@ -5,6 +5,11 @@ using System.IO.Ports;
 using Serilog;
 using Services.Contracts;
 using Microsoft.Extensions.Configuration;
+using Core.DataTransferObjects;
+using Base.ExtensionMethods;
+using System.Collections.Generic;
+using Base.Helper;
+using Services.DataTransferObjects;
 
 namespace Services
 {
@@ -16,7 +21,7 @@ namespace Services
 
         public string SerialPortName { get; }
 
-        public event EventHandler<string> MessageReceived;
+        public event EventHandler<MeasurementDto> MeasurementReceived;
 
         public SerialCommunicationService(IConfiguration configuration)
         {
@@ -28,7 +33,7 @@ namespace Services
         {
             Log.Information("SerialCommunicationService started");
             _serialPort = new SerialPort(SerialPortName, BAUDRATE) { ReadTimeout = 1500, WriteTimeout = 1500 };
-            StringBuilder receivedChars = new StringBuilder();
+            StringBuilder receivedChars = new();
             try
             {
                 _serialPort.Open();
@@ -43,7 +48,11 @@ namespace Services
                         if (readChar == '\n')
                         {
                             Log.Information($"SerialCommunicationService; data received: {receivedChars}");
-                            MessageReceived?.Invoke(this, receivedChars.ToString());
+                            var measurement = GetMeasurementFromMessage(receivedChars.ToString());
+                            if (measurement != null)
+                            {
+                                MeasurementReceived?.Invoke(this, measurement);
+                            }
                             //Console.Write($">>>>>>>>>>>>> {receivedChars}");
                             receivedChars.Clear();
                         }
@@ -59,6 +68,54 @@ namespace Services
                 Log.Error($"SerialCommunication; Exception: {ex.Message}");
             }
         }
+
+        private static MeasurementDto GetMeasurementFromMessage(string message)
+        {
+            if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
+            {
+                return null;
+            }
+
+            // heating/OilBurnerSwitch/command:1}
+            // temperature_01/state/{"timestamp":1625917023,"value":25.17}
+            if (message.Contains("command"))
+            {
+                return null;
+            }
+            var startIndex = message.IndexOf('/');
+            if (startIndex < 0)
+            {
+                return null;
+            }
+            string sensorName = message.Substring(0, startIndex);
+            if(!Enum.TryParse<ItemEnum>(sensorName, out ItemEnum sensorItem))
+            {
+                return null;
+            }
+            var sensor = RuleEngine.Instance.StateService.GetSensor(sensorItem);
+            if (sensor == null)
+            {
+                return null;
+            }
+            startIndex = message.IndexOf('{');
+            var payload = message[startIndex..];
+            (DateTime time, double? value) = ParseSerialPayload(payload);
+            if (value != null)
+            {
+                sensor.AddMeasurement(time, value.Value);
+                var measurement = new MeasurementDto
+                {
+                    SensorId = sensor.Id,
+                    SensorName = sensorName,
+                    Time = time,
+                    Trend = sensor.Trend,
+                    Value = value.Value
+                };
+                return measurement;
+            }
+            return null;
+        }
+
 
         public void StopCommunication()
         {
@@ -90,6 +147,41 @@ namespace Services
             await SendAsync(message);
             Log.Information($"SerialCommunicationService; SetActorBySerialCommunication; message: {message}");
         }
+
+        private static (DateTime, double?) ParseSerialPayload(string payload)
+        {
+            var text = payload.RemoveChars("\"{}\\");
+            var properties = text.ToString().Split(',');
+            var propertyValues = new Dictionary<string, string>();
+            foreach (var property in properties)
+            {
+                var keyValuePairs = property.Split(':');
+                propertyValues.Add(keyValuePairs[0].ToLower(), keyValuePairs[1]);
+            }
+            DateTime time = DateTime.MinValue;
+            if (propertyValues.ContainsKey("timestamp"))
+            {
+                time = TimeConverters.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
+            }
+            double? value = null;
+            if (propertyValues.ContainsKey("value"))
+            {
+                string valueString = propertyValues["value"];
+                value = valueString.TryParseToDouble();
+                //value = NumberConverters.ParseInvariantDouble(valueString);
+                if (value != null)
+                {
+                    value = value.Value;
+                }
+                else
+                {
+                    Log.Error("ParseSerialPayload, double.TryParse: '{ValueString}', Length: {Length}, FormatException",
+                            valueString, valueString.Length);
+                }
+            }
+            return (time, value);
+        }
+
 
 
     }

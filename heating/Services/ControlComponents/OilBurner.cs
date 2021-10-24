@@ -89,9 +89,9 @@ namespace Services.ControlComponents
                 Fsm.AddTransition(State.Ready, State.Off, Input.IsntNeededOilBurner);
                 Fsm.AddTransition(State.TooHot, State.Ready, Input.IsCooledToHot);
                 // Aktionen festlegen
-                Fsm.GetState(State.Off).OnLeave += DoBurnerOn;
-                Fsm.GetState(State.Off).OnEnter += DoBurnerOff;
-                Fsm.GetState(State.TooHot).OnEnter += DoBurnerOff;
+                //Fsm.GetState(State.Off).OnLeave += DoBurnerOn;
+                //Fsm.GetState(State.Off).OnEnter += DoBurnerOff;
+                //Fsm.GetState(State.TooHot).OnEnter += DoBurnerOff;
             }
             catch (Exception ex)
             {

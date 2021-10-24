@@ -1,4 +1,6 @@
 ﻿
+using Core.DataTransferObjects;
+
 using Services.DataTransferObjects;
 
 using System;
@@ -8,7 +10,7 @@ namespace Services.Contracts
 {
     public interface ISerialCommunicationService
     {
-        event EventHandler<string> MessageReceived;
+        event EventHandler<MeasurementDto> MeasurementReceived;
 
         void StartCommunication();
         void StopCommunication();

@@ -1,10 +1,6 @@
 ﻿using Serilog;
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Services.DataTransferObjects
 {
@@ -24,6 +20,8 @@ namespace Services.DataTransferObjects
         TemperatureGroundFloor,
         LivingroomFirstFloor,
         LivingroomGroundFloor,
+        HmoLivingroomFirstFloor,
+        HmoTemperatureOut,
 
         // Actors
         OilBurnerSwitch,
@@ -47,7 +45,7 @@ namespace Services.DataTransferObjects
 
         public int Id { get; set; }
         public string ItemName { get; private set; }
-        public MeasurementValue[] Measurements = new MeasurementValue[10];
+        public MeasurementValue[] Measurements = new MeasurementValue[100];
         public double Trend { get; set; }  // umgerechnet in Delta/Stunde
 
         public DateTime Time { get; private set; }
@@ -82,7 +80,7 @@ namespace Services.DataTransferObjects
             }
             Measurements[_actIndex] = new MeasurementValue(time, value);
             Log.Information($"Add SensorWithHistory; Sensor: {ItemName}, Value: {value}, Index: {_actIndex}, Trend: {Trend}");
-            _actIndex = (_actIndex + 1) % 10;
+            _actIndex = (_actIndex + 1) % Measurements.Length;
             // letzte Werte als aktuelle Werte speichern
             Time = time;
             Value = value;

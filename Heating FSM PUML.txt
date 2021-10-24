@@ -1,0 +1,73 @@
+https://plantuml.com/de/state-diagram -- OnlineServer
+
+@startuml
+state HeatingCircuit #lightblue {
+Off --> PumpIsOff : IsInHeatingTime
+PumpIsOff --> Off : IsntInHeatingTime
+PumpIsOff  --> WaitBurnerIsReadyToHeat : IsCold
+WaitBurnerIsReadyToHeat --> PumpIsOn : IsBurnerReadyToHeat
+PumpIsOn --> UseResidualHeat : IsHot
+PumpIsOn : Enter: Pumpe einschalten
+UseResidualHeat --> PumpIsOff : IsAllResidualHeatUsed
+PumpIsOn --> PumpIsOff : IsntBurnerReadyToHeat
+Off --> CoolBurnerByCircuit : IsBurnerToCool
+PumpIsOff --> CoolBurnerByCircuit : IsBurnerToCool
+PumpIsOff: Enter: Pumpe ausschalten
+CoolBurnerByCircuit --> PumpIsOff : IsntBurnerToCool
+CoolBurnerByCircuit : Enter: Pumpe einschalten
+}
+@enduml
+
+
+@startuml
+state OilBurner#lightblue {
+Off --> Cold: IsNeededOilBurner
+note on link 
+  Switch OilBurner ON 
+end note
+Cold ---> Ready : IsHeatedToReady
+Ready --> Cold : IsCooledToCold
+Ready --> Hot : IsHeatedToHot
+Hot --> Ready : IsCooledToReady
+Hot --> TooHot : IsTooHot
+TooHot --> TooHot : IsntNeededOilBurner
+note on link 
+  Switch OilBurner OFF 
+end note
+TooHot --> Hot : IsCooledToHot
+Hot --> Hot : IsntNeededOilBurner
+note on link 
+  Switch OilBurner OFF 
+end note
+Ready --> Off : IsntNeededOilBurner
+note on link 
+  Switch OilBurner OFF 
+end note
+Cold --> Off : IsntNeededOilBurner
+note on link 
+  Switch OilBurner OFF 
+end note
+}
+@enduml
+
+@startuml
+state HotWater#lightblue {
+AllOff --> HeatBoilerByBurner : IsBoilerToHeatByBurner
+note on link 
+  OilBurner is ready and boiler is cold
+end note
+HeatBoilerByBurner --> AllOff : IsBoilerHot
+AllOff --> HeatBoilerBySolar : IsBoilerToHeatBySolar
+HeatBoilerBySolar --> AllOff : IsntBoilerToHeatBySolar
+note on link 
+  solar isn't hot enough to heat boiler
+end note
+HeatBoilerBySolar --> HeatBufferBySolar : IsBoilerVeryHot
+HeatBufferBySolar --> AllOff : IsntBufferToHeatBySolar
+note on link 
+  solar isn't hot enough to heat buffer
+end note
+AllOff --> CoolBurner : IsBurnerToCool
+CoolBurner --> AllOff : IsntBurnerToCool
+}
+@enduml
