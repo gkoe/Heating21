@@ -13,6 +13,7 @@ using Microsoft.Extensions.Configuration;
 using Base.ExtensionMethods;
 using Services.DataTransferObjects;
 using Core.DataTransferObjects;
+using Core.Entities;
 
 namespace Services
 {

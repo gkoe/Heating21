@@ -23,7 +23,7 @@ namespace Services
     {
         public static RuleEngine Instance { get; private set; }
 
-        Timer SaveMeasurementsTimer;
+        readonly Timer SaveMeasurementsTimer;
             
         IServiceProvider ServiceProvider { get; }
 
@@ -44,8 +44,8 @@ namespace Services
 
         public RuleEngine(IServiceProvider serviceProvider)
         {
-            //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 60 * 1000, 900 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
-            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
+            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 60 * 1000, 900 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
+            //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             ServiceProvider = serviceProvider;
             Configuration = serviceProvider.GetRequiredService<IConfiguration>();
             var appSettingsSection = Configuration.GetSection("ConnectionStrings");
@@ -72,7 +72,7 @@ namespace Services
             try
             {
                 var measurementsToSave = StateService.GetAverageSensorValuesForLast900Seconds();
-                Log.Information($"RuleEngine;OnSaveMeasurements;{measurementsToSave} Measurements to save");
+                Log.Information($"RuleEngine;OnSaveMeasurements;{measurementsToSave.Length} Measurements to save");
                 using ApplicationDbContext dbContext = new(ConnectionString);
                 using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
                 try

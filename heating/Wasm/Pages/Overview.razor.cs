@@ -60,6 +60,8 @@ namespace Wasm.Pages
         public SensorWithLastValueUiDto TemperatureAfter { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureAfter));
         public SensorWithLastValueUiDto TemperatureFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureFirstFloor));
         public SensorWithLastValueUiDto TemperatureGroundFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureGroundFloor));
+        public SensorWithLastValueUiDto HmoLivingroomFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(HmoLivingroomFirstFloor));
+        public SensorWithLastValueUiDto HmoTemperatureOut { get; set; } = new SensorWithLastValueUiDto(nameof(HmoTemperatureOut));
 
         public ActorUiDto PumpFirstFloor { get; set; } = new ActorUiDto(nameof(PumpFirstFloor));
         public ActorUiDto MixerFirstFloorPlus { get; set; } = new ActorUiDto(nameof(MixerFirstFloorPlus));
@@ -110,8 +112,9 @@ namespace Wasm.Pages
             sensors.Add(nameof(TemperatureAfter), TemperatureAfter);
             sensors.Add(nameof(TemperatureBefore), TemperatureBefore);
             sensors.Add(nameof(TemperatureFirstFloor), TemperatureFirstFloor);
-            sensors.Add(nameof(TemperatureGroundFloor), TemperatureGroundFloor);
             sensors.Add(nameof(SolarCollector), SolarCollector);
+            sensors.Add(nameof(HmoLivingroomFirstFloor), HmoLivingroomFirstFloor);
+            sensors.Add(nameof(HmoTemperatureOut), HmoTemperatureOut);
 
             hubConnection.On<MeasurementDto>("ReceiveMeasurement", (measurement) =>
             {

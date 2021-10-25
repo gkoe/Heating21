@@ -1,4 +1,6 @@
-﻿using Serilog;
+﻿using Core.Entities;
+
+using Serilog;
 
 using Services.Contracts;
 using Services.DataTransferObjects;

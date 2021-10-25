@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 using Base.Persistence.Repositories;
@@ -35,6 +36,16 @@ namespace Persistence
                 .Where(m => m.SensorId == sensorId)
                 .OrderByDescending(m => m.Time)
                 .Take(100)
+                .ToArrayAsync();
+            return measurements;
+        }
+
+        public async Task<Measurement[]> GetByDay(string sensorName, DateTime day)
+        {
+            var measurements = await DbContext
+                .Measurements
+                .Where(m => m.Sensor.Name == sensorName && m.Time.Date == day.Date)
+                .OrderBy(m => m.Time)
                 .ToArrayAsync();
             return measurements;
         }

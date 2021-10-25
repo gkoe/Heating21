@@ -1,0 +1,41 @@
+﻿@page "/chartsensorvalues"
+
+@using Radzen.Blazor
+
+<div class="container mt-4">
+    <div>
+        <div class="card">
+            <h5 class="card-header">Sensorwerte</h5>
+            <div class="flex-container">
+                <div class="d-flex p-2 align-items-center">
+                    <RadzenDropDown AllowClear="false" TValue="string" Style="width:200px"
+                                    @bind-Value=@SelectedSensor
+                                    Data=@Sensors
+                                    Change=@(args => OnChangeSensor(args.ToString())) />
+                    <RadzenDatePicker @bind-Value=@SelectedDate DateFormat="d" Change=@(args => OnChangeDate(args.ToString())) />
+                </div>
+            </div>
+
+            @*<div class="col-xl-6 mb-5 mt-3">
+            </div>*@
+
+            <RadzenChart Style="width:90%">
+                <RadzenLineSeries Data="@DataItems" CategoryProperty="QuarterOfAnHourNumber" Title="@SelectedSensor" LineType="LineType.Solid" ValueProperty="Value">
+                    <RadzenMarkers MarkerType="MarkerType.Square" />
+                </RadzenLineSeries>
+                <RadzenValueAxis >
+                    <RadzenGridLines Visible="true" />
+@*                    <RadzenAxisTitle Text="°C" />*@
+                </RadzenValueAxis>
+                <RadzenCategoryAxis Step="1">
+                    <RadzenAxisTitle Text="Viertelstunden" />
+                </RadzenCategoryAxis>
+                <RadzenLegend Visible="false" />
+            </RadzenChart>
+
+        </div>
+
+    </div>
+
+</div>
+

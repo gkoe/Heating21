@@ -14,6 +14,7 @@ using Base.ExtensionMethods;
 using Services.DataTransferObjects;
 using Core.DataTransferObjects;
 using Base.Helper;
+using Core.Entities;
 
 namespace Services
 {

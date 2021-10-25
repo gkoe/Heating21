@@ -3,6 +3,7 @@ using Base.DataTransferObjects;
 
 using Core.Entities;
 using Core.DataTransferObjects;
+using System;
 
 namespace Wasm.Services.Contracts
 {
@@ -12,6 +13,8 @@ namespace Wasm.Services.Contracts
         Task<bool> ChangeSwitchAsync(string name, bool on);
         Task<bool> SetManualOperationAsync(bool on);
         Task<string[]> GetFsmStatesAsync();
+        Task<MeasurementDto[]> GetMeasurementsAsync(string sensorName, DateTime date);
+
 
         Task ResetEspAsync();
     }

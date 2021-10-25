@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Core.DataTransferObjects;
+
+using Newtonsoft.Json;
+
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Wasm.Services.Contracts;
@@ -55,7 +59,17 @@ namespace Wasm.Services
             var response = await _client.GetAsync(request);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<string[]>(contentTemp);
-            System.Console.WriteLine($"ApiService;GetFsmStates; result: {string.Join(';',result)}");
+            System.Console.WriteLine($"ApiService;GetFsmStates; result: {string.Join(';', result)}");
+            return result;
+        }
+
+        public async Task<MeasurementDto[]> GetMeasurementsAsync(string sensorName, DateTime date)
+        {
+            var request = $"api/measurements/getbysensoranddate/{sensorName},{date.ToString("yyyy-MM-dd")}";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<MeasurementDto[]>(contentTemp);
+            System.Console.WriteLine($"ApiService;GetMeasurementsAsync; {result.Length} measurements read");
             return result;
         }
 

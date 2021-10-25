@@ -4,39 +4,6 @@ using System;
 
 namespace Services.DataTransferObjects
 {
-    public enum ItemEnum
-    {
-        // Sensors
-        OilBurnerTemperature,
-        BoilerTop,
-        BoilerBottom,
-        BufferTop,
-        BufferBottom,
-        TemperatureBefore,
-        TemperatureAfter,
-        SolarCollector,
-
-        TemperatureFirstFloor,
-        TemperatureGroundFloor,
-        LivingroomFirstFloor,
-        LivingroomGroundFloor,
-        HmoLivingroomFirstFloor,
-        HmoTemperatureOut,
-
-        // Actors
-        OilBurnerSwitch,
-        PumpBoiler,
-        PumpSolar,
-        PumpFirstFloor,
-        PumpGroundFloor,
-        ValveBoilerBuffer,
-        MixerFirstFloorMinus,
-        MixerFirstFloorPlus,
-        MixerGroundFloorMinus,
-        MixerGroundFloorPlus
-
-    }
-
     public class Item
     {
         //const ItemEnum StartActors = ItemEnum.OilBurnerSwitch;

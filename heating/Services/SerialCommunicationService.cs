@@ -10,6 +10,7 @@ using Base.ExtensionMethods;
 using System.Collections.Generic;
 using Base.Helper;
 using Services.DataTransferObjects;
+using Core.Entities;
 
 namespace Services
 {

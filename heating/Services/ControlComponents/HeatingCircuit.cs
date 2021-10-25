@@ -1,4 +1,6 @@
-﻿using HeatControl.Fsm;
+﻿using Core.Entities;
+
+using HeatControl.Fsm;
 using Serilog;
 using Services.Contracts;
 using Services.DataTransferObjects;
