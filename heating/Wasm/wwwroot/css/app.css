@@ -1,5 +1,10 @@
 ﻿/*@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');*/
 
+.my-flex-card > div > div.card {
+    height: calc(100% - 15px);
+    margin-bottom: 15px;
+}
+
 .flex-container {
     display: flex;
     flex-direction: row;

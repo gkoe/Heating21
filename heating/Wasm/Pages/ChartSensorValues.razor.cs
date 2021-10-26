@@ -36,7 +36,25 @@ namespace Wasm.Pages
 
         protected override async Task OnInitializedAsync()
         {
-            Sensors = Enum.GetNames(typeof(ItemEnum));
+            string[] sensorNames = new string[]
+            {
+                ItemEnum.OilBurnerTemperature.ToString(),
+                ItemEnum.LivingroomFirstFloor.ToString(),
+                ItemEnum.SolarCollector.ToString(),
+                ItemEnum.BoilerTop.ToString(),
+                ItemEnum.HmoTemperatureOut.ToString(),
+                ItemEnum.HmoLivingroomFirstFloor.ToString(),
+                ItemEnum.BufferTop.ToString(),
+                ItemEnum.BufferBottom.ToString(),
+                ItemEnum.BoilerBottom.ToString(),
+                ItemEnum.OilBurnerSwitch.ToString(),
+                ItemEnum.PumpFirstFloor.ToString(),
+                ItemEnum.PumpBoiler.ToString(),
+                ItemEnum.PumpSolar.ToString(),
+                ItemEnum.ValveBoilerBuffer.ToString()
+            };
+            Sensors = sensorNames;
+            //Sensors = Enum.GetNames(typeof(ItemEnum)).OrderBy(s => s).ToArray(); ;
             //DataItems = new ChartDataItem[]
             //{
             //    new ChartDataItem { QuarterOfAnHourNumber = 1, Value = 10},
@@ -69,6 +87,19 @@ namespace Wasm.Pages
                 })
                 .ToArray();
         }
+
+        public static string GetCategoryText(object valueObject)
+        {
+            var value = (double)valueObject;
+            var intValue = (int)value;
+            //return intValue.ToString();
+            if (intValue % 4 != 0)
+            {
+                return "";
+            }
+            return (intValue / 4).ToString();
+        }
+
 
 
         protected async Task OnChangeSensor(string sensor)
