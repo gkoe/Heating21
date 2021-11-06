@@ -21,7 +21,7 @@
                     <RadzenLineSeries Data="@DataItems" Smooth="true" CategoryProperty="QuarterOfAnHourNumber" Title="@SelectedSensor" LineType="LineType.Solid" ValueProperty="Value">
 @*                        <RadzenMarkers MarkerType="MarkerType.Square" />*@
                     </RadzenLineSeries>
-                    <RadzenValueAxis  Formatter=@(value => $"  {value}°C")>
+                    <RadzenValueAxis  Formatter=@(value => $"{value} °C")>
                         <RadzenGridLines Visible="true" />
                     </RadzenValueAxis>
                     <RadzenCategoryAxis Step="1" Formatter=@(value => @GetCategoryText(value))>

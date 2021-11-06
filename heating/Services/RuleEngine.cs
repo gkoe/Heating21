@@ -1,17 +1,21 @@
 ﻿using Core.Contracts;
-using Core.DataTransferObjects;
 using Core.Entities;
+
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using Persistence;
+
 using Serilog;
+
 using Services.Contracts;
 using Services.ControlComponents;
-using Services.DataTransferObjects;
 using Services.Hubs;
+
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading;
@@ -44,7 +48,7 @@ namespace Services
 
         public RuleEngine(IServiceProvider serviceProvider)
         {
-            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 60 * 1000, 900 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
+            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 1 * 1000, 1 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             ServiceProvider = serviceProvider;
             Configuration = serviceProvider.GetRequiredService<IConfiguration>();
@@ -58,8 +62,9 @@ namespace Services
             var measurementsHubContext = serviceProvider.GetRequiredService<IHubContext<MeasurementsHub>>();
             try
             {
-                var sensorsActors = GetSyncedSensorsWithDb().Result;
-                StateService = new StateService(measurementsHubContext, sensorsActors);
+                StateService = new StateService(measurementsHubContext);
+                var sensors = SyncSensorsWithDb().Result;
+                var actors = SyncActorsWithDb().Result;
             }
             catch (Exception ex)
             {
@@ -69,22 +74,13 @@ namespace Services
 
         private async void OnSaveMeasurements(object state)
         {
+            if (StateService == null) return;
             try
             {
-                var measurementsToSave = StateService.GetAverageSensorValuesForLast900Seconds();
-                Log.Information($"RuleEngine;OnSaveMeasurements;{measurementsToSave.Length} Measurements to save");
-                using ApplicationDbContext dbContext = new(ConnectionString);
-                using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
-                try
-                {
-                    await unitOfWork.Measurements.AddRangeAsync(measurementsToSave);
-                    var count = await unitOfWork.SaveChangesAsync();
-                }
-                catch (Exception ex)
-                {
-                    Log.Error($"RuleEngine,OnSaveMeasurements;Failed to save measurement; ex: {ex.Message}");
-                }
-
+                var sensorMeasurementsToSave = StateService.GetSensorMeasurementsToSave();
+                await SaveMeasurements(sensorMeasurementsToSave);
+                var actorMeasurementsToSave = StateService.GetActorMeasurementsToSave();
+                await SaveMeasurements(actorMeasurementsToSave);
             }
             catch (Exception ex)
             {
@@ -92,18 +88,53 @@ namespace Services
             }
         }
 
-        async Task<Sensor[]> GetSyncedSensorsWithDb()
+        private async Task SaveMeasurements(IEnumerable<Measurement> measurements)
         {
-            using ApplicationDbContext dbContext = new (ConnectionString);
-            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
-            foreach (var item in Enum.GetValues(typeof(ItemEnum)))
+            if (measurements.Count() > 0)
             {
-                var sensorName = (ItemEnum)item;
-                await unitOfWork.Sensors.UpsertAsync(sensorName.ToString());
+                foreach (var m in measurements)
+                {
+                    m.Item = null;
+                }
+                Log.Information($"RuleEngine;OnSaveActorMeasurements;{measurements.Count()} Measurements to save");
+                using ApplicationDbContext dbContext = new(ConnectionString);
+                using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+                try
+                {
+                    await unitOfWork.Measurements.AddRangeAsync(measurements);
+                    var count = await unitOfWork.SaveChangesAsync();
+                }
+                catch (Exception ex)
+                {
+                    Log.Error($"RuleEngine,OnSaveMeasurements;Failed to save Measurement; ex: {ex.Message}");
+                }
+            }
+        }
+
+        async Task<Sensor[]> SyncSensorsWithDb()
+        {
+            using ApplicationDbContext dbContext = new(ConnectionString);
+            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+            foreach (var sensor in StateService.GetSensors())
+            {
+                await unitOfWork.Sensors.UpsertAsync(sensor);
             }
             await unitOfWork.SaveChangesAsync();
             var sensors = await unitOfWork.Sensors.GetAsync();
             return sensors.OrderBy(s => s.Name).ToArray();
+        }
+
+        async Task<Actor[]> SyncActorsWithDb()
+        {
+            using ApplicationDbContext dbContext = new(ConnectionString);
+            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+            foreach (var actor in StateService.GetActors())
+            {
+                await unitOfWork.Actors.UpsertAsync(actor);
+            }
+            await unitOfWork.SaveChangesAsync();
+            var actors = await unitOfWork.Actors.GetAsync();
+            return actors.OrderBy(s => s.Name).ToArray();
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)

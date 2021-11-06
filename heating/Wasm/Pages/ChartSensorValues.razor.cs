@@ -38,20 +38,20 @@ namespace Wasm.Pages
         {
             string[] sensorNames = new string[]
             {
-                ItemEnum.OilBurnerTemperature.ToString(),
-                ItemEnum.LivingroomFirstFloor.ToString(),
-                ItemEnum.SolarCollector.ToString(),
-                ItemEnum.BoilerTop.ToString(),
-                ItemEnum.HmoTemperatureOut.ToString(),
-                ItemEnum.HmoLivingroomFirstFloor.ToString(),
-                ItemEnum.BufferTop.ToString(),
-                ItemEnum.BufferBottom.ToString(),
-                ItemEnum.BoilerBottom.ToString(),
-                ItemEnum.OilBurnerSwitch.ToString(),
-                ItemEnum.PumpFirstFloor.ToString(),
-                ItemEnum.PumpBoiler.ToString(),
-                ItemEnum.PumpSolar.ToString(),
-                ItemEnum.ValveBoilerBuffer.ToString()
+                SensorName.OilBurnerTemperature.ToString(),
+                SensorName.LivingroomFirstFloor.ToString(),
+                SensorName.SolarCollector.ToString(),
+                SensorName.BoilerTop.ToString(),
+                SensorName.HmoTemperatureOut.ToString(),
+                SensorName.HmoLivingroomFirstFloor.ToString(),
+                SensorName.BufferTop.ToString(),
+                SensorName.BufferBottom.ToString(),
+                SensorName.BoilerBottom.ToString(),
+                ActorName.OilBurnerSwitch.ToString(),
+                ActorName.PumpFirstFloor.ToString(),
+                ActorName.PumpBoiler.ToString(),
+                ActorName.PumpSolar.ToString(),
+                ActorName.ValveBoilerBuffer.ToString()
             };
             Sensors = sensorNames;
             //Sensors = Enum.GetNames(typeof(ItemEnum)).OrderBy(s => s).ToArray(); ;

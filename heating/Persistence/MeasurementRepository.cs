@@ -33,7 +33,7 @@ namespace Persistence
         {
             var measurements = await DbContext
                 .Measurements
-                .Where(m => m.SensorId == sensorId)
+                .Where(m => m.ItemId == sensorId)
                 .OrderByDescending(m => m.Time)
                 .Take(100)
                 .ToArrayAsync();
@@ -44,7 +44,7 @@ namespace Persistence
         {
             var measurements = await DbContext
                 .Measurements
-                .Where(m => m.Sensor.Name == sensorName && m.Time.Date == day.Date)
+                .Where(m => m.Item.Name == sensorName && m.Time.Date == day.Date)
                 .OrderBy(m => m.Time)
                 .ToArrayAsync();
             return measurements;
@@ -54,7 +54,7 @@ namespace Persistence
         {
             var measurement = await DbContext
                 .Measurements
-                .Where(m => m.Sensor.Name == sensorName)
+                .Where(m => m.Item.Name == sensorName)
                 .OrderByDescending(m => m.Time)
                 .FirstOrDefaultAsync();
             return measurement;
@@ -65,7 +65,7 @@ namespace Persistence
             var measurement = new Measurement
             {
                 Id = 0,
-                SensorId = measurementDto.SensorId,
+                ItemId = measurementDto.ItemId,
                 Value = measurementDto.Value,
                 Time = measurementDto.Time,
                 Trend = measurementDto.Trend

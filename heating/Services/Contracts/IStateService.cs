@@ -2,7 +2,6 @@
 using Core.DataTransferObjects;
 using Core.Entities;
 
-using Services.DataTransferObjects;
 
 using System;
 using System.Threading.Tasks;
@@ -13,16 +12,19 @@ namespace Services.Contracts
     {
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        SensorWithHistory GetSensor(ItemEnum sensorName);
-        public Actor GetActor(ItemEnum actorName);
+        Sensor[] GetSensors();
+        Actor[] GetActors();
+
+        Sensor GetSensor(string sensorName);
+        Actor GetActor(string actorName);
 
         void Init(ISerialCommunicationService serialCommunicationService, IEspHttpCommunicationService espHttpCommunicationService, 
             IHomematicHttpCommunicationService homematicHttpCommunicationService);
 
-        Task SendSensorsAndActors();
+        Task SendItems();
 
         public Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto);
-
-        public Measurement[] GetAverageSensorValuesForLast900Seconds();
+        Measurement[] GetSensorMeasurementsToSave();
+        Measurement[] GetActorMeasurementsToSave();
     }
 }

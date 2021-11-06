@@ -1,10 +1,13 @@
-﻿using Core.Entities;
+﻿
+using Core.Entities;
 
 using HeatControl.Fsm;
+
 using Serilog;
+
 using Services.Contracts;
-using Services.DataTransferObjects;
 using Services.Fsm;
+
 using System;
 using System.Linq;
 
@@ -96,14 +99,14 @@ namespace Services.ControlComponents
 
         private (bool, string) IsHot()
         {
-            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
             bool isHot = temperature >= OG_TEMP;
             return (isHot, $"LivingRoomTemperature: {temperature}");
         }
 
         private (bool, string) IsCold()
         {
-            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
             bool isCold = temperature <= OG_TEMP - 0.5;
             return (isCold, $"LivingRoomTemperature: {temperature}");
         }
@@ -115,7 +118,7 @@ namespace Services.ControlComponents
                 return (true, "No use of residual heat, because burner is used by HotWater");
             }
             var (isOilBurnerCooled, message) = OilBurner.IsCooledToReady();
-            var temperature = StateService.GetSensor(ItemEnum.LivingroomFirstFloor).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
             return (isOilBurnerCooled, $"IsAllResidualHeatUsed: LivingRoom: {temperature}, {message}");
         }
 
@@ -146,20 +149,20 @@ namespace Services.ControlComponents
         async void DoPumpOn(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HeatingCircuit;DoPumpOn");
-            var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
-            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 1);
-            var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
-            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemName.ToString(), 1);
+            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.Name, 1);
+            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.Name, 1);
         }
 
         async void DoPumpOff(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HeatingCircuit;DoPumpOff");
             //OilBurner.IsBurnerNeededByHeatingCircuit = false;
-            var pumpFirstFloorSwitch = StateService.GetActor(ItemEnum.PumpFirstFloor);
-            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.ItemName.ToString(), 0);
-            var pumpGroundFloorSwitch = StateService.GetActor(ItemEnum.PumpGroundFloor);
-            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.ItemName.ToString(), 0);
+            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.Name, 0);
+            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.Name, 0);
         }
 
         //void OilBurnerNeeded(object sender, EventArgs e)

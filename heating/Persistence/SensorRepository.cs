@@ -33,13 +33,18 @@ namespace Persistence
             return sensors;
         }
 
-        public async Task UpsertAsync(string sensorName)
+        public async Task UpsertAsync(Sensor stateSensor)
         {
-            var sensor = await DbContext.Sensors.FirstOrDefaultAsync(s => s.Name == sensorName);
-            if (sensor == null)
+            var dbSensor = await DbContext.Sensors.FirstOrDefaultAsync(s => s.Name == stateSensor.Name);
+            if (dbSensor == null)
             {
-                sensor = new Sensor { Name = sensorName };
-                await DbContext.AddAsync(sensor);
+                dbSensor = new Sensor { Name = stateSensor.Name, PersistenceInterval = stateSensor.PersistenceInterval };
+                await DbContext.AddAsync(dbSensor);
+            }
+            else
+            {
+                stateSensor.PersistenceInterval = dbSensor.PersistenceInterval;
+                stateSensor.Id = dbSensor.Id;
             }
         }
     }

@@ -5,13 +5,10 @@ namespace Core.Contracts
 {
     public interface IUnitOfWork : IBaseUnitOfWork
     {
+        IActorRepository Actors { get; }
         ISensorRepository Sensors { get; }
         IMeasurementRepository Measurements { get; }
         IFsmTransitionRepository FsmTransitions { get; }
-
-        //IPupilRepository PupilRepository { get; }
-        //IBookingRepository BookingRepository { get; }
-        //ILockerRepository LockerRepository { get; }
 
     }
 }

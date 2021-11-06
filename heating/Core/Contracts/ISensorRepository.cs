@@ -9,6 +9,6 @@ namespace Core.Contracts
     {
         Task<Sensor[]> GetAsync();
         Sensor GetByName(string sensorName);
-        Task UpsertAsync(string sensorName);
+        Task UpsertAsync(Sensor sensor);
     }
 }

@@ -22,7 +22,7 @@ namespace Services.Hubs
         {
             // https://consultwithgriff.com/signalr-connection-ids/
             Log.Information($"client connected, connectionid: {Context.ConnectionId}");
-            await StateService.SendSensorsAndActors();
+            await StateService.SendItems();
             //await Clients.All.SendAsync("ReceiveMessage", "Hello by SignalR");
             await base.OnConnectedAsync();
         }

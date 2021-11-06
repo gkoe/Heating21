@@ -10,6 +10,7 @@ namespace Persistence
     public class ApplicationDbContext : BaseApplicationDbContext
     {
         public DbSet<Sensor> Sensors { get; set; }
+        public DbSet<Actor> Actors { get; set; }
         public DbSet<Measurement> Measurements { get; set; }
         public DbSet<FsmTransition> FsmTransitions { get; set; }
         public string ConnectionString { get; }

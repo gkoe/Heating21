@@ -1,17 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
-
+﻿
 using System;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.IO.Ports;
 using Serilog;
 using Services.Contracts;
 using System.Net.Http;
-using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Base.ExtensionMethods;
-using Services.DataTransferObjects;
 using Core.DataTransferObjects;
 using Base.Helper;
 using Core.Entities;
@@ -24,7 +18,7 @@ namespace Services
         //private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
 
         readonly string[] urls = { "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv", "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv" };
-        readonly ItemEnum[] sensorItems = { ItemEnum.HmoLivingroomFirstFloor, ItemEnum.HmoTemperatureOut };
+        readonly SensorName[] sensorItems = { SensorName.HmoLivingroomFirstFloor, SensorName.HmoTemperatureOut };
         private readonly IHttpClientFactory _httpClientFactory;
         private HttpClient _httpClient;
         //private readonly JsonSerializerOptions _options;
@@ -65,10 +59,10 @@ namespace Services
                         if (response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             var text = await response.Content.ReadAsStringAsync();
-                            var measurement = GetMeasurementFromMessage(text, sensorItems[i]);
+                            var measurement = GetMeasurementFromMessage(text, sensorItems[i].ToString());
                             if (measurement != null)
                             {
-                                MeasurementReceived?.Invoke(this, measurement);
+                                MeasurementReceived?.Invoke(this, new MeasurementDto(measurement));
 
                             }
                         }
@@ -83,7 +77,7 @@ namespace Services
             }
         }
 
-        private  static MeasurementDto GetMeasurementFromMessage(string message, ItemEnum sensorEnum)
+        private  static Measurement GetMeasurementFromMessage(string message, string sensorName)
         {
             if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
             {
@@ -99,25 +93,17 @@ namespace Services
             //    "s": 0
             //}
             var response = JsonSerializerExtensions.DeserializeAnonymousType(message, new { ts = 0L, v = 0.0, s = 0 });
-            var sensor = RuleEngine.Instance.StateService.GetSensor(sensorEnum);
+            var sensor = RuleEngine.Instance.StateService.GetSensor(sensorName);
             if (sensor == null)
             {
-                Log.Error($"HomematicHttpCommunicationService;GetMeasurementFromMessage;Sensor {ItemEnum.LivingroomFirstFloor} doesn't exist");
+                Log.Error($"HomematicHttpCommunicationService;GetMeasurementFromMessage;Sensor {sensorName} doesn't exist");
                 return null;
             }
-            DateTime time = TimeConverters.UnixTimeStampToDateTime(response.ts/1000);
+            DateTime time = DateTimeHelpers.UnixTimeStampToDateTime(response.ts/1000);
             double? value = response.v;
             if (value != null)
             {
-                sensor.AddMeasurement(time, value.Value);
-                var measurement = new MeasurementDto
-                {
-                    SensorId = sensor.Id,
-                    SensorName = sensor.ItemName,
-                    Time = time,
-                    Trend = sensor.Trend,
-                    Value = value.Value
-                };
+                var measurement = sensor.AddMeasurementToBuffer(time, value.Value);
                 return measurement;
             }
             else

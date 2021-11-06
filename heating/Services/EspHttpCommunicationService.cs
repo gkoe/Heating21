@@ -1,17 +1,11 @@
-﻿using Microsoft.Extensions.Hosting;
-
+﻿
 using System;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
-using System.IO.Ports;
 using Serilog;
 using Services.Contracts;
 using System.Net.Http;
-using System.Text.Json;
 using Microsoft.Extensions.Configuration;
 using Base.ExtensionMethods;
-using Services.DataTransferObjects;
 using Core.DataTransferObjects;
 using Core.Entities;
 
@@ -62,7 +56,7 @@ namespace Services
                         var measurement = GetMeasurementFromMessage(text);
                         if (measurement != null)
                         {
-                            MeasurementReceived?.Invoke(this, measurement);
+                            MeasurementReceived?.Invoke(this, new MeasurementDto(measurement));
 
                         }
                     }
@@ -75,7 +69,7 @@ namespace Services
             }
         }
 
-        private  static MeasurementDto GetMeasurementFromMessage(string message)
+        private  static Measurement GetMeasurementFromMessage(string message)
         {
             if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
             {
@@ -84,10 +78,10 @@ namespace Services
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
             message = message.RemoveChars(" ");
             //string sensorName = "LivingroomFirstFloor";
-            var sensor = RuleEngine.Instance.StateService.GetSensor(ItemEnum.LivingroomFirstFloor);
+            var sensor = RuleEngine.Instance.StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString());
             if (sensor == null)
             {
-                Log.Error($"EspHttpCommunicationService;GetMeasurementFromMessage;Sensor {ItemEnum.LivingroomFirstFloor} doesn't exist");
+                Log.Error($"EspHttpCommunicationService;GetMeasurementFromMessage;Sensor {sensor} doesn't exist");
                 return null;
             }
             var startPos = message.IndexOf("time") + 6;
@@ -113,15 +107,7 @@ namespace Services
             double? value = valueString.TryParseToDouble();
             if (value != null)
             {
-                sensor.AddMeasurement(time, value.Value);
-                var measurement = new MeasurementDto
-                {
-                    SensorId = sensor.Id,
-                    SensorName = sensor.ItemName,
-                    Time = time,
-                    Trend = sensor.Trend,
-                    Value = value.Value
-                };
+                var measurement = sensor.AddMeasurementToBuffer(time, value.Value);
                 return measurement;
             }
             else

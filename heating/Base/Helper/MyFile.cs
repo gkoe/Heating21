@@ -57,7 +57,7 @@ namespace Base.Helper
         /// <param name="fileName">Dateiname für Datei, die im Pfad der Anwendung/Test liegt</param>
         /// <param name="overreadTitleLine">enthält die csv-Datei eine zu überlesende Titelzeile</param>
         /// <returns>Zweidimensionales Stringarray zur Weiterbearbeitung</returns>
-        public static async Task<string[][]> ReadStringMatrixFromCsvAsync(string fileName, bool overreadTitleLine)
+        public static async Task<string[][]> ReadStringMatrixFromCsvAsync(string fileName, bool overreadTitleLine=false)
         {
             int startLine = 0; // soll die Titelzeile überlesen werden startet der Zeilenzähler bei 1
             int subtractIndex = 0; // und eine Zeile ist zu überlesen

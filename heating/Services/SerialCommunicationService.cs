@@ -9,7 +9,6 @@ using Core.DataTransferObjects;
 using Base.ExtensionMethods;
 using System.Collections.Generic;
 using Base.Helper;
-using Services.DataTransferObjects;
 using Core.Entities;
 
 namespace Services
@@ -52,7 +51,7 @@ namespace Services
                             var measurement = GetMeasurementFromMessage(receivedChars.ToString());
                             if (measurement != null)
                             {
-                                MeasurementReceived?.Invoke(this, measurement);
+                                MeasurementReceived?.Invoke(this, new MeasurementDto(measurement));
                             }
                             //Console.Write($">>>>>>>>>>>>> {receivedChars}");
                             receivedChars.Clear();
@@ -70,7 +69,7 @@ namespace Services
             }
         }
 
-        private static MeasurementDto GetMeasurementFromMessage(string message)
+        private static Measurement GetMeasurementFromMessage(string message)
         {
             if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
             {
@@ -88,30 +87,24 @@ namespace Services
             {
                 return null;
             }
-            string sensorName = message.Substring(0, startIndex);
-            if(!Enum.TryParse<ItemEnum>(sensorName, out ItemEnum sensorItem))
+            string itemName = message.Substring(0, startIndex);
+            // Test, ob der itemName ein gültiger Sensor oder Actor ist
+            Item item = RuleEngine.Instance.StateService.GetSensor(itemName);
+            if (item == null)
             {
-                return null;
-            }
-            var sensor = RuleEngine.Instance.StateService.GetSensor(sensorItem);
-            if (sensor == null)
-            {
-                return null;
+                item = RuleEngine.Instance.StateService.GetActor(itemName);
+                if (item == null)
+                {
+                    Log.Debug($"SerialCommunication; GetMeasurementFromMessage; Item not found: {itemName}");
+                    return null;
+                }
             }
             startIndex = message.IndexOf('{');
             var payload = message[startIndex..];
             (DateTime time, double? value) = ParseSerialPayload(payload);
             if (value != null)
             {
-                sensor.AddMeasurement(time, value.Value);
-                var measurement = new MeasurementDto
-                {
-                    SensorId = sensor.Id,
-                    SensorName = sensorName,
-                    Time = time,
-                    Trend = sensor.Trend,
-                    Value = value.Value
-                };
+                var measurement = item.AddMeasurementToBuffer(time, value.Value);
                 return measurement;
             }
             return null;
@@ -162,7 +155,7 @@ namespace Services
             DateTime time = DateTime.MinValue;
             if (propertyValues.ContainsKey("timestamp"))
             {
-                time = TimeConverters.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
+                time = DateTimeHelpers.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
             }
             double? value = null;
             if (propertyValues.ContainsKey("value"))

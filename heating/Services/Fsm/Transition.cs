@@ -36,7 +36,7 @@ namespace HeatControl.Fsm
         public void Select()
         {
             OnSelect?.Invoke(this, null);  // Aktivitäten ausführe, die im Zuge der Transition definiert sind
-            Log.Information($"Fsm Select Transition; {FromState.Fsm.Name}; Input: {Input.InputEnum};  From: {FromState.StateEnum}; to {ToState.StateEnum}; InputMessage: {InputMessage}");
+            Log.Information($"Fsm Select Transition;{FromState.Fsm.Name}; Input: {Input.InputEnum};  From: {FromState.StateEnum}; to {ToState.StateEnum}; InputMessage: {InputMessage}");
             Input.DoOnInput();  // Aktivitäten ausführen, die bei Auftreten des Inputs auszuführen sind
         }
 

@@ -77,44 +77,15 @@ namespace Persistence.Migrations
                     b.ToTable("FsmTransitions");
                 });
 
-            modelBuilder.Entity("Core.Entities.Measurement", b =>
+            modelBuilder.Entity("Core.Entities.Item", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("Retained")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<byte[]>("RowVersion")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("BLOB");
-
-                    b.Property<int>("SensorId")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<DateTime>("Time")
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("Trend")
-                        .HasColumnType("REAL");
-
-                    b.Property<double>("Value")
-                        .HasColumnType("REAL");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SensorId");
-
-                    b.ToTable("Measurements");
-                });
-
-            modelBuilder.Entity("Core.Entities.Sensor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
@@ -129,7 +100,39 @@ namespace Persistence.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sensors");
+                    b.ToTable("Item");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Item");
+                });
+
+            modelBuilder.Entity("Core.Entities.Measurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Trend")
+                        .HasColumnType("REAL");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("Measurements");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -330,6 +333,29 @@ namespace Persistence.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
+            modelBuilder.Entity("Core.Entities.Actor", b =>
+                {
+                    b.HasBaseType("Core.Entities.Item");
+
+                    b.HasDiscriminator().HasValue("Actor");
+                });
+
+            modelBuilder.Entity("Core.Entities.Sensor", b =>
+                {
+                    b.HasBaseType("Core.Entities.Item");
+
+                    b.Property<DateTime>("LastPersistenceTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PersistenceInterval")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<double>("Trend")
+                        .HasColumnType("REAL");
+
+                    b.HasDiscriminator().HasValue("Sensor");
+                });
+
             modelBuilder.Entity("Base.Entities.ApplicationUser", b =>
                 {
                     b.HasBaseType("Microsoft.AspNetCore.Identity.IdentityUser");
@@ -351,13 +377,13 @@ namespace Persistence.Migrations
 
             modelBuilder.Entity("Core.Entities.Measurement", b =>
                 {
-                    b.HasOne("Core.Entities.Sensor", "Sensor")
+                    b.HasOne("Core.Entities.Item", "Item")
                         .WithMany("Measurements")
-                        .HasForeignKey("SensorId")
+                        .HasForeignKey("ItemId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Sensor");
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -411,7 +437,7 @@ namespace Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Core.Entities.Sensor", b =>
+            modelBuilder.Entity("Core.Entities.Item", b =>
                 {
                     b.Navigation("Measurements");
                 });

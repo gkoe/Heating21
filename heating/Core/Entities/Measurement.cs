@@ -7,13 +7,13 @@ namespace Core.Entities
     public class Measurement : EntityObject
     {
         public double Value { get; set; }
-
         public DateTime Time { get; set; }
-        public bool Retained { get; set; }
 
-        [ForeignKey(nameof(SensorId))]
-        public Sensor Sensor { get; set; }
-        public int SensorId { get; set; }
+        [ForeignKey(nameof(ItemId))]
+        public Item Item { get; set; }
+        public int ItemId { get; set; }
+
+
         public double Trend { get; set; }
 
 

@@ -124,24 +124,24 @@ namespace Wasm.Pages
                     trendPercent = measurement.Trend / measurement.Value * 100;
                 }
 
-                var encodedMsg = $"{measurement.SensorName},  {measurement.Time}, {measurement.Value}, {trendPercent:F2}%";
+                var encodedMsg = $"{measurement.ItemName},  {measurement.Time}, {measurement.Value}, {trendPercent:F2}%";
                 //            var encodedMsg = $"{measurement.SensorName},  {measurement.Time}, {measurement.Value}, {measurement.Trend}";
                 //messages.Add(encodedMsg);
                 Console.WriteLine(encodedMsg);
-                if (sensors.ContainsKey(measurement.SensorName))
+                if (sensors.ContainsKey(measurement.ItemName))
                 {
-                    var sensor = sensors[measurement.SensorName];
+                    var sensor = sensors[measurement.ItemName];
                     sensor.Value = measurement.Value;
                     sensor.Trend = trendPercent;
                 }
-                else if (actors.ContainsKey(measurement.SensorName))
+                else if (actors.ContainsKey(measurement.ItemName))
                 {
-                    var actor = actors[measurement.SensorName];
+                    var actor = actors[measurement.ItemName];
                     actor.NewActorValueReceived(measurement);
                 }
                 else
                 {
-                    throw new Exception($"{measurement.SensorName} is not a known sensor or actor");
+                    throw new Exception($"{measurement.ItemName} is not a known sensor or actor");
                 }
                 StateHasChanged();
             });

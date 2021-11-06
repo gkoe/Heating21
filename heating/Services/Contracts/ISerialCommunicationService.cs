@@ -1,8 +1,5 @@
 ﻿
 using Core.DataTransferObjects;
-
-using Services.DataTransferObjects;
-
 using System;
 using System.Threading.Tasks;
 

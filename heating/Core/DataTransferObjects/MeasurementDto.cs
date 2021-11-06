@@ -1,4 +1,7 @@
 ﻿using Base.ExtensionMethods;
+using Base.Helper;
+
+using Core.Entities;
 
 using System;
 
@@ -22,8 +25,8 @@ namespace Core.DataTransferObjects
         }
 
         public DateTime Time { get; set; }
-        public int SensorId { get; set; }
-        public string SensorName { get; set; }
+        public int ItemId { get; set; }
+        public string ItemName { get; set; }
         public double Trend 
         {
             get
@@ -36,10 +39,23 @@ namespace Core.DataTransferObjects
             }
         }
 
+        public MeasurementDto()
+        {
+
+        }
+        public MeasurementDto(Measurement measurement)
+        {
+            Value = measurement.Value;
+            Time = measurement.Time;
+            Trend = measurement.Trend;
+            ItemName = measurement.Item?.Name;
+            ItemId = measurement.ItemId;
+        }
+
 
         public override string ToString()
         {
-            return $"{SensorName} {Time.ToShortTimeString()}: {Value}";
+            return $"{ItemName} {Time.ToShortTimeString()}: {Value}";
         }
     }
 }

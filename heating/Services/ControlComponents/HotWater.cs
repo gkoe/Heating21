@@ -1,9 +1,11 @@
-﻿using Core.Entities;
+﻿
+using Core.Entities;
 
 using Serilog;
+
 using Services.Contracts;
-using Services.DataTransferObjects;
 using Services.Fsm;
+
 using System;
 using System.Linq;
 
@@ -92,8 +94,8 @@ namespace Services.ControlComponents
 
         public (bool, string) IsBoilerToHeatBySolar()
         {
-            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
-            var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
+            var solar = StateService.GetSensor(SensorName.SolarCollector.ToString()).Value;
+            var boilerBottom = StateService.GetSensor(SensorName.BoilerBottom.ToString()).Value;
             if (boilerBottom >= BOILER_VERY_HOT)
             {
                 return (false, $"Boiler is very hot (bottom: {boilerBottom})");
@@ -107,8 +109,8 @@ namespace Services.ControlComponents
 
         public (bool, string) IsntBoilerToHeatBySolar()
         {
-            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
-            var boilerBottom = StateService.GetSensor(ItemEnum.BoilerBottom).Value;
+            var solar = StateService.GetSensor(SensorName.SolarCollector.ToString()).Value;
+            var boilerBottom = StateService.GetSensor(SensorName.BoilerBottom.ToString()).Value;
             //if (boilerBottom >= BOILER_VERY_HOT)
             //{
             //    return (true, $"Boiler is very hot (bottom: {boilerBottom})");
@@ -125,7 +127,7 @@ namespace Services.ControlComponents
 
         private (bool, string) IsBoilerHot()
         {
-            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            var temperature = StateService.GetSensor(SensorName.BoilerTop.ToString()).Value;
             if (temperature >= BOILER_HOT)
             {
                 return (true, $"Boiler is hot: {temperature})");
@@ -139,7 +141,7 @@ namespace Services.ControlComponents
             {
                 return (false, "OilBurner isn't ready");
             }
-            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            var temperature = StateService.GetSensor(SensorName.BoilerTop.ToString()).Value;
             if (temperature <= BOILER_COLD)
             {
                 return (true, $"Boiler is to heat by burner: {temperature})");
@@ -149,7 +151,7 @@ namespace Services.ControlComponents
 
         private (bool, string) IsBoilerVeryHot()
         {
-            var temperature = StateService.GetSensor(ItemEnum.BoilerTop).Value;
+            var temperature = StateService.GetSensor(SensorName.BoilerTop.ToString()).Value;
             if (temperature >= BOILER_VERY_HOT)
             {
                 return (true, $"Boiler is very hot: {temperature})");
@@ -159,8 +161,8 @@ namespace Services.ControlComponents
 
         private (bool, string) IsntBufferToHeatBySolar()
         {
-            var solar = StateService.GetSensor(ItemEnum.SolarCollector).Value;
-            var bufferBottom = StateService.GetSensor(ItemEnum.BufferBottom).Value;
+            var solar = StateService.GetSensor(SensorName.SolarCollector.ToString()).Value;
+            var bufferBottom = StateService.GetSensor(SensorName.BufferBottom.ToString()).Value;
             if (solar < (bufferBottom + 3.0))
             {
                 return (true, $"Solar ({solar}) is not hot enough to heat buffer: {bufferBottom})");
@@ -176,47 +178,47 @@ namespace Services.ControlComponents
         async void DoAllOff(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HotWater;DoAllOff");
-            var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
-            var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
-            var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
+            var pumpBoiler = StateService.GetActor(ActorName.PumpBoiler.ToString());
+            var pumpSolar = StateService.GetActor(ActorName.PumpSolar.ToString());
+            var valveBoilerBuffer = StateService.GetActor(ActorName.ValveBoilerBuffer.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.Name, 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 0);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 0);
             OilBurner.IsBurnerNeededByHotWater = false;
         }
 
         async void DoHeatBoilerByBurner(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HotWater;DoHeatBoilerByBurner");
-            var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
-            var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
-            var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
+            var pumpBoiler = StateService.GetActor(ActorName.PumpBoiler.ToString());
+            var pumpSolar = StateService.GetActor(ActorName.PumpSolar.ToString());
+            var valveBoilerBuffer = StateService.GetActor(ActorName.ValveBoilerBuffer.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.Name, 1);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 0);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 0);
             OilBurner.IsBurnerNeededByHotWater = true;
         }
 
         async void DoHeatBoilerBySolar(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HotWater;DoHeatBoilerBySolar");
-            var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
-            var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
-            var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 0);
+            var pumpBoiler = StateService.GetActor(ActorName.PumpBoiler.ToString());
+            var pumpSolar = StateService.GetActor(ActorName.PumpSolar.ToString());
+            var valveBoilerBuffer = StateService.GetActor(ActorName.ValveBoilerBuffer.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.Name, 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 1);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 0);
         }
 
         async void DoHeatBufferBySolar(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HotWater;DoHeatBufferBySolar");
-            var pumpBoiler = StateService.GetActor(ItemEnum.PumpBoiler);
-            var pumpSolar = StateService.GetActor(ItemEnum.PumpSolar);
-            var valveBoilerBuffer = StateService.GetActor(ItemEnum.ValveBoilerBuffer);
-            await SerialCommunicationService.SetActorAsync(pumpBoiler.ItemName.ToString(), 0);
-            await SerialCommunicationService.SetActorAsync(pumpSolar.ItemName.ToString(), 1);
-            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.ItemName.ToString(), 1);
+            var pumpBoiler = StateService.GetActor(ActorName.PumpBoiler.ToString());
+            var pumpSolar = StateService.GetActor(ActorName.PumpSolar.ToString());
+            var valveBoilerBuffer = StateService.GetActor(ActorName.ValveBoilerBuffer.ToString());
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.Name, 0);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 1);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 1);
         }
 
         #endregion

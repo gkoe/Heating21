@@ -1,28 +1,24 @@
-﻿using Base.Helper;
-
+﻿
 using Core.DataTransferObjects;
 using Core.Entities;
-using Base.Entities;
 
 using Microsoft.AspNetCore.SignalR;
 using Serilog;
 using Services.Contracts;
-using Services.DataTransferObjects;
 using Services.Hubs;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Base.ExtensionMethods;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace Services
 {
 
     public class StateService : IStateService
     {
-        public ConcurrentDictionary<string, SensorWithHistory> Sensors { get; init; }
-        public ConcurrentDictionary<string, Actor> Actors { get; init; }
+        public ConcurrentDictionary<string, Sensor> Sensors { get; init; } = new ConcurrentDictionary<string, Sensor>();
+        public ConcurrentDictionary<string, Actor> Actors { get; init; } = new ConcurrentDictionary<string, Actor>();
 
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IEspHttpCommunicationService EspHttpCommunicationService { get; private set; }
@@ -30,33 +26,54 @@ namespace Services
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
         //public IUnitOfWork UnitOfWork { get; private set; }
 
-        public SensorWithHistory GetSensor(ItemEnum itemEnum) => Sensors[itemEnum.ToString()];
-        public Actor GetActor(ItemEnum itemEnum) => Actors[itemEnum.ToString()];
+        public Sensor GetSensor(string sensorName)
+        {
+            if (!Sensors.ContainsKey(sensorName))
+            {
+                return null;
+            }
+            return Sensors[sensorName];
+        }
+        public Actor GetActor(string actorName)
+        {
+            if (!Actors.ContainsKey(actorName))
+            {
+                return null;
+            }
+            return Actors[actorName];
+        }
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public StateService(IHubContext<MeasurementsHub> measurementsHubContext, Sensor[] sensorsActors)
+        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
         {
-            //UnitOfWork = unitOfWork;
-            Sensors = new ConcurrentDictionary<string, SensorWithHistory>();
-            foreach (var item in sensorsActors)
-            {
-                var sensorName = item.Name;
-                Sensors[sensorName.ToString()] = new SensorWithHistory(sensorName, item.Id);
-            }
-            Actors = new ConcurrentDictionary<string, Actor>();
-            foreach (var item in sensorsActors)
-            {
-                var actorName = item.Name;
-                Actors[actorName.ToString()] = new Actor(actorName, item.Id);
-            }
+            InitSensors();
+            InitActors();
             MeasurementsHubContext = measurementsHubContext;
         }
 
-        //public void OnNewClientConnected()
-        //{
+        private void InitSensors()
+        {
+            Sensors[SensorName.OilBurnerTemperature.ToString()] = new Sensor { Name = SensorName.OilBurnerTemperature.ToString(), PersistenceInterval = 60 };
+            Sensors[SensorName.BoilerTop.ToString()] = new Sensor { Name = SensorName.BoilerTop.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.BoilerBottom.ToString()] = new Sensor { Name = SensorName.BoilerBottom.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.SolarCollector.ToString()] = new Sensor { Name = SensorName.SolarCollector.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.LivingroomFirstFloor.ToString()] = new Sensor { Name = SensorName.LivingroomFirstFloor.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.HmoLivingroomFirstFloor.ToString()] = new Sensor { Name = SensorName.HmoLivingroomFirstFloor.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.HmoTemperatureOut.ToString()] = new Sensor { Name = SensorName.HmoTemperatureOut.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.BufferTop.ToString()] = new Sensor { Name = SensorName.BufferTop.ToString(), PersistenceInterval = 900 };
+            Sensors[SensorName.BufferBottom.ToString()] = new Sensor { Name = SensorName.BufferBottom.ToString(), PersistenceInterval = 900 };
+        }
 
-        //}
+        private void InitActors()
+        {
+            Actors[ActorName.OilBurnerSwitch.ToString()] = new Actor { Name = ActorName.OilBurnerSwitch.ToString() };
+            Actors[ActorName.PumpBoiler.ToString()] = new Actor { Name = ActorName.PumpBoiler.ToString() };
+            Actors[ActorName.PumpSolar.ToString()] = new Actor { Name = ActorName.PumpSolar.ToString() };
+            Actors[ActorName.PumpFirstFloor.ToString()] = new Actor { Name = ActorName.PumpFirstFloor.ToString() };
+            Actors[ActorName.PumpGroundFloor.ToString()] = new Actor { Name = ActorName.PumpGroundFloor.ToString() };
+            Actors[ActorName.ValveBoilerBuffer.ToString()] = new Actor { Name = ActorName.ValveBoilerBuffer.ToString() };
+        }
 
         public void Init(ISerialCommunicationService serialCommunicationService, IEspHttpCommunicationService espHttpCommunicationService,
             IHomematicHttpCommunicationService homematicHttpCommunicationService)
@@ -88,173 +105,29 @@ namespace Services
             await Task.CompletedTask;
         }
 
-        //private async void SerialCommunicationService_MessageReceived(object sender, string message)
-        //{
-        //    Log.Information($"StateService; message received from serial: {message}");
-        //    await AddMeasurementFromSerialAsync(message);
-        //    // await Clients.All.SendAsync("ReceiveMessage", user, message);
-        //    // MeasurementsHubContext.Clients.All.SendAsync("ReceiveMessage", "StateService", message);
-        //}
 
-        //private async Task AddMeasurementFromHttpAsync(string message)
-        //{
-        //    //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
-        //    message = message.RemoveChars(" ");
-        //    //int startPos = message.IndexOf(':') + 1;
-        //    //string sensorName = message[startPos..message.IndexOf(',')];
-        //    string sensorName = "LivingroomFirstFloor";
-        //    if (!Sensors.ContainsKey(sensorName))
-        //    {
-        //        return;
-        //    }
-        //    var sensor = Sensors[sensorName];
-        //    var startPos = message.IndexOf("time") + 6;
-        //    var endPos = message.IndexOf("value")-2;
-        //    var length = endPos - startPos;
-        //    if (length < 18)
-        //    {
-        //        Log.Information($"AddMeasurementFromHttpAsync; parse time; Illegal length: {length}");
-        //        return;
-        //    }
-        //    string timeString = message.Substring(startPos, 10)+" "+ message.Substring(startPos+10, 8);
-        //    DateTime time = DateTime.Parse(timeString);
-        //    startPos = message.IndexOf("value") + 7;
-        //    endPos = message.IndexOf("Grad");
-        //    length = endPos - startPos;
-        //    if (length < 1)
-        //    {
-        //        Log.Information($"AddMeasurementFromHttpAsync; parse value; Illegal length: {length}");
-        //        return;
-        //    }
-        //    string valueString = message.Substring(startPos, length);
-        //    //double? value = NumberConverters.ParseInvariantDouble(valueString);
-        //    double? value = valueString.TryParseToDouble();
-        //    if (value != null)
-        //    {
-        //        sensor.AddMeasurement(time, value.Value);
-        //        var measurement = new MeasurementDto
-        //        {
-        //            SensorId = sensor.Id,
-        //            SensorName = sensorName,
-        //            Time = time,
-        //            Trend = sensor.Trend,
-        //            Value = value.Value
-        //        };
-        //        NewMeasurement?.Invoke(this, measurement);
-        //        await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
-        //    }
-        //    else
-        //    {
-        //        Log.Error($"AddMeasurementFromHttpAsync; Illegal valueString: {valueString}");
-        //    }
-        //}
-
-        //private async Task AddMeasurementFromSerialAsync(string message)
-        //{
-            //// heating/OilBurnerSwitch/command:1}
-            //// temperature_01/state/{"timestamp":1625917023,"value":25.17}
-            //if (message.Contains("command"))
-            //{
-            //    return;
-            //}
-            //var startIndex = message.IndexOf('/');
-            //if (startIndex < 0)
-            //{
-            //    return;
-            //}
-            //string sensorName = message.Substring(0, startIndex);
-            //if (!Sensors.ContainsKey(sensorName))
-            //{
-            //    return;
-            //}
-            //var sensor = Sensors[sensorName];
-            //startIndex = message.IndexOf('{');
-            //var payload = message[startIndex..];
-            //(DateTime time, double? value) = ParseSerialPayload(payload);
-            //if (value != null)
-            //{
-            //    sensor.AddMeasurement(time, value.Value);
-            //    var measurement = new MeasurementDto
-            //    {
-            //        SensorId = sensor.Id,
-            //        SensorName = sensorName,
-            //        Time = time,
-            //        Trend = sensor.Trend,
-            //        Value = value.Value
-            //    };
-            //    NewMeasurement?.Invoke(this, measurement);
-            //    Log.Information("Send measurement by SignalR: {Name};{Time};{Trend};{Value}", 
-            //        measurement.SensorName, measurement.Time, measurement.Trend, measurement.Value.ToGermanString());
-            //    await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
-            //}
-        //}
-
-        //private static (DateTime, double?) ParseSerialPayload(string payload)
-        //{
-        //    var text = payload.RemoveChars("\"{}\\");
-        //    var properties = text.ToString().Split(',');
-        //    var propertyValues = new Dictionary<string, string>();
-        //    foreach (var property in properties)
-        //    {
-        //        var keyValuePairs = property.Split(':');
-        //        propertyValues.Add(keyValuePairs[0].ToLower(), keyValuePairs[1]);
-        //    }
-        //    DateTime time = DateTime.MinValue;
-        //    if (propertyValues.ContainsKey("timestamp"))
-        //    {
-        //        time = TimeConverters.UnixTimeStampToDateTime(double.Parse(propertyValues["timestamp"]));
-        //    }
-        //    double? value = null;
-        //    if (propertyValues.ContainsKey("value"))
-        //    {
-        //        string valueString = propertyValues["value"];
-        //        value = valueString.TryParseToDouble();
-        //        //value = NumberConverters.ParseInvariantDouble(valueString);
-        //        if (value != null)
-        //        {
-        //            value = value.Value;
-        //        }
-        //        else
-        //        {
-        //            Log.Error("ParseSerialPayload, double.TryParse: '{ValueString}', Length: {Length}, FormatException",
-        //                    valueString, valueString.Length);
-        //        }
-        //    }
-        //    return (time, value);
-        //}
-
-        public Measurement[] GetAverageSensorValuesForLast900Seconds()
-        {
-            var sensors = Sensors
-                .Where(s => s.Value.Measurements.Any(m => m != null && m.Time > DateTime.Now.AddMinutes(-15)))
-                .ToArray();
-            Log.Information($"StateService;GetAverageSensorValuesForLast900Seconds;{sensors.Length} sensors with measurements in last 900 secs");
-            var measurements = sensors
-                .Select(s => new Measurement
-                {
-                    SensorId = s.Value.Id,
-                    Value = s.Value
-                        .Measurements
-                        .Where(m => m != null && m.Time > DateTime.Now.AddMinutes(-15))
-                        .Average(m => m.Value),
-                    Time = DateTime.Now
-                })
-                .ToArray();
-            return measurements;
-        }
-
-
-        public async Task SendSensorsAndActors()
+        public async Task SendItems()
         {
             foreach (var sensor in Sensors.Values)
             {
-                var measurement = new MeasurementDto
+                MeasurementDto measurement = new()
                 {
-                    SensorId = sensor.Id,
-                    SensorName = sensor.ItemName.ToString(),
+                    ItemId = sensor.Id,
+                    ItemName = sensor.Name,
                     Time = sensor.Time,
                     Trend = sensor.Trend,
                     Value = sensor.Value
+                };
+                await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+            }
+            foreach (var actor in Actors.Values)
+            {
+                MeasurementDto measurement = new()
+                {
+                    ItemId = actor.Id,
+                    ItemName = actor.Name,
+                    Time = actor.Time,
+                    Value = actor.Value
                 };
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
@@ -264,16 +137,63 @@ namespace Services
         {
             await MeasurementsHubContext.Clients.All.SendAsync("ReceiveFsmStateChanged", fsmTransition);
         }
+
+        public Measurement[] GetSensorMeasurementsToSave()
+        {
+            var measurementsToPersist = new List<Measurement>();
+            foreach (var sensor in Sensors.Values)
+            {
+                if (sensor.LastPersistenceTime.AddSeconds(sensor.PersistenceInterval) <= DateTime.Now)
+                {
+                    var averageMeasurementValue = sensor.GetAverageMeasurementsValuesForPersistenceInterval();
+                    if (averageMeasurementValue != null)
+                    {
+                        measurementsToPersist.Add(averageMeasurementValue);
+                        sensor.LastPersistenceTime = DateTime.Now;
+                    }
+                }
+            }
+            return measurementsToPersist.ToArray();
+        }
+
+        public Measurement[] GetActorMeasurementsToSave()
+        {
+            var measurementsToPersist = new List<Measurement>();
+            foreach (var actor in Actors.Values)
+            {
+                if (!actor.LastValuePersisted)
+                {
+                    var beforeMeasurement = new Measurement
+                    {
+                        Item = actor,
+                        ItemId = actor.Id,
+                        Time = DateTime.Now,
+                        Value = actor.LastValue
+                    };
+                    measurementsToPersist.Add(beforeMeasurement);
+                    var afterMeasurement = new Measurement
+                    {
+                        Item = actor,
+                        ItemId = actor.Id,
+                        Time = DateTime.Now,
+                        Value = actor.Value
+                    };
+                    measurementsToPersist.Add(afterMeasurement);
+                    actor.LastValuePersisted = true;
+                }
+            }
+            return measurementsToPersist.ToArray();
+        }
+
+        public Sensor[] GetSensors()
+        {
+            return Sensors.Values.ToArray();
+        }
+
+        public Actor[] GetActors()
+        {
+            return Actors.Values.ToArray();
+        }
     }
-
-    //public class HttpMeasurementDto
-    //{
-    //    public string Sensor { get; set; }
-    //    public DateTime Time { get; set; }
-    //    public double Value { get; set; }
-
-    //}
-
-
 
 }
