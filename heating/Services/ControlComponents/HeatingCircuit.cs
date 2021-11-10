@@ -99,14 +99,14 @@ namespace Services.ControlComponents
 
         private (bool, string) IsHot()
         {
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
             bool isHot = temperature >= OG_TEMP;
             return (isHot, $"LivingRoomTemperature: {temperature}");
         }
 
         private (bool, string) IsCold()
         {
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
             bool isCold = temperature <= OG_TEMP - 0.5;
             return (isCold, $"LivingRoomTemperature: {temperature}");
         }
@@ -118,7 +118,7 @@ namespace Services.ControlComponents
                 return (true, "No use of residual heat, because burner is used by HotWater");
             }
             var (isOilBurnerCooled, message) = OilBurner.IsCooledToReady();
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
             return (isOilBurnerCooled, $"IsAllResidualHeatUsed: LivingRoom: {temperature}, {message}");
         }
 
@@ -149,9 +149,9 @@ namespace Services.ControlComponents
         async void DoPumpOn(object sender, EventArgs e)
         {
             Log.Information($"Fsm;HeatingCircuit;DoPumpOn");
-            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor.ToString());
+            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor);
             await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.Name, 1);
-            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor.ToString());
+            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor);
             await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.Name, 1);
         }
 
@@ -159,9 +159,9 @@ namespace Services.ControlComponents
         {
             Log.Information($"Fsm;HeatingCircuit;DoPumpOff");
             //OilBurner.IsBurnerNeededByHeatingCircuit = false;
-            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor.ToString());
+            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor);
             await SerialCommunicationService.SetActorAsync(pumpFirstFloorSwitch.Name, 0);
-            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor.ToString());
+            var pumpGroundFloorSwitch = StateService.GetActor(ActorName.PumpGroundFloor);
             await SerialCommunicationService.SetActorAsync(pumpGroundFloorSwitch.Name, 0);
         }
 

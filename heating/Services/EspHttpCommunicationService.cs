@@ -107,7 +107,7 @@ namespace Services
             double? value = valueString.TryParseToDouble();
             if (value != null)
             {
-                var measurement = sensor.AddMeasurementToBuffer(time, value.Value);
+                var measurement = sensor.AddMeasurement(time, value.Value);
                 return measurement;
             }
             else

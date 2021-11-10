@@ -60,17 +60,139 @@ namespace Services
             //UnitOfWork = new UnitOfWork(dbContext);
 
             var measurementsHubContext = serviceProvider.GetRequiredService<IHubContext<MeasurementsHub>>();
+            var initialSensors = GetInitialSensors();
+            var initialActors = GetInitialActors();
+            var sensors = SyncSensors(initialSensors).Result;
+            var actors = SyncActors(initialActors).Result;
             try
             {
-                StateService = new StateService(measurementsHubContext);
-                var sensors = SyncSensorsWithDb().Result;
-                var actors = SyncActorsWithDb().Result;
+                StateService = new StateService(sensors, actors, measurementsHubContext);
             }
             catch (Exception ex)
             {
-                Log.Error($"Constructor; DB not ready, ex: {ex.Message}");
+                Log.Error($"Constructor; StateService not ready, ex: {ex.Message}");
             }
         }
+
+
+
+        #region Initialize sensors and actors with config and db
+
+        public static List<Sensor> GetInitialSensors()
+        {
+
+            var sensors = new List<Sensor>
+            {
+                new Sensor(SensorName.OilBurnerTemperature, "°C", persistenceInterval: 60),
+                new Sensor(SensorName.BoilerTop, "°C"),
+                new Sensor(SensorName.BoilerBottom, "°C"),
+                new Sensor(SensorName.SolarCollector, "°C"),
+                new Sensor(SensorName.LivingroomFirstFloor, "°C"),
+                new Sensor(SensorName.HmoLivingroomFirstFloor, "°C"),
+                new Sensor(SensorName.HmoTemperatureOut, "°C"),
+                new Sensor(SensorName.BufferTop, "°C"),
+                new Sensor(SensorName.BufferBottom, "°C"),
+            };
+            return sensors;
+        }
+        public static List<Actor> GetInitialActors()
+        {
+
+            var actors = new List<Actor>
+            {
+                new Actor(ActorName.OilBurnerSwitch),
+                new Actor(ActorName.PumpBoiler),
+                new Actor(ActorName.PumpSolar),
+                new Actor(ActorName.PumpFirstFloor),
+                new Actor(ActorName.PumpGroundFloor),
+                new Actor(ActorName.ValveBoilerBuffer),
+            };
+            return actors;
+        }
+
+        private async Task<Sensor[]> SyncSensors(List<Sensor> initialSensors)
+        {
+            using ApplicationDbContext dbContext = new(ConnectionString);
+            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+            try
+            {
+                var dbSensors = (await unitOfWork.Sensors.GetAsync()).ToList();
+                Log.Information($"RuleEngine;SyncSensors;{dbSensors.Count} sensors read from db");
+                var sensorsToDelete = dbSensors
+                    .Where(s => !initialSensors.Any(initialSensor => initialSensor.Name == s.Name))
+                    .ToArray();
+                foreach (var item in sensorsToDelete)
+                {
+                    unitOfWork.Sensors.Remove(item);
+                }
+                var sensorsToInsert = initialSensors
+                    .Where(s => !dbSensors.Any(dbSensor => dbSensor.Name == s.Name))
+                    .ToArray();
+                await unitOfWork.Sensors.AddRangeAsync(sensorsToInsert);
+                await unitOfWork.SaveChangesAsync();
+                var sensors =  await unitOfWork.Sensors.GetAsync();
+                var sensorNames = Enum.GetNames(typeof(SensorName));
+                if (sensors.Length != sensorNames.Length)
+                {
+                    Log.Error($"RuleEngine,SyncSensors; dbSensors: {sensors.Length} !=  enumSensors: {sensorNames.Length}");
+                    return null;
+                }
+                var sensorArray = new Sensor[sensorNames.Length];
+                for (int i = 0; i < sensorNames.Length; i++)
+                {
+                    sensorArray[i] = sensors.Single(s => s.Name == ((SensorName)i).ToString());
+                }
+                return sensorArray;
+
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"RuleEngine,SyncSensors;Failed to read sensors; ex: {ex.Message}");
+            }
+            return null;
+        }
+
+        private async Task<Actor[]> SyncActors(List<Actor> initialActors)
+        {
+            using ApplicationDbContext dbContext = new(ConnectionString);
+            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+            try
+            {
+                var dbActors = (await unitOfWork.Actors.GetAsync()).ToList();
+                Log.Information($"RuleEngine;SyncActors;{dbActors.Count} actors read from db");
+                var actorsToDelete = dbActors
+                    .Where(s => !initialActors.Any(initialActor => initialActor.Name == s.Name))
+                    .ToArray();
+                foreach (var item in actorsToDelete)
+                {
+                    unitOfWork.Actors.Remove(item);
+                }
+                var actorsToInsert = initialActors
+                    .Where(s => !dbActors.Any(dbActor => dbActor.Name == s.Name))
+                    .ToArray();
+                await unitOfWork.Actors.AddRangeAsync(actorsToInsert);
+                await unitOfWork.SaveChangesAsync();
+                var actors = await unitOfWork.Actors.GetAsync();
+                var actorNames = Enum.GetNames(typeof(ActorName));
+                if (actors.Length != actorNames.Length)
+                {
+                    Log.Error($"RuleEngine,SyncActors; dbActors: {actors.Length} !=  enumActors: {actorNames.Length}");
+                    return null;
+                }
+                var actorArray = new Actor[actorNames.Length];
+                for (int i = 0; i < actorNames.Length; i++)
+                {
+                    actorArray[i] = actors.Single(s => s.Name == ((ActorName)i).ToString());
+                }
+                return actorArray;
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"RuleEngine,SyncActors;Failed to read actors; ex: {ex.Message}");
+            }
+            return null;
+        }
+        #endregion
 
         private async void OnSaveMeasurements(object state)
         {
@@ -90,13 +212,13 @@ namespace Services
 
         private async Task SaveMeasurements(IEnumerable<Measurement> measurements)
         {
-            if (measurements.Count() > 0)
+            if (measurements.Any())
             {
-                foreach (var m in measurements)
+                foreach (var m in measurements)  // Item (Sensor oder Actor) muss sonst von Db in Context geladen werden
                 {
                     m.Item = null;
                 }
-                Log.Information($"RuleEngine;OnSaveActorMeasurements;{measurements.Count()} Measurements to save");
+                Log.Information($"RuleEngine;OnSaveMeasurements;{measurements.Count()} Measurements to save");
                 using ApplicationDbContext dbContext = new(ConnectionString);
                 using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
                 try
@@ -111,31 +233,65 @@ namespace Services
             }
         }
 
-        async Task<Sensor[]> SyncSensorsWithDb()
-        {
-            using ApplicationDbContext dbContext = new(ConnectionString);
-            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
-            foreach (var sensor in StateService.GetSensors())
-            {
-                await unitOfWork.Sensors.UpsertAsync(sensor);
-            }
-            await unitOfWork.SaveChangesAsync();
-            var sensors = await unitOfWork.Sensors.GetAsync();
-            return sensors.OrderBy(s => s.Name).ToArray();
-        }
+        //private async Task<List<Sensor>> GetSensorsFromDb()
+        //{
+        //    using ApplicationDbContext dbContext = new(ConnectionString);
+        //    using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+        //    try
+        //    {
+        //        var sensors = await unitOfWork.Sensors.GetAsync();
+        //        Log.Information($"RuleEngine;GetSensorsFromDb;{sensors.Count()} sensors read");
+        //        return sensors.ToList();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"RuleEngine,GetSensorsFromDb;Failed to read sensors; ex: {ex.Message}");
+        //    }
+        //    return null;
+        //}
 
-        async Task<Actor[]> SyncActorsWithDb()
-        {
-            using ApplicationDbContext dbContext = new(ConnectionString);
-            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
-            foreach (var actor in StateService.GetActors())
-            {
-                await unitOfWork.Actors.UpsertAsync(actor);
-            }
-            await unitOfWork.SaveChangesAsync();
-            var actors = await unitOfWork.Actors.GetAsync();
-            return actors.OrderBy(s => s.Name).ToArray();
-        }
+        //private async Task<List<Actor>> GetActorsFromDb()
+        //{
+        //    using ApplicationDbContext dbContext = new(ConnectionString);
+        //    using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+        //    try
+        //    {
+        //        var actors = await unitOfWork.Actors.GetAsync();
+        //        Log.Information($"RuleEngine;GetSensorsFromDb;{actors.Count()} actors read");
+        //        return actors.ToList();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Log.Error($"RuleEngine,GetSensorsFromDb;Failed to read actors; ex: {ex.Message}");
+        //    }
+        //    return null;
+        //}
+
+        //async Task<Sensor[]> SyncSensorsWithDb()
+        //{
+        //    using ApplicationDbContext dbContext = new(ConnectionString);
+        //    using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+        //    foreach (var sensor in StateService.GetSensors())
+        //    {
+        //        await unitOfWork.Sensors.UpsertAsync(sensor);
+        //    }
+        //    await unitOfWork.SaveChangesAsync();
+        //    var sensors = await unitOfWork.Sensors.GetAsync();
+        //    return sensors.OrderBy(s => s.Name).ToArray();
+        //}
+
+        //async Task<Actor[]> SyncActorsWithDb()
+        //{
+        //    using ApplicationDbContext dbContext = new(ConnectionString);
+        //    using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+        //    foreach (var actor in StateService.GetActors())
+        //    {
+        //        await unitOfWork.Actors.UpsertAsync(actor);
+        //    }
+        //    await unitOfWork.SaveChangesAsync();
+        //    var actors = await unitOfWork.Actors.GetAsync();
+        //    return actors.OrderBy(s => s.Name).ToArray();
+        //}
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

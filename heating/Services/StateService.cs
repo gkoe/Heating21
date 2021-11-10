@@ -17,8 +17,8 @@ namespace Services
 
     public class StateService : IStateService
     {
-        public ConcurrentDictionary<string, Sensor> Sensors { get; init; } = new ConcurrentDictionary<string, Sensor>();
-        public ConcurrentDictionary<string, Actor> Actors { get; init; } = new ConcurrentDictionary<string, Actor>();
+        public Sensor[] Sensors { get; init; } = Array.Empty<Sensor>();
+        public Actor[] Actors { get; init; } = Array.Empty<Actor>();
 
         protected ISerialCommunicationService SerialCommunicationService { get; private set; }
         protected IEspHttpCommunicationService EspHttpCommunicationService { get; private set; }
@@ -26,55 +26,21 @@ namespace Services
         IHubContext<MeasurementsHub> MeasurementsHubContext { get; }
         //public IUnitOfWork UnitOfWork { get; private set; }
 
-        public Sensor GetSensor(string sensorName)
-        {
-            if (!Sensors.ContainsKey(sensorName))
-            {
-                return null;
-            }
-            return Sensors[sensorName];
-        }
-        public Actor GetActor(string actorName)
-        {
-            if (!Actors.ContainsKey(actorName))
-            {
-                return null;
-            }
-            return Actors[actorName];
-        }
+        public Sensor GetSensor(string sensorName) => Sensors.FirstOrDefault(s => s.Name == sensorName);
+        public Actor GetActor(string actorName) => Actors.FirstOrDefault(s => s.Name == actorName);
+
+        public Sensor GetSensor(SensorName sensorName) => sensorName >= 0 && (int)sensorName < Sensors.Length ? Sensors[(int)sensorName] : null;
+        public Actor GetActor(ActorName actorName) => actorName >= 0 && (int)actorName < Actors.Length ? Actors[(int)actorName] : null;
+
 
         public event EventHandler<MeasurementDto> NewMeasurement;
 
-        public StateService(IHubContext<MeasurementsHub> measurementsHubContext)
+        public StateService(IEnumerable<Sensor> sensors, IEnumerable<Actor> actors, IHubContext<MeasurementsHub> measurementsHubContext)
         {
-            InitSensors();
-            InitActors();
+            Sensors = sensors.ToArray();
+            Actors = actors.ToArray();
             MeasurementsHubContext = measurementsHubContext;
         }
-
-        private void InitSensors()
-        {
-            Sensors[SensorName.OilBurnerTemperature.ToString()] = new Sensor { Name = SensorName.OilBurnerTemperature.ToString(), PersistenceInterval = 60 };
-            Sensors[SensorName.BoilerTop.ToString()] = new Sensor { Name = SensorName.BoilerTop.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.BoilerBottom.ToString()] = new Sensor { Name = SensorName.BoilerBottom.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.SolarCollector.ToString()] = new Sensor { Name = SensorName.SolarCollector.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.LivingroomFirstFloor.ToString()] = new Sensor { Name = SensorName.LivingroomFirstFloor.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.HmoLivingroomFirstFloor.ToString()] = new Sensor { Name = SensorName.HmoLivingroomFirstFloor.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.HmoTemperatureOut.ToString()] = new Sensor { Name = SensorName.HmoTemperatureOut.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.BufferTop.ToString()] = new Sensor { Name = SensorName.BufferTop.ToString(), PersistenceInterval = 900 };
-            Sensors[SensorName.BufferBottom.ToString()] = new Sensor { Name = SensorName.BufferBottom.ToString(), PersistenceInterval = 900 };
-        }
-
-        private void InitActors()
-        {
-            Actors[ActorName.OilBurnerSwitch.ToString()] = new Actor { Name = ActorName.OilBurnerSwitch.ToString() };
-            Actors[ActorName.PumpBoiler.ToString()] = new Actor { Name = ActorName.PumpBoiler.ToString() };
-            Actors[ActorName.PumpSolar.ToString()] = new Actor { Name = ActorName.PumpSolar.ToString() };
-            Actors[ActorName.PumpFirstFloor.ToString()] = new Actor { Name = ActorName.PumpFirstFloor.ToString() };
-            Actors[ActorName.PumpGroundFloor.ToString()] = new Actor { Name = ActorName.PumpGroundFloor.ToString() };
-            Actors[ActorName.ValveBoilerBuffer.ToString()] = new Actor { Name = ActorName.ValveBoilerBuffer.ToString() };
-        }
-
         public void Init(ISerialCommunicationService serialCommunicationService, IEspHttpCommunicationService espHttpCommunicationService,
             IHomematicHttpCommunicationService homematicHttpCommunicationService)
         {
@@ -106,9 +72,9 @@ namespace Services
         }
 
 
-        public async Task SendItems()
+        public async Task SendItemsBySignalRAsync()
         {
-            foreach (var sensor in Sensors.Values)
+            foreach (var sensor in Sensors)
             {
                 MeasurementDto measurement = new()
                 {
@@ -120,7 +86,7 @@ namespace Services
                 };
                 await MeasurementsHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
-            foreach (var actor in Actors.Values)
+            foreach (var actor in Actors)
             {
                 MeasurementDto measurement = new()
                 {
@@ -141,11 +107,11 @@ namespace Services
         public Measurement[] GetSensorMeasurementsToSave()
         {
             var measurementsToPersist = new List<Measurement>();
-            foreach (var sensor in Sensors.Values)
+            foreach (var sensor in Sensors)
             {
                 if (sensor.LastPersistenceTime.AddSeconds(sensor.PersistenceInterval) <= DateTime.Now)
                 {
-                    var averageMeasurementValue = sensor.GetAverageMeasurementsValuesForPersistenceInterval();
+                    var averageMeasurementValue = sensor.GetAverageMeasurementValuesForPersistenceInterval();
                     if (averageMeasurementValue != null)
                     {
                         measurementsToPersist.Add(averageMeasurementValue);
@@ -159,7 +125,7 @@ namespace Services
         public Measurement[] GetActorMeasurementsToSave()
         {
             var measurementsToPersist = new List<Measurement>();
-            foreach (var actor in Actors.Values)
+            foreach (var actor in Actors)
             {
                 if (!actor.LastValuePersisted)
                 {
@@ -187,12 +153,12 @@ namespace Services
 
         public Sensor[] GetSensors()
         {
-            return Sensors.Values.ToArray();
+            return Sensors;
         }
 
         public Actor[] GetActors()
         {
-            return Actors.Values.ToArray();
+            return Actors;
         }
     }
 

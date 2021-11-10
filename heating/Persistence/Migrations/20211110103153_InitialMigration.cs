@@ -223,7 +223,6 @@ namespace Persistence.Migrations
                     Value = table.Column<double>(type: "REAL", nullable: false),
                     Time = table.Column<DateTime>(type: "TEXT", nullable: false),
                     ItemId = table.Column<int>(type: "INTEGER", nullable: false),
-                    Trend = table.Column<double>(type: "REAL", nullable: false),
                     RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
                 },
                 constraints: table =>

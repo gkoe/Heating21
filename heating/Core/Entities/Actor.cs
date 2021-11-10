@@ -11,10 +11,10 @@ namespace Core.Entities
         PumpFirstFloor,
         PumpGroundFloor,
         ValveBoilerBuffer,
-        MixerFirstFloorMinus,
-        MixerFirstFloorPlus,
-        MixerGroundFloorMinus,
-        MixerGroundFloorPlus
+        //MixerFirstFloorMinus,
+        //MixerFirstFloorPlus,
+        //MixerGroundFloorMinus,
+        //MixerGroundFloorPlus
     }
 
 
@@ -25,7 +25,15 @@ namespace Core.Entities
         [NotMapped]
         public bool LastValuePersisted { get; set; }
 
-        public override Measurement AddMeasurementToBuffer(DateTime time, double value)
+        public Actor()  { }
+        public Actor(ActorName actorName, string unit = "")
+        : base((int)actorName, unit)
+        {
+            Name = actorName.ToString();
+        }
+
+
+        public override Measurement AddMeasurement(DateTime time, double value)
         {
             LastValue = Value;
             LastValuePersisted = false;
@@ -34,7 +42,7 @@ namespace Core.Entities
             var measurement = new Measurement
             {
                 ItemId = Id,
-                //Item = this,
+                Item = this,
                 Time = time,
                 Value = Value
             };

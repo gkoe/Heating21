@@ -47,9 +47,12 @@ namespace Core.DataTransferObjects
         {
             Value = measurement.Value;
             Time = measurement.Time;
-            Trend = measurement.Trend;
             ItemName = measurement.Item?.Name;
             ItemId = measurement.ItemId;
+            if (measurement.Item is Sensor)
+            {
+                Trend = (measurement.Item as Sensor).Trend;
+            }
         }
 
 

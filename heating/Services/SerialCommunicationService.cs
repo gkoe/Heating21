@@ -48,7 +48,7 @@ namespace Services
                         if (readChar == '\n')
                         {
                             Log.Information($"SerialCommunicationService; data received: {receivedChars}");
-                            var measurement = GetMeasurementFromMessage(receivedChars.ToString());
+                            var measurement = GetMeasurementFromSerialMessage(receivedChars.ToString());
                             if (measurement != null)
                             {
                                 MeasurementReceived?.Invoke(this, new MeasurementDto(measurement));
@@ -69,7 +69,7 @@ namespace Services
             }
         }
 
-        private static Measurement GetMeasurementFromMessage(string message)
+        private static Measurement GetMeasurementFromSerialMessage(string message)
         {
             if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
             {
@@ -104,7 +104,7 @@ namespace Services
             (DateTime time, double? value) = ParseSerialPayload(payload);
             if (value != null)
             {
-                var measurement = item.AddMeasurementToBuffer(time, value.Value);
+                var measurement = item.AddMeasurement(time, value.Value);
                 return measurement;
             }
             return null;

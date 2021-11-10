@@ -122,9 +122,6 @@ namespace Persistence.Migrations
                     b.Property<DateTime>("Time")
                         .HasColumnType("TEXT");
 
-                    b.Property<double>("Trend")
-                        .HasColumnType("REAL");
-
                     b.Property<double>("Value")
                         .HasColumnType("REAL");
 

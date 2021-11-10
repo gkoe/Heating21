@@ -11,29 +11,39 @@ namespace Core.Entities
         OilBurnerTemperature,
         BoilerTop,
         BoilerBottom,
-        BufferTop,
-        BufferBottom,
-        TemperatureBefore,
-        TemperatureAfter,
         SolarCollector,
-        TemperatureFirstFloor,
-        TemperatureGroundFloor,
         LivingroomFirstFloor,
-        LivingroomGroundFloor,
         HmoLivingroomFirstFloor,
         HmoTemperatureOut,
+        BufferTop,
+        BufferBottom,
+        //TemperatureBefore,
+        //TemperatureAfter,
+        //TemperatureFirstFloor,
+        //TemperatureGroundFloor,
+        //LivingroomGroundFloor,
     }
 
     public class Sensor : Item
     {
         const int MEASUREMENTS_BUFFER_SIZE = 100;
 
+
         public double Trend { get; set; }  // umgerechnet in Delta/Stunde
 
         public int PersistenceInterval { get; set; } = 900;
         public DateTime LastPersistenceTime { get; set; }
 
-        public Measurement GetAverageMeasurementsValuesForPersistenceInterval()
+        public Sensor()  { }
+
+        public Sensor(SensorName sensorName, string unit = "", int persistenceInterval = 900) 
+                : base((int) sensorName, unit)
+        {
+            PersistenceInterval = persistenceInterval;
+            Name = sensorName.ToString();
+        }
+
+        public Measurement GetAverageMeasurementValuesForPersistenceInterval()
         {
             var measurements = MeasurementsBuffer
                 .Where(m => m != null && m.Time > DateTime.Now.AddSeconds(PersistenceInterval * (-1)))
@@ -55,19 +65,19 @@ namespace Core.Entities
         [NotMapped]
         public MeasurementValue[] MeasurementsBuffer = new MeasurementValue[MEASUREMENTS_BUFFER_SIZE];
         int _actIndex = 0;
-        DateTime lastTimeStamp = DateTime.MinValue;
+        DateTime _lastPersistenceTime = DateTime.MinValue;
 
 
-        public override Measurement AddMeasurementToBuffer(DateTime time, double value)
+        public override Measurement AddMeasurement(DateTime time, double value)
         {
             if (MeasurementsBuffer[_actIndex] == null && _actIndex == 0)   // erster Messwert ==> Trend auf 0 setzen
             {
                 Trend = 0;
-                lastTimeStamp = time;
+                _lastPersistenceTime = time;
             }
             else
             {
-                double timeFactorToHour = 3600.0 / (time - lastTimeStamp).TotalSeconds;
+                double timeFactorToHour = 3600.0 / (time - _lastPersistenceTime).TotalSeconds;
                 int index = (_actIndex - 1 + 10) % 10;
                 double delta = value - MeasurementsBuffer[index].Value;
                 if (value == 0)
@@ -90,7 +100,6 @@ namespace Core.Entities
                 ItemId = Id,
                 Item = this,
                 Time = time,
-                Trend = Trend,
                 Value = Value
             };
             return measurement;

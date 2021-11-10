@@ -68,7 +68,6 @@ namespace Persistence
                 ItemId = measurementDto.ItemId,
                 Value = measurementDto.Value,
                 Time = measurementDto.Time,
-                Trend = measurementDto.Trend
             };
             await DbContext.Measurements.AddAsync(measurement);
         }

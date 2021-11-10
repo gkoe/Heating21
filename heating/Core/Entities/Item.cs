@@ -24,9 +24,23 @@ namespace Core.Entities
         [NotMapped]
         public double Value { get; set; }
 
+        [NotMapped]
+        public int EnumNumber { get; private set; }
+
         public ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
 
-        public abstract Measurement AddMeasurementToBuffer(DateTime time, double value);
+        public Item()
+        {
+
+        }
+
+        public Item(int enumNumber, string unit = "")
+        {
+            EnumNumber = enumNumber;
+            Unit = unit;
+        }
+
+        public abstract Measurement AddMeasurement(DateTime time, double value);
 
     }
 }

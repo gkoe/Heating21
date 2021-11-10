@@ -102,7 +102,7 @@ namespace Services.ControlComponents
 
         public (bool, string) IsCooledToCold()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             bool isCold = temperature <= BURNER_COLD;
             return (isCold, $"OilBurnerTemperature: {temperature}");
         }
@@ -113,7 +113,7 @@ namespace Services.ControlComponents
         /// <returns></returns>
         public (bool, string) IsHeatedToReady()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             var isReady = temperature >= BURNER_READY;
             return (isReady, $"OilBurnerTemperature: {temperature}");
         }
@@ -124,21 +124,21 @@ namespace Services.ControlComponents
         /// <returns></returns>
         public (bool, string) IsCooledToReady()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             var isReady = temperature <= BURNER_READY;
             return (isReady, $"OilBurnerTemperature: {temperature}");
         }
 
         public (bool, string) IsHeatedToHot()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             bool isTooHot = temperature >= BURNER_HOT;
             return (isTooHot, $"OilBurnerTemperature: {temperature}");
         }
 
         public (bool, string) IsCooledToHot()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             bool isTooHot = temperature <= BURNER_HOT;
             return (isTooHot, $"OilBurnerTemperature: {temperature}");
         }
@@ -149,14 +149,14 @@ namespace Services.ControlComponents
         /// <returns></returns>
         public (bool, string) IsHeatedToTooHot()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             bool isTooHot = temperature >= BURNER_TOO_HOT;
             return (isTooHot, $"OilBurnerTemperature: {temperature}");
         }
 
         private (bool,string) IsNeededOilBurner()
         {
-            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature.ToString()).Value;
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
             if (IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater)
             {
                 return (true, $"IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater, Oilburner: {temperature}");
@@ -187,14 +187,14 @@ namespace Services.ControlComponents
         void DoBurnerOn(object sender, EventArgs e)
         {
             Log.Information($"Fsm;OilBurner;DoBurnerOn");
-            var oilBurnerSwitch = StateService.GetActor(ActorName.OilBurnerSwitch.ToString());
+            var oilBurnerSwitch = StateService.GetActor(ActorName.OilBurnerSwitch);
             SerialCommunicationService.SetActorAsync(oilBurnerSwitch.Name, 1).Wait();
         }
 
         void DoBurnerOff(object sender, EventArgs e)
         {
             Log.Information($"Fsm;OilBurner;DoBurnerOff");
-            var oilBurnerSwitch = StateService.GetActor(ActorName.OilBurnerSwitch.ToString());
+            var oilBurnerSwitch = StateService.GetActor(ActorName.OilBurnerSwitch);
             SerialCommunicationService.SetActorAsync(oilBurnerSwitch.Name, 0).Wait();
         }
         #endregion

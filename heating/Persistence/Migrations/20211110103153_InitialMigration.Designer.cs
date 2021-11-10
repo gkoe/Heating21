@@ -9,7 +9,7 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20211106093805_InitialMigration")]
+    [Migration("20211110103153_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -123,9 +123,6 @@ namespace Persistence.Migrations
 
                     b.Property<DateTime>("Time")
                         .HasColumnType("TEXT");
-
-                    b.Property<double>("Trend")
-                        .HasColumnType("REAL");
 
                     b.Property<double>("Value")
                         .HasColumnType("REAL");

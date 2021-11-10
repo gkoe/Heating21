@@ -103,7 +103,7 @@ namespace Services
             double? value = response.v;
             if (value != null)
             {
-                var measurement = sensor.AddMeasurementToBuffer(time, value.Value);
+                var measurement = sensor.AddMeasurement(time, value.Value);
                 return measurement;
             }
             else

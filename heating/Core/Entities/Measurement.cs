@@ -14,9 +14,6 @@ namespace Core.Entities
         public int ItemId { get; set; }
 
 
-        public double Trend { get; set; }
-
-
         public override string ToString()
         {
             return $"{Time.ToShortTimeString()}: {Value}";
