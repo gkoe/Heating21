@@ -1,4 +1,5 @@
 ﻿using Core.DataTransferObjects;
+using Core.Entities;
 
 using Newtonsoft.Json;
 
@@ -65,11 +66,21 @@ namespace Wasm.Services
 
         public async Task<MeasurementDto[]> GetMeasurementsAsync(string sensorName, DateTime date)
         {
-            var request = $"api/measurements/getbysensoranddate/{sensorName},{date.ToString("yyyy-MM-dd")}";
+            var request = $"api/measurements/getbysensoranddate/{sensorName},{date:yyyy-MM-dd}";
             var response = await _client.GetAsync(request);
             var contentTemp = await response.Content.ReadAsStringAsync();
             var result = JsonConvert.DeserializeObject<MeasurementDto[]>(contentTemp);
             System.Console.WriteLine($"ApiService;GetMeasurementsAsync; {result.Length} measurements read");
+            return result;
+        }
+
+        public async Task<FsmTransition[]> GetFsmTransitionsAsync(DateTime date)
+        {
+            var request = $"api/fsmtransitions/getbydate/{date:yyyy-MM-dd}";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<FsmTransition[]>(contentTemp);
+            System.Console.WriteLine($"ApiService;GetFsmMessagesAsync; {result.Length} fsmtransitions read");
             return result;
         }
 

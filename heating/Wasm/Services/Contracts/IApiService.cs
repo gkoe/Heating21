@@ -14,6 +14,7 @@ namespace Wasm.Services.Contracts
         Task<bool> SetManualOperationAsync(bool on);
         Task<string[]> GetFsmStatesAsync();
         Task<MeasurementDto[]> GetMeasurementsAsync(string sensorName, DateTime date);
+        Task<FsmTransition[]> GetFsmTransitionsAsync(DateTime date);
 
 
         Task ResetEspAsync();

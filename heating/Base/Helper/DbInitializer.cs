@@ -28,17 +28,18 @@ namespace Base.Helper
 
         public void Initalize()
         {
-            try
-            {
-                if (UnitOfWork.BaseApplicationDbContext.Database.GetPendingMigrations().Any())
-                {
-                    UnitOfWork.BaseApplicationDbContext.Database.Migrate();
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
+            // Update-Database wird vorher gemacht
+            //try
+            //{
+            //    if (UnitOfWork.BaseApplicationDbContext.Database.GetPendingMigrations().Any())
+            //    {
+            //        UnitOfWork.BaseApplicationDbContext.Database.Migrate();
+            //    }
+            //}
+            //catch (Exception)
+            //{
+            //    throw;
+            //}
 
             if (RoleManager.Roles.Any(x => x.Name == MagicStrings.Role_Admin)) return;
 

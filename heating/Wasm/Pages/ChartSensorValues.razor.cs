@@ -78,7 +78,7 @@ namespace Wasm.Pages
         private async Task GetAndFillDataItemsAsync()
         {
             Console.WriteLine($"GetAndFillDataItemsAsync for Sensor {SelectedSensor} and Date: {SelectedDate.ToShortDateString()}");
-            var measurements = await ApiService.GetMeasurementsAsync(SelectedSensor, DateTime.Today);
+            var measurements = await ApiService.GetMeasurementsAsync(SelectedSensor, SelectedDate.Date);
             DataItems = measurements
                 .Select(m => new ChartDataItem
                 {

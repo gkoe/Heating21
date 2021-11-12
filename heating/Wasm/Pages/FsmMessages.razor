@@ -1,0 +1,47 @@
+﻿@page "/fsmmessages"
+
+@using Radzen.Blazor
+@using Core.Entities
+
+<div class="container-xl border mt-4">
+    <div class="row my-flex-card">
+        <div class="card" style="width:100%">
+            <h5 class="card-header">FSM-Messages</h5>
+            <div class="flex-container">
+                <div class="d-flex p-2 align-items-center">
+                    <RadzenDropDown AllowClear="false" TValue="string" Style="width:200px"
+                                    @bind-Value=@SelectedFsm
+                                    Data=@Fsms
+                                    Change=@(args => OnChangeFsm(args.ToString())) />
+                    <RadzenDatePicker @bind-Value=@SelectedDate DateFormat="d" Change=@(args => OnChangeDate(args.ToString())) />
+                </div>
+            </div>
+
+            <div class="m-2">
+            </div>
+
+
+        </div>
+
+    </div>
+    <RadzenGrid @ref="FsmTransitionsGrid"
+                Count="@SelectedFsmTransitions.Length"
+                Data="@SelectedFsmTransitions"
+                TItem="FsmTransition"
+                AllowPaging="true" PageSize="40"
+                AllowColumnResize="true">
+        <Columns>
+            <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="Time" Title="Time">
+                <Template>
+                    <div class="text-center">@((context as FsmTransition).Time.ToString("HH:mm:ss"))</div>
+                </Template>
+            </RadzenGridColumn>
+            <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="Input" Title="Input" />
+            <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="LastState" Title="LastState" />
+            <RadzenGridColumn Width="150x" TItem="FsmTransition" Property="ActState" Title="ActState" />
+            <RadzenGridColumn Width="200px" TItem="FsmTransition" Property="InputMessage" Title="InputMessage" />
+        </Columns>
+    </RadzenGrid>
+
+</div>
+
