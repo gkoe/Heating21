@@ -7,8 +7,9 @@ namespace Wasm.DataTransferObjects
 {
     public class ChartDataItem
     {
+        public DateTime  Time { get; set; }
         public int QuarterOfAnHourNumber { get; set; }
-        public string HourText => QuarterOfAnHourNumber % 4 == 0 ? (QuarterOfAnHourNumber/4).ToString() : "";
+        public string HourText => Time.Hour.ToString(); // QuarterOfAnHourNumber % 4 == 0 ? (QuarterOfAnHourNumber/4).ToString() : "";
         public double? Value { get; set; }
 
     }

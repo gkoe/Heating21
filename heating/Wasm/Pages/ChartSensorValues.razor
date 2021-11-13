@@ -18,15 +18,22 @@
 
             <div class="m-2">
                 <RadzenChart>
-                    <RadzenLineSeries Data="@DataItems" Smooth="true" CategoryProperty="QuarterOfAnHourNumber" Title="@SelectedSensor" LineType="LineType.Solid" ValueProperty="Value">
-@*                        <RadzenMarkers MarkerType="MarkerType.Square" />*@
+                    <RadzenLineSeries Data="@DataItems" Smooth="true" CategoryProperty="Time" Title="@SelectedSensor"
+                                      LineType="LineType.Solid" ValueProperty="Value">
+                        @*                        <RadzenMarkers MarkerType="MarkerType.Square" />*@
                     </RadzenLineSeries>
-                    <RadzenValueAxis  Formatter=@(value => $"{value} °C")>
+                    <RadzenValueAxis  Formatter=@(value => $" {value:F2} °C")>
                         <RadzenGridLines Visible="true" />
                     </RadzenValueAxis>
                     <RadzenCategoryAxis Step="1" Formatter=@(value => @GetCategoryText(value))>
                     </RadzenCategoryAxis>
                     <RadzenLegend Visible="false" />
+                    @*<RadzenTooltip Context="value">
+                        <div>
+                            <span>@value.Quarter</span> 2020:
+                            <strong>@data.Revenue</strong>
+                        </div>
+                    </RadzenTooltip>*@
                 </RadzenChart>
             </div>
 

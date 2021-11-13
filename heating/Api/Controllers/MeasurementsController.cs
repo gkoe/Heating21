@@ -75,7 +75,7 @@ namespace Api.Controllers
                     MiniMapper.CopyProperties(dto, m);
                     return dto;
                 })
-                .Take(100)
+                //.Take(100)
                 .ToArray();
             return Ok(measurementDtos);
         }

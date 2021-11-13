@@ -82,22 +82,24 @@ namespace Wasm.Pages
             DataItems = measurements
                 .Select(m => new ChartDataItem
                 {
+                   Time = m.Time,
                    QuarterOfAnHourNumber = (m.Time.Hour*60+m.Time.Minute)/15,
                    Value = m.Value
                 })
                 .ToArray();
+            Console.WriteLine($"Chart mit {DataItems.Length} dataitems for chart");
         }
 
-        public static string GetCategoryText(object valueObject)
+        public static string GetCategoryText(object timeObject)
         {
-            var value = (double)valueObject;
-            var intValue = (int)value;
-            //return intValue.ToString();
-            if (intValue % 4 != 0)
-            {
-                return "";
-            }
-            return (intValue / 4).ToString();
+            var time = (DateTime)timeObject;
+            //var intValue = time.Hour;
+            return time.ToString("HH:mm");
+            //if (intValue % 4 != 0)
+            //{
+            //    return "";
+            //}
+            //return (intValue / 4).ToString();
         }
 
 

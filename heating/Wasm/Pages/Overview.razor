@@ -26,13 +26,13 @@
             <h5 class="card-header">Ölbrenner</h5>
 
             @*<div class="card-header">
-                    <div class="d-flexalign-items-center">
-                        <div class="flex-container">
-                            <span class="header">Ölbrenner</span>
-                            <span class="fsm-info">@OilBurnerFsmInfo</span>
-                        </div>
-                    </div>
-                </div>*@
+            <div class="d-flexalign-items-center">
+                <div class="flex-container">
+                    <span class="header">Ölbrenner</span>
+                    <span class="fsm-info">@OilBurnerFsmInfo</span>
+                </div>
+            </div>
+        </div>*@
             <div class="card-body">
                 <div class="flex-container">
                     <div class="flex-container">
@@ -51,15 +51,13 @@
                                       Change="@(_ => SwitchChangedAsync("OilBurnerSwitch"))" />
                     </div>
                 </div>
-                @if (OilBurnerFsmInfo.Length > 0)
-                {
-                    <div class="flex-container">
-                        <div class="d-flex">
-                            <div><input type="text" readonly class="form-control-plaintext fsm-info" value=@OilBurnerFsmInfo></div>
-                        </div>
-                    </div>
-                }
             </div>
+            @if (OilBurnerFsmInfo.Length > 0)
+            {
+                <div class="card-footer">
+                    <span>@OilBurnerFsmInfo</span>
+                </div>
+            }
         </div>
 
         <div class="card mt-2">
@@ -124,15 +122,13 @@
                                       Change="@(_ => SwitchChangedAsync("ValveBoilerBuffer"))" />
                     </div>
                 </div>
-                @if (HotWaterFsmInfo.Length > 0)
-                {
-                    <div class="flex-container">
-                        <div class="d-flex">
-                            <div><input type="text" readonly class="form-control-plaintext fsm-info" value=@HotWaterFsmInfo></div>
-                        </div>
-                    </div>
-                }
             </div>
+            @if (HotWaterFsmInfo.Length > 0)
+            {
+        <div class="card-footer">
+            <span>@HotWaterFsmInfo</span>
+        </div>
+            }
         </div>
 
         <div class="card mt-2">
@@ -226,16 +222,13 @@
                                       Change="@(_ => MixerChangedAysnc("MixerGroundFloorMinus"))" />
                     </div>
                 </div>
-                @if (HeatingCircuitFsmInfo.Length > 0)
-                {
-                    <div class="flex-container">
-                        <div class="d-flex">
-                            <div><input type="text" readonly class="form-control-plaintext fsm-info" value=@HeatingCircuitFsmInfo></div>
-                        </div>
-                    </div>
-                }
-
             </div>
+            @if (HeatingCircuitFsmInfo.Length > 0)
+            {
+                <div class="card-footer">
+                    <span>@HeatingCircuitFsmInfo</span>
+                </div>
+            }
         </div>
         <div class="flex-container mt-2">
             <RadzenButton style="margin: 0 1rem 1rem 0" class="col-md-2 justify-content-end" Click="@ResetEsp" Text="Reset ESP" ButtonStyle="ButtonStyle.Secondary" />

@@ -33,13 +33,17 @@
         <Columns>
             <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="Time" Title="Time">
                 <Template>
-                    <div class="text-center">@((context as FsmTransition).Time.ToString("HH:mm:ss"))</div>
+                    <div class="text-left">@((context as FsmTransition).Time.ToString("HH:mm:ss"))</div>
                 </Template>
             </RadzenGridColumn>
+            @if (SelectedFsm == "All")
+            {
+                <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="Fsm" Title="Fsm" />
+            }
             <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="Input" Title="Input" />
             <RadzenGridColumn Width="150px" TItem="FsmTransition" Property="LastState" Title="LastState" />
             <RadzenGridColumn Width="150x" TItem="FsmTransition" Property="ActState" Title="ActState" />
-            <RadzenGridColumn Width="200px" TItem="FsmTransition" Property="InputMessage" Title="InputMessage" />
+            <RadzenGridColumn Width="300px" TItem="FsmTransition" Property="InputMessage" Title="InputMessage" />
         </Columns>
     </RadzenGrid>
 

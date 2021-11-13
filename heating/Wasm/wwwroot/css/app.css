@@ -16,6 +16,11 @@
     align-self: flex-start;
 }
 
+.fsm-info-div {
+    border: dashed;
+    width: 100%
+}
+
 .measurement-label {
     width: 140px;
 }

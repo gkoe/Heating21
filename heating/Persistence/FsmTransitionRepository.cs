@@ -25,7 +25,7 @@ namespace Persistence
             var fsmTransitions = await DbContext
                 .FsmTransitions
                 .Where(t => t.Time.Date == day.Date)
-                .OrderBy(t => t.Time)
+                .OrderByDescending(t => t.Time)
                 .ToArrayAsync();
             return fsmTransitions;
         }
