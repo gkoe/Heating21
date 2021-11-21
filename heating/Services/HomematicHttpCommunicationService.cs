@@ -9,16 +9,21 @@ using Base.ExtensionMethods;
 using Core.DataTransferObjects;
 using Base.Helper;
 using Core.Entities;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace Services
 {
     public class HomematicHttpCommunicationService : IHomematicHttpCommunicationService
     {
         //private const string URL_LIVINGROOM = "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv";
-        //private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
+        private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
+        private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://10.0.0.2:2121/device/00265D899A9F7C/1/ACTUAL_TEMPERATURE/~pv";
+        private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://10.0.0.2:2121/device/00265D899A9F7C/1/SET_POINT_TEMPERATURE/~pv";
 
-        readonly string[] urls = { "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv", "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv" };
-        readonly SensorName[] sensorItems = { SensorName.HmoLivingroomFirstFloor, SensorName.HmoTemperatureOut };
+        //readonly string[] urls = { "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv", "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv" };
+        readonly string[] urls = { URL_OUTDOOR, URL_THERMOSTAT_LIVINGROOM_ACT, URL_THERMOSTAT_LIVINGROOM_SET};
+        readonly SensorName[] sensorItems = { SensorName.HmoTemperatureOut, SensorName.HmoLivingroomFirstFloor, SensorName.HmoLivingroomFirstFloorSet };
         private readonly IHttpClientFactory _httpClientFactory;
         private HttpClient _httpClient;
         //private readonly JsonSerializerOptions _options;
@@ -119,5 +124,11 @@ namespace Services
             StopGetByHttp = true;
         }
 
+        public async Task SetTargetTemperatureAsync(double temperature)
+        {
+            var requestObject = new { v = temperature };
+            var content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
+            using var response = await _httpClient.PutAsync(URL_THERMOSTAT_LIVINGROOM_SET, content);
+        }
     }
 }

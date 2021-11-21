@@ -18,5 +18,7 @@ namespace Wasm.Services.Contracts
 
 
         Task ResetEspAsync();
+        Task SetTargetTemperature(int floor, double targetTemperature);
+        Task<double> GetTargetTemperature(int floor);
     }
 }

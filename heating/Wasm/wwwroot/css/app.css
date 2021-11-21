@@ -10,6 +10,7 @@
     flex-direction: row;
 }
 
+
 .header {
     font-size: large;
     font-weight: bold;
@@ -50,6 +51,18 @@
     /*vertical-align:text-bottom;*/
     margin-right: 20px;
     top: 10px;
+}
+
+.set-measurement-input {
+    width: 100px;
+    display: inline-block;
+    font-weight: 600;
+}
+
+.set-measurement-button {
+    width: 150px;
+    display: inline-block;
+    margin-left: 5px;
 }
 
 

@@ -15,7 +15,7 @@ namespace Services.ControlComponents
 {
     public sealed class HeatingCircuit
     {
-        const double OG_TEMP = 23.5;
+        public double TargetTemperature { get; set; } = 22.5;
 
         public enum State { Off, PumpIsOff, WaitBurnerReadyToHeat, PumpIsOn, UseResidualHeat, CoolBurnerByCircuit };
         public enum Input
@@ -100,14 +100,14 @@ namespace Services.ControlComponents
         private (bool, string) IsHot()
         {
             var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
-            bool isHot = temperature >= OG_TEMP;
+            bool isHot = temperature >= TargetTemperature;
             return (isHot, $"LivingRoomTemperature: {temperature}");
         }
 
         private (bool, string) IsCold()
         {
             var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
-            bool isCold = temperature <= OG_TEMP - 0.5;
+            bool isCold = temperature <= TargetTemperature - 0.5;
             return (isCold, $"LivingRoomTemperature: {temperature}");
         }
 

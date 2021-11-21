@@ -91,7 +91,23 @@ namespace Wasm.Services
             System.Console.WriteLine($"ApiService;ResetEsp; response: {response.StatusCode}");
         }
 
+        public async Task SetTargetTemperature(int floor, double targetTemperature)
+        {
+            var tenthOfDegree = (int)(targetTemperature * 10);
+            var request = $"api/ruleengine/settargettemperature/{floor}/{tenthOfDegree}";
+            var response = await _client.GetAsync(request);
+            System.Console.WriteLine($"ApiService;SetTargetTemperature; response: {response.StatusCode}");
+        }
 
+        public async Task<double> GetTargetTemperature(int floor)
+        {
+            var request = $"api/ruleengine/gettargettemperature/{floor}";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<double>(contentTemp); 
+            System.Console.WriteLine($"ApiService;GetTargetTemperature; response: {response.StatusCode}");
+            return result/10.0;
+        }
     }
 
 }

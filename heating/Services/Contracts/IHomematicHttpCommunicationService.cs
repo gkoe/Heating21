@@ -2,6 +2,7 @@
 using Core.DataTransferObjects;
 
 using System;
+using System.Threading.Tasks;
 
 namespace Services.Contracts
 {
@@ -11,5 +12,6 @@ namespace Services.Contracts
 
         void StopCommunication();
         void StartCommunication();
+        Task SetTargetTemperatureAsync(double temperature);
     }
 }

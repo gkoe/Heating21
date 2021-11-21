@@ -14,6 +14,7 @@ namespace Core.Entities
         SolarCollector,
         LivingroomFirstFloor,
         HmoLivingroomFirstFloor,
+        HmoLivingroomFirstFloorSet,
         HmoTemperatureOut,
         BufferTop,
         BufferBottom,

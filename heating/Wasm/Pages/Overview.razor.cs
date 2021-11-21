@@ -61,6 +61,10 @@ namespace Wasm.Pages
         public SensorWithLastValueUiDto TemperatureFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureFirstFloor));
         public SensorWithLastValueUiDto TemperatureGroundFloor { get; set; } = new SensorWithLastValueUiDto(nameof(TemperatureGroundFloor));
         public SensorWithLastValueUiDto HmoLivingroomFirstFloor { get; set; } = new SensorWithLastValueUiDto(nameof(HmoLivingroomFirstFloor));
+
+        public double LivingroomFirstFloorTargetTemperature { get; set; } = 23.0;
+        public double LivingroomGroundFloorTargetTemperature { get; set; } = 23.0;
+
         public SensorWithLastValueUiDto HmoTemperatureOut { get; set; } = new SensorWithLastValueUiDto(nameof(HmoTemperatureOut));
 
         public ActorUiDto PumpFirstFloor { get; set; } = new ActorUiDto(nameof(PumpFirstFloor));
@@ -165,6 +169,7 @@ namespace Wasm.Pages
                 }
                 StateHasChanged();
             });
+            LivingroomFirstFloorTargetTemperature = await GetFirstFloorTargetTemperature();
             string[] states = await ApiService.GetFsmStatesAsync();
             OilBurnerFsmInfo = states[0];
             HotWaterFsmInfo = states[1];
@@ -244,6 +249,34 @@ namespace Wasm.Pages
             Console.WriteLine("Reset Esp");
             await ApiService.ResetEspAsync();
             NotificationService.ShowNotification(NotificationSeverity.Info, "ESP reseted");
+        }
+
+        public async Task SetFirstFloorTemperature()
+        {
+            Console.WriteLine($"Set FirstFloor Temperature to {LivingroomFirstFloorTargetTemperature:F2}");
+            await ApiService.SetTargetTemperature(1, LivingroomFirstFloorTargetTemperature);
+            NotificationService.ShowNotification(NotificationSeverity.Info, $"Temperatur OG auf {LivingroomFirstFloorTargetTemperature:F2} °C einstellen");
+        }
+
+        public async Task<double> GetFirstFloorTargetTemperature()
+        {
+            var temperature = await ApiService.GetTargetTemperature(1);
+            Console.WriteLine($"Get FirstFloor TargetTemperature {LivingroomFirstFloorTargetTemperature}");
+            return temperature;
+        }
+
+        public async Task SetGroundFloorTemperature()
+        {
+            Console.WriteLine($"Set GroundFloor Temperature to {LivingroomGroundFloorTargetTemperature:F2}");
+            await ApiService.SetTargetTemperature(0, LivingroomGroundFloorTargetTemperature);
+            NotificationService.ShowNotification(NotificationSeverity.Info, $"Temperatur EG auf {LivingroomGroundFloorTargetTemperature:F2} °C einstellen");
+        }
+
+        public async Task<double> GetGroundFloorTargetTemperature()
+        {
+            var temperature = await ApiService.GetTargetTemperature(0);
+            Console.WriteLine($"Get GroundFloor TargetTemperature {LivingroomGroundFloorTargetTemperature}");
+            return temperature;
         }
 
 

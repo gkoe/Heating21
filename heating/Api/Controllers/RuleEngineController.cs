@@ -46,5 +46,34 @@ namespace Api.Controllers
             return Ok(states);
         }
 
+        [HttpGet("{floor}/{tenthOfDegree}")]
+        //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> SetTargetTemperature([FromRoute] int floor, double tenthOfDegree)
+        {
+            Log.Information($"SetTargetTemperature; Floor: {floor}, Temperature: {tenthOfDegree}");
+            if (floor == 1)
+            {
+                //RuleEngine.Instance.HeatingCircuit.TargetTemperature = tenthOfDegree/10.0;
+                await RuleEngine.Instance.SetTargetTemperatureAsync(tenthOfDegree / 10.0);
+            }
+            //await RuleEngine.Instance.RaspberryIoService.ResetEspAsync();
+            return Ok();
+        }
+
+        [HttpGet("{floor}")]
+        //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetTargetTemperature([FromRoute] int floor)
+        {
+            Log.Information($"GetTargetTemperature; Floor: {floor}");
+            //await RuleEngine.Instance.RaspberryIoService.ResetEspAsync();
+            var tenthOfDegree = (int)(RuleEngine.Instance.HeatingCircuit.TargetTemperature * 10);
+            return Ok(tenthOfDegree);
+        }
+
+
+
+
     }
 }

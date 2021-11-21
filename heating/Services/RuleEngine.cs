@@ -1,4 +1,5 @@
 ﻿using Core.Contracts;
+using Core.DataTransferObjects;
 using Core.Entities;
 
 using Microsoft.AspNetCore.SignalR;
@@ -89,6 +90,7 @@ namespace Services
                 new Sensor(SensorName.SolarCollector, "°C"),
                 new Sensor(SensorName.LivingroomFirstFloor, "°C"),
                 new Sensor(SensorName.HmoLivingroomFirstFloor, "°C"),
+                new Sensor(SensorName.HmoLivingroomFirstFloorSet, "°C"),
                 new Sensor(SensorName.HmoTemperatureOut, "°C"),
                 new Sensor(SensorName.BufferTop, "°C"),
                 new Sensor(SensorName.BufferBottom, "°C"),
@@ -323,6 +325,7 @@ namespace Services
                     Log.Error("ExecuteAsync;Raspberry IO not available!");
                 }
                 StartFiniteStateMachines();
+                HomematicHttpCommunicationService.MeasurementReceived += HomematicHttpCommunicationService_MeasurementReceived;
             }
             Instance = this;  // ab jetzt Zugriff über Singleton erlauben
             while (!stoppingToken.IsCancellationRequested)
@@ -331,6 +334,14 @@ namespace Services
                 // Auf Änderungen des States reagieren, Timeouts bearbeiten, ...
             }
             //return Task.CompletedTask;
+        }
+
+        private void HomematicHttpCommunicationService_MeasurementReceived(object sender, MeasurementDto measurementDto)
+        {
+            if (measurementDto.ItemName == SensorName.HmoLivingroomFirstFloorSet.ToString())
+            {
+                HeatingCircuit.TargetTemperature = measurementDto.Value;
+            }
         }
 
         //private async void StateService_NewMeasurement(object sender, MeasurementDto measurementDto)
@@ -403,6 +414,12 @@ namespace Services
         {
             SerialCommunicationService.StopCommunication();
             await base.StopAsync(cancellationToken);
+        }
+
+        public async Task SetTargetTemperatureAsync(double temperature)
+        {
+            HeatingCircuit.TargetTemperature = temperature;
+            await HomematicHttpCommunicationService.SetTargetTemperatureAsync(temperature);
         }
 
 
