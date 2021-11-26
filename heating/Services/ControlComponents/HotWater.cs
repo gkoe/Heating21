@@ -21,7 +21,7 @@ namespace Services.ControlComponents
         public enum State { AllOff, HeatBoilerByBurner, HeatBoilerBySolar, HeatBufferBySolar, CoolBurner};
         public enum Input
         {
-            IsBoilerToHeatByBurner, IsBoilerHot, IsBurnerToCool, IsntBurnerToCool, IsBoilerToHeatBySolar,
+            IsBoilerToHeatByBurner, IsntBoilerToHeatByBurner, IsBoilerHot, IsBurnerToCool, IsntBurnerToCool, IsBoilerToHeatBySolar,
             IsBoilerVeryHot, IsntBufferToHeatBySolar, IsntBoilerToHeatBySolar
         };
         public IStateService StateService { get; }
@@ -60,6 +60,7 @@ namespace Services.ControlComponents
             try
             {
                 // Triggermethoden bei Inputs definieren
+                Fsm.GetInput(Input.IsntBoilerToHeatByBurner).TriggerMethod = IsntBoilerToHeatByBurner;
                 Fsm.GetInput(Input.IsBoilerToHeatByBurner).TriggerMethod = IsBoilerToHeatByBurner;
                 Fsm.GetInput(Input.IsBoilerHot).TriggerMethod = IsBoilerHot;
                 Fsm.GetInput(Input.IsBurnerToCool).TriggerMethod = IsBurnerToCool;
@@ -70,6 +71,7 @@ namespace Services.ControlComponents
                 Fsm.GetInput(Input.IsntBufferToHeatBySolar).TriggerMethod = IsntBufferToHeatBySolar;
                 // Übergänge definieren
                 Fsm.AddTransition(State.AllOff, State.HeatBoilerByBurner, Input.IsBoilerToHeatByBurner);
+                Fsm.AddTransition(State.HeatBoilerByBurner, State.AllOff, Input.IsntBoilerToHeatByBurner);
                 Fsm.AddTransition(State.AllOff, State.HeatBoilerBySolar, Input.IsBoilerToHeatBySolar);
                 Fsm.AddTransition(State.AllOff, State.CoolBurner, Input.IsBurnerToCool);
                 Fsm.AddTransition(State.HeatBoilerByBurner, State.AllOff, Input.IsBoilerHot);
@@ -133,6 +135,15 @@ namespace Services.ControlComponents
                 return (true, $"Boiler is hot: {temperature})");
             }
             return (false, "");
+        }
+
+        private (bool, string) IsntBoilerToHeatByBurner()
+        {
+            if (OilBurner.IsHeatedToReady().Item1)
+            {
+                return (false, "OilBurner is ready");
+            }
+            return (true, "Oilburner is too cold");
         }
 
         private (bool, string) IsBoilerToHeatByBurner()

@@ -99,15 +99,15 @@ namespace Services.ControlComponents
 
         private (bool, string) IsHot()
         {
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
-            bool isHot = temperature >= TargetTemperature;
+            var temperature = StateService.GetSensor(SensorName.HmoLivingroomFirstFloor).Value;
+            bool isHot = temperature >= TargetTemperature-0.2;  // Heizung läuft sonst weit drüber
             return (isHot, $"LivingRoomTemperature: {temperature}");
         }
 
         private (bool, string) IsCold()
         {
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
-            bool isCold = temperature <= TargetTemperature - 0.5;
+            var temperature = StateService.GetSensor(SensorName.HmoLivingroomFirstFloor).Value;
+            bool isCold = temperature <= TargetTemperature - 0.4;
             return (isCold, $"LivingRoomTemperature: {temperature}");
         }
 
@@ -118,7 +118,7 @@ namespace Services.ControlComponents
                 return (true, "No use of residual heat, because burner is used by HotWater");
             }
             var (isOilBurnerCooled, message) = OilBurner.IsCooledToReady();
-            var temperature = StateService.GetSensor(SensorName.LivingroomFirstFloor).Value;
+            var temperature = StateService.GetSensor(SensorName.HmoLivingroomFirstFloor).Value;
             return (isOilBurnerCooled, $"IsAllResidualHeatUsed: LivingRoom: {temperature}, {message}");
         }
 

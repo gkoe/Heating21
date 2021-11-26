@@ -17,6 +17,7 @@ namespace Services.ControlComponents
         const double BURNER_READY = 50.0;
         const double BURNER_HOT = 65.0;
         const double BURNER_TOO_HOT = 80.0;
+        const double BURNER_COOLED_HOT = 78.0;
 
         public enum State {  Off, Cold, Ready, Hot, TooHot};
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCooledToCold, IsHeatedToReady, IsCooledToReady, IsHeatedToHot, 
@@ -50,6 +51,12 @@ namespace Services.ControlComponents
         public void Stop()
         {
             Fsm.Stop();
+        }
+
+        public double GetTemperature()
+        {
+            var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
+            return temperature;
         }
 
         /// <summary>
@@ -139,7 +146,7 @@ namespace Services.ControlComponents
         public (bool, string) IsCooledToHot()
         {
             var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
-            bool isTooHot = temperature <= BURNER_HOT;
+            bool isTooHot = temperature <= BURNER_COOLED_HOT;
             return (isTooHot, $"OilBurnerTemperature: {temperature}");
         }
 
