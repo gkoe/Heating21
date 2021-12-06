@@ -92,9 +92,16 @@ namespace Core.Entities
             //}
             MeasurementsBuffer[_actIndex] = new MeasurementValue(time, value);
             var measurementValueBefore10Minutes = GetMeasurementValueBeforeXMinutes(MeasurementsBuffer, _actIndex, 10);
-            var timeDifference = (DateTime.Now - measurementValueBefore10Minutes.Time).TotalSeconds;
-            double valueDifference = value - measurementValueBefore10Minutes.Value;
-            Trend = valueDifference/timeDifference * 3600;  // Delta pro Stunde
+            if (measurementValueBefore10Minutes != null)
+            {
+                var timeDifference = (DateTime.Now - measurementValueBefore10Minutes.Time).TotalSeconds; ;
+                double valueDifference = value - measurementValueBefore10Minutes.Value;
+                Trend = valueDifference / timeDifference * 3600;  // Delta pro Stunde
+            }
+            else
+            {
+                Trend = double.MinValue;
+            }
             Log.Information($"AddMeasurementToBuffer; Item: {Name}, Value: {value}, Index: {_actIndex}, Trend: {Trend}");
             _actIndex = (_actIndex + 1) % MeasurementsBuffer.Length;
             // letzte Werte als aktuelle Werte speichern
