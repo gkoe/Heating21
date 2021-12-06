@@ -15,6 +15,9 @@ using Microsoft.Extensions.Logging;
 
 using Radzen;
 
+using Serilog;
+using Serilog.Core;
+
 using Wasm.Services;
 using Wasm.Services.Contracts;
 
@@ -43,6 +46,13 @@ namespace Wasm
                 BaseAddress =
                         new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
             });
+
+            //var levelSwitch = new LoggingLevelSwitch();
+            //Log.Logger = new LoggerConfiguration()
+            //    .MinimumLevel.ControlledBy(levelSwitch)
+            //    .Enrich.WithProperty("InstanceId", Guid.NewGuid().ToString("n"))
+            //    .CreateLogger();
+            //builder.Logging.AddSerilog();
 
             var x = builder.Build();
             _ = new JwtPayload();

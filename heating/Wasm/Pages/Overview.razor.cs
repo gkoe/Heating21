@@ -10,6 +10,7 @@ using Wasm.Helper;
 using Wasm.DataTransferObjects;
 using Microsoft.Extensions.Configuration;
 using Core.Entities;
+using Serilog;
 
 namespace Wasm.Pages
 {
@@ -77,6 +78,7 @@ namespace Wasm.Pages
         protected override async Task OnInitializedAsync()
         {
             Console.WriteLine($"------------------- SignalRHubUrl: {Configuration["SignalRHubUrl"]}");
+            //Log.Error("Overview; OnInitializedAsync");
             hubConnection = new HubConnectionBuilder()
                 .WithUrl(Configuration["SignalRHubUrl"])
                 //.WithUrl("https://localhost:5001/measurementshub")

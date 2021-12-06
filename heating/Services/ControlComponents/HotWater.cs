@@ -100,11 +100,11 @@ namespace Services.ControlComponents
             var boilerBottom = StateService.GetSensor(SensorName.BoilerBottom).Value;
             if (boilerBottom >= BOILER_VERY_HOT)
             {
-                return (false, $"Boiler is very hot (bottom: {boilerBottom})");
+                return (false, $"Boiler is very hot (bottom: {boilerBottom}");
             }
             if (solar > (boilerBottom + 10.0))
             {
-                return (true,$"Solar ({solar}) is ready to heat boiler (bottom: {boilerBottom})");
+                return (true,$"Solar ({solar}) is ready to heat boiler (bottom: {boilerBottom}");
             }
             return  (false, "");
         }
@@ -115,11 +115,11 @@ namespace Services.ControlComponents
             var boilerBottom = StateService.GetSensor(SensorName.BoilerBottom).Value;
             //if (boilerBottom >= BOILER_VERY_HOT)
             //{
-            //    return (true, $"Boiler is very hot (bottom: {boilerBottom})");
+            //    return (true, $"Boiler is very hot (bottom: {boilerBottom}");
             //}
             if(solar < boilerBottom + 5.0)
             {
-                return (true, $"Solar is too cold ({solar}) to heat boiler (bottom: {boilerBottom})");
+                return (true, $"Solar is too cold ({solar}) to heat boiler (bottom: {boilerBottom}");
             }
             return (false, "");
         }
@@ -132,7 +132,7 @@ namespace Services.ControlComponents
             var temperature = StateService.GetSensor(SensorName.BoilerTop).Value;
             if (temperature >= BOILER_HOT)
             {
-                return (true, $"Boiler is hot: {temperature})");
+                return (true, $"Boiler is hot: {temperature}");
             }
             return (false, "");
         }
@@ -155,7 +155,7 @@ namespace Services.ControlComponents
             var temperature = StateService.GetSensor(SensorName.BoilerTop).Value;
             if (temperature <= BOILER_COLD)
             {
-                return (true, $"Boiler is to heat by burner: {temperature})");
+                return (true, $"Boiler is to heat by burner: {temperature}");
             }
             return (false, "");
         }
@@ -165,7 +165,7 @@ namespace Services.ControlComponents
             var temperature = StateService.GetSensor(SensorName.BoilerTop).Value;
             if (temperature >= BOILER_VERY_HOT)
             {
-                return (true, $"Boiler is very hot: {temperature})");
+                return (true, $"Boiler is very hot: {temperature}");
             }
             return (false, "");
         }
@@ -176,7 +176,7 @@ namespace Services.ControlComponents
             var bufferBottom = StateService.GetSensor(SensorName.BufferBottom).Value;
             if (solar < (bufferBottom + 3.0))
             {
-                return (true, $"Solar ({solar}) is not hot enough to heat buffer: {bufferBottom})");
+                return (true, $"Solar ({solar}) is not hot enough to heat buffer: {bufferBottom}");
             }
             return (false, "");
         }
