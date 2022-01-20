@@ -13,7 +13,7 @@ namespace Services.ControlComponents
 {
     public sealed class OilBurner
     {
-        const double BURNER_COLD = 40.0;
+        const double BURNER_COLD = 30.0;
         const double BURNER_READY = 50.0;
         const double BURNER_HOT = 65.0;
         const double BURNER_TOO_HOT = 80.0;

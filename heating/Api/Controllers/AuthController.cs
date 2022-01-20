@@ -174,13 +174,21 @@ namespace Api.Controllers
 
                 if (!string.IsNullOrEmpty(upsertUserDto.NewPassword))
                 {
-                    var token = await UserManager.GeneratePasswordResetTokenAsync(dbUser);
-                    result = await UserManager.ResetPasswordAsync(dbUser, token, upsertUserDto.NewPassword);
-                    if (!result.Succeeded)
+                    try
                     {
-                        var errors = result.Errors.Select(e => e.Description);
-                        return BadRequest(new ApiResponseDto
-                        { Errors = errors, IsSuccessful = false });
+                        var token = await UserManager.GeneratePasswordResetTokenAsync(dbUser);
+                        result = await UserManager.ResetPasswordAsync(dbUser, token, upsertUserDto.NewPassword);
+                        if (!result.Succeeded)
+                        {
+                            var errors = result.Errors.Select(e => e.Description);
+                            return BadRequest(new ApiResponseDto
+                            { Errors = errors, IsSuccessful = false });
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        throw ex;
                     }
                 }
 

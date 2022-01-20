@@ -70,15 +70,16 @@ namespace Services.ControlComponents
                 // Übergänge definieren
                 Fsm.AddTransition(State.Off, State.PumpIsOff, Input.IsInHeatingTime);
                 Fsm.AddTransition(State.Off, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.CoolBurnerByCircuit, State.Off, Input.IsntBurnerToCool);
+                Fsm.AddTransition(State.CoolBurnerByCircuit, State.PumpIsOff, Input.IsntBurnerToCool);
                 Fsm.AddTransition(State.PumpIsOff, State.Off, Input.IsntInHeatingTime);
+                Fsm.AddTransition(State.PumpIsOff, State.PumpIsOn, Input.IsCold)
+                    .OnSelect += SwitchOilBurnerOn;
                 Fsm.AddTransition(State.PumpIsOff, State.CoolBurnerByCircuit, Input.IsBurnerToCool);
-                Fsm.AddTransition(State.PumpIsOff, State.WaitBurnerReadyToHeat, Input.IsCold)
-                    .OnSelect += Select_Transition_PumpIsOff_WaitBurnerReadyToHeat_IsCold;
-                Fsm.AddTransition(State.WaitBurnerReadyToHeat, State.PumpIsOn, Input.IsBurnerReadyToHeat);
-                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsntBurnerReadyToHeat);
+                //Fsm.AddTransition(State.WaitBurnerReadyToHeat, State.PumpIsOn, Input.IsBurnerReadyToHeat);
+                Fsm.AddTransition(State.PumpIsOn, State.PumpIsOff, Input.IsntInHeatingTime)
+                    .OnSelect += SwitchOilBurnerOff; ;
                 Fsm.AddTransition(State.PumpIsOn, State.UseResidualHeat, Input.IsHot)
-                    .OnSelect += Select_Transition_PumpIsOn_PumpIsOff_IsHot; ;
+                    .OnSelect += SwitchOilBurnerOff; ;
                 Fsm.AddTransition(State.UseResidualHeat, State.PumpIsOff, Input.IsAllResidualHeatUsed);
                 // Aktionen festlegen
                 Fsm.GetState(State.PumpIsOn).OnEnter += DoPumpOn;
@@ -134,12 +135,12 @@ namespace Services.ControlComponents
 
         #region Triggermethoden Transitionen
 
-        private void Select_Transition_PumpIsOff_WaitBurnerReadyToHeat_IsCold(object sender, EventArgs e)
+        private void SwitchOilBurnerOn(object sender, EventArgs e)
         {
             OilBurner.IsBurnerNeededByHeatingCircuit = true;
         }
 
-        private void Select_Transition_PumpIsOn_PumpIsOff_IsHot(object sender, EventArgs e)
+        private void SwitchOilBurnerOff(object sender, EventArgs e)
         {
             OilBurner.IsBurnerNeededByHeatingCircuit = false;
         }

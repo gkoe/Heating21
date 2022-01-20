@@ -54,8 +54,8 @@ namespace Api
                 config.Password.RequireLowercase = true;
                 config.Password.RequireNonAlphanumeric = true;
             })
-                .AddEntityFrameworkStores<ApplicationDbContext>();
-                //.AddDefaultTokenProviders()
+                .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddDefaultTokenProviders();
                 //.AddDefaultUI();
 
             appSettingsSection = Configuration.GetSection("AuthSettings");

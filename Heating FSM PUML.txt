@@ -1,5 +1,30 @@
 https://plantuml.com/de/state-diagram -- OnlineServer
 
+// HeatingCircuit ab 24.12.2021
+// Heizkreispumpe wird gleichzeitig mit Brenner eingeschaltet
+// Es wird zwar das kühle Wasser hochgepumpt, aber die Temperatur steigt dafür
+// gleichmäßig an. Hoffentlich reduzieren sich damit die Brennerstörungen
+@startuml
+state HeatingCircuit_Version_20211224 #lightblue {
+Off --> PumpIsOff : IsInHeatingTime
+PumpIsOff --> Off : IsntInHeatingTime
+PumpIsOff  --> PumpIsOn : IsCold
+PumpIsOn --> UseResidualHeat : IsHot
+PumpIsOn : Enter: Pumpe einschalten
+PumpIsOn --> PumpIsOff : IsntInHeatingTime
+UseResidualHeat --> PumpIsOff : IsAllResidualHeatUsed
+Off --> CoolBurnerByCircuit : IsBurnerToCool
+PumpIsOff --> CoolBurnerByCircuit : IsBurnerToCool
+PumpIsOff: Enter: Pumpe ausschalten
+CoolBurnerByCircuit --> PumpIsOff : IsntBurnerToCool
+CoolBurnerByCircuit : Enter: Pumpe einschalten
+}
+@enduml
+
+// HeatingCircuit bis 23.12.2021
+// HeatingCircuit schaltet Heizkreis erst ein, wenn Brenner auf Temperatur ist (50°)
+// Heizkreis kühlt dann bei tiefen Temperaturen Kesselwasser bis auf gut 30° ab.
+// Brenner geht dann gerne auf Störung
 @startuml
 state HeatingCircuit #lightblue {
 Off --> PumpIsOff : IsInHeatingTime
