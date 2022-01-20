@@ -396,7 +396,7 @@ namespace Services
             }
         }
 
-        private void StartFiniteStateMachines()
+        public void StartFiniteStateMachines()
         {
             OilBurner.Start();
             HotWater.Start();

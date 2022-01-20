@@ -17,7 +17,7 @@ namespace Wasm.Services.Contracts
         Task<FsmTransition[]> GetFsmTransitionsAsync(DateTime date);
 
 
-        Task ResetEspAsync();
+        Task RestartFsmsAsync();
         Task SetTargetTemperature(int floor, double targetTemperature);
         Task<double> GetTargetTemperature(int floor);
     }

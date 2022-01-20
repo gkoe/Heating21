@@ -44,10 +44,12 @@ namespace Api.Controllers
         [HttpGet()]
         //[Authorize(Roles = "Admin")]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<IActionResult> ResetEsp()
+        public async Task<IActionResult> RestartFsmsAsync()
         {
             Log.Information("ESP reseted");
             await RuleEngine.Instance.RaspberryIoService.ResetEspAsync();
+            await Task.Delay(10000);  // warten, dass ESP konstant läuft
+            RuleEngine.Instance.StartFiniteStateMachines();
             return Ok();
         }
 

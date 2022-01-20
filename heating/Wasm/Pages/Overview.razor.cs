@@ -246,11 +246,11 @@ namespace Wasm.Pages
         public bool IsConnected =>
             hubConnection.State == HubConnectionState.Connected;
 
-        public async Task ResetEsp()
+        public async Task RestartFsms()
         {
-            Console.WriteLine("Reset Esp");
-            await ApiService.ResetEspAsync();
-            NotificationService.ShowNotification(NotificationSeverity.Info, "ESP reseted");
+            Console.WriteLine("Restart Fsms");
+            await ApiService.RestartFsmsAsync();
+            NotificationService.ShowNotification(NotificationSeverity.Info, "ESP reseted and Fsms restarted");
         }
 
         public async Task SetFirstFloorTemperature()

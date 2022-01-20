@@ -84,11 +84,11 @@ namespace Wasm.Services
             return result;
         }
 
-        public async Task ResetEspAsync()
+        public async Task RestartFsmsAsync()
         {
-            var request = $"api/maintenance/resetesp";
+            var request = $"api/maintenance/restartfsms";
             var response = await _client.GetAsync(request);
-            System.Console.WriteLine($"ApiService;ResetEsp; response: {response.StatusCode}");
+            System.Console.WriteLine($"ApiService;RestartFsms; response: {response.StatusCode}");
         }
 
         public async Task SetTargetTemperature(int floor, double targetTemperature)
