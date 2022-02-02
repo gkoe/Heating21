@@ -32,5 +32,7 @@ namespace Services.Contracts
         public Task SendFsmStateChangedAsync(FsmTransition fsmStateChangedInfoDto);
         Measurement[] GetSensorMeasurementsToSave();
         Measurement[] GetActorMeasurementsToSave();
+
+        MeasurementDto[] GetSensorAndActorValues();
     }
 }

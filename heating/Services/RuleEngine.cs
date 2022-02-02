@@ -313,6 +313,7 @@ namespace Services
                 OilBurner.Fsm.StateChanged += Fsm_StateChanged;
                 HeatingCircuit = new HeatingCircuit(StateService, SerialCommunicationService, OilBurner);
                 HeatingCircuit.Fsm.StateChanged += Fsm_StateChanged;
+                OilBurner.HeatingCircuit = HeatingCircuit;
                 HotWater = new HotWater(StateService, SerialCommunicationService, OilBurner);
                 HotWater.Fsm.StateChanged += Fsm_StateChanged;
 
@@ -328,9 +329,18 @@ namespace Services
                 HomematicHttpCommunicationService.MeasurementReceived += HomematicHttpCommunicationService_MeasurementReceived;
             }
             Instance = this;  // ab jetzt Zugriff über Singleton erlauben
+            int round = 0;
             while (!stoppingToken.IsCancellationRequested)
             {
                 await Task.Delay(100, stoppingToken);
+                round++;
+                if (round >= 100)  // alle 10 Sekunden
+                {
+                    Log.Information($"RuleEngine;ExecuteAsync;check oilburner and heating");
+                    OilBurner.CheckOilBurner();
+                    HeatingCircuit.CheckHeating();
+                    round = 0;
+                }
                 // Auf Änderungen des States reagieren, Timeouts bearbeiten, ...
             }
             //return Task.CompletedTask;

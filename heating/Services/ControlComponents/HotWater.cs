@@ -84,7 +84,7 @@ namespace Services.ControlComponents
                 Fsm.GetState(State.HeatBoilerByBurner).OnEnter += DoHeatBoilerByBurner;
                 Fsm.GetState(State.HeatBoilerBySolar).OnEnter += DoHeatBoilerBySolar;
                 Fsm.GetState(State.HeatBufferBySolar).OnEnter += DoHeatBufferBySolar;
-                Fsm.GetState(State.CoolBurner).OnEnter += DoHeatBoilerByBurner;
+                Fsm.GetState(State.CoolBurner).OnEnter += DoCoolBurnerByBoiler;
                 Fsm.GetState(State.AllOff).OnEnter += DoAllOff;
             }
             catch (Exception ex)
@@ -208,6 +208,17 @@ namespace Services.ControlComponents
             await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 0);
             await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 0);
             OilBurner.IsBurnerNeededByHotWater = true;
+        }
+        async void DoCoolBurnerByBoiler(object sender, EventArgs e)
+        {
+            Log.Information($"Fsm;HotWater;DoCoolBurnerByBoiler");
+            var pumpBoiler = StateService.GetActor(ActorName.PumpBoiler);
+            var pumpSolar = StateService.GetActor(ActorName.PumpSolar);
+            var valveBoilerBuffer = StateService.GetActor(ActorName.ValveBoilerBuffer);
+            await SerialCommunicationService.SetActorAsync(pumpBoiler.Name, 1);
+            await SerialCommunicationService.SetActorAsync(pumpSolar.Name, 0);
+            await SerialCommunicationService.SetActorAsync(valveBoilerBuffer.Name, 0);
+            OilBurner.IsBurnerNeededByHotWater = false;
         }
 
         async void DoHeatBoilerBySolar(object sender, EventArgs e)

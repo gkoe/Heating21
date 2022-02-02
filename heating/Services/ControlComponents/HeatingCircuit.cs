@@ -1,4 +1,6 @@
 ﻿
+using Base.Helper;
+
 using Core.Entities;
 
 using HeatControl.Fsm;
@@ -171,6 +173,29 @@ namespace Services.ControlComponents
         //    OilBurner.IsBurnerNeededByHeatingCircuit = true;
         //}
         #endregion
+
+        #region Sicherheitschecks
+        public void CheckHeating()
+        {
+            var pumpFirstFloorSwitch = StateService.GetActor(ActorName.PumpFirstFloor);
+            var shouldBeOn = EnumHelper.ToInt(Fsm.ActState.StateEnum) == EnumHelper.ToInt(State.CoolBurnerByCircuit)
+                || EnumHelper.ToInt(Fsm.ActState.StateEnum) == EnumHelper.ToInt(State.UseResidualHeat)
+                || EnumHelper.ToInt(Fsm.ActState.StateEnum) == EnumHelper.ToInt(State.PumpIsOn);
+            if (shouldBeOn && pumpFirstFloorSwitch.Value == 0)
+            {
+                Log.Warning($"Fsm;HeatingCircuit;Pump should be on, State: {Fsm.ActState.StateEnum}");
+                DoPumpOn(this, null);
+                return;
+            }
+            if (!shouldBeOn && pumpFirstFloorSwitch.Value == 1)
+            {
+                Log.Warning($"Fsm;HeatingCircuit;Pump should be off, State: {Fsm.ActState.StateEnum}");
+                DoPumpOff(this, null);
+                return;
+            }
+        }
+        #endregion
+
 
     }
 }

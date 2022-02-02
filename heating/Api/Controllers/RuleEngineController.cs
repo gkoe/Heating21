@@ -2,6 +2,8 @@
 
 using Base.DataTransferObjects;
 
+using Core.DataTransferObjects;
+
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,6 +32,21 @@ namespace Api.Controllers
             await RuleEngine.Instance.RaspberryIoService.ResetEspAsync();
             return Ok(true);
         }
+
+        /// <summary>
+        /// Sendet die aktuellen Werte aus dem Stateservice.
+        /// </summary>
+        /// <returns>aktuelle Messwerte der Sensoren und Aktoren</returns>
+        [HttpGet]
+        //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(typeof(MeasurementDto[]),  StatusCodes.Status200OK)]
+        public IActionResult GetSensorAndActorValues()
+        {
+            Log.Information("RuleEngineController;GetSensorValues");
+            var sensorValues = RuleEngine.Instance.StateService.GetSensorAndActorValues();
+            return Ok(sensorValues);
+        }
+
 
         [HttpGet]
         //[Authorize(Roles = "Admin")]
@@ -69,6 +86,16 @@ namespace Api.Controllers
             Log.Information($"GetTargetTemperature; Floor: {floor}");
             //await RuleEngine.Instance.RaspberryIoService.ResetEspAsync();
             var tenthOfDegree = (int)(RuleEngine.Instance.HeatingCircuit.TargetTemperature * 10);
+            return Ok(tenthOfDegree);
+        }
+
+        [HttpGet()]
+        //[Authorize(Roles = "Admin")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public IActionResult GetOilBurnerTargetTemperature()
+        {
+            Log.Information($"GetOilBurnerTargetTemperature");
+            var tenthOfDegree = (int)(RuleEngine.Instance.OilBurner.TargetTemperature * 10);
             return Ok(tenthOfDegree);
         }
 

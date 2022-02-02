@@ -41,10 +41,11 @@ namespace Wasm
             //builder.Services.AddScoped<TooltipService>();
             //builder.Services.AddScoped<ContextMenuService>();
             builder.Services.AddScoped<UtilityServices>();
+            var baseAddress = builder.Configuration.GetValue<string>("BaseAPIUrl");
             builder.Services.AddScoped(sp => new HttpClient
             {
                 BaseAddress =
-                        new Uri(builder.Configuration.GetValue<string>("BaseAPIUrl"))
+                        new Uri(baseAddress)
             });
 
             //var levelSwitch = new LoggingLevelSwitch();

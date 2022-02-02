@@ -38,6 +38,7 @@ namespace Wasm.Pages
         // OilBurner
         public SensorWithLastValueUiDto OilBurnerTemperature { get; set; } = new SensorWithLastValueUiDto(nameof(OilBurnerTemperature));
         public ActorUiDto OilBurnerSwitch { get; set; } = new ActorUiDto(nameof(OilBurnerSwitch));
+        public double OilBurnerTargetTemperature { get; set; } = 999;
         public string OilBurnerFsmInfo { get; set; } = "";
         public string HeatingCircuitFsmInfo { get; set; } = "";
         public string HotWaterFsmInfo { get; set; } = "";
@@ -172,6 +173,7 @@ namespace Wasm.Pages
                 StateHasChanged();
             });
             LivingroomFirstFloorTargetTemperature = await GetFirstFloorTargetTemperature();
+            OilBurnerTargetTemperature = await GetOilBurnerTargetTemperature();
             string[] states = await ApiService.GetFsmStatesAsync();
             OilBurnerFsmInfo = states[0];
             HotWaterFsmInfo = states[1];
@@ -264,6 +266,13 @@ namespace Wasm.Pages
         {
             var temperature = await ApiService.GetTargetTemperature(1);
             Console.WriteLine($"Get FirstFloor TargetTemperature {LivingroomFirstFloorTargetTemperature}");
+            return temperature;
+        }
+
+        public async Task<double> GetOilBurnerTargetTemperature()
+        {
+            var temperature = await ApiService.GetOilBurnerTargetTemperature();
+            Console.WriteLine($"Get OilBurner TargetTemperature {OilBurnerTargetTemperature}");
             return temperature;
         }
 

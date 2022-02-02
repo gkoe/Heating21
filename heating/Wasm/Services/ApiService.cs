@@ -104,9 +104,19 @@ namespace Wasm.Services
             var request = $"api/ruleengine/gettargettemperature/{floor}";
             var response = await _client.GetAsync(request);
             var contentTemp = await response.Content.ReadAsStringAsync();
-            var result = JsonConvert.DeserializeObject<double>(contentTemp); 
+            var result = JsonConvert.DeserializeObject<double>(contentTemp);
             System.Console.WriteLine($"ApiService;GetTargetTemperature; response: {response.StatusCode}");
-            return result/10.0;
+            return result / 10.0;
+        }
+
+        public async Task<double> GetOilBurnerTargetTemperature()
+        {
+            var request = $"api/ruleengine/getoilburnertargettemperature";
+            var response = await _client.GetAsync(request);
+            var contentTemp = await response.Content.ReadAsStringAsync();
+            var result = JsonConvert.DeserializeObject<double>(contentTemp);
+            System.Console.WriteLine($"ApiService;GetOilBurnerTargetTemperature; response: {response.StatusCode}");
+            return result / 10.0;
         }
     }
 

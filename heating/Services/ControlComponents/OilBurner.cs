@@ -13,11 +13,24 @@ namespace Services.ControlComponents
 {
     public sealed class OilBurner
     {
+        public double TargetTemperature 
+        {
+            get
+            {
+                var livingRoomTemperature = StateService.GetSensor(SensorName.HmoLivingroomFirstFloor).Value;
+                var deltaRoomTemperature = HeatingCircuit.TargetTemperature - livingRoomTemperature;
+                var temperatureSurcharge = Math.Min(deltaRoomTemperature / 5.0 , 1) * 15;  // kann nicht über 15° erhöhen
+                return BURNER_HOT + temperatureSurcharge; // 16° ==> 60+1*15 = 75; 21,5° 60+1/5*15=63
+            }
+        }
+
         const double BURNER_COLD = 30.0;
         const double BURNER_READY = 50.0;
-        const double BURNER_HOT = 65.0;
+        const double BURNER_HOT = 60.0;
         const double BURNER_TOO_HOT = 80.0;
-        const double BURNER_COOLED_HOT = 78.0;
+        const double BURNER_COOLED_HOT = 75.0;
+
+       
 
         public enum State {  Off, Cold, Ready, Hot, TooHot};
         public enum Input { IsNeededOilBurner, IsntNeededOilBurner, IsCooledToCold, IsHeatedToReady, IsCooledToReady, IsHeatedToHot, 
@@ -25,6 +38,8 @@ namespace Services.ControlComponents
         public IStateService StateService { get; }
         public FiniteStateMachine Fsm { get; set; }
         public ISerialCommunicationService SerialCommunicationService { get; }
+        public HeatingCircuit HeatingCircuit { get; set; }
+
         public bool IsBurnerNeededByHotWater { get; internal set; }
         public bool IsBurnerNeededByHeatingCircuit { get; internal set; }
 
@@ -97,7 +112,7 @@ namespace Services.ControlComponents
                 // Aktionen festlegen
                 //Fsm.GetState(State.Off).OnLeave += DoBurnerOn;
                 //Fsm.GetState(State.Off).OnEnter += DoBurnerOff;
-                //Fsm.GetState(State.TooHot).OnEnter += DoBurnerOff;
+                Fsm.GetState(State.TooHot).OnEnter += DoBurnerOff;
             }
             catch (Exception ex)
             {
@@ -139,7 +154,7 @@ namespace Services.ControlComponents
         public (bool, string) IsHeatedToHot()
         {
             var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
-            bool isTooHot = temperature >= BURNER_HOT;
+            bool isTooHot = temperature >= TargetTemperature; // BURNER_HOT;
             return (isTooHot, $"OilBurnerTemperature: {temperature}");
         }
 
@@ -164,6 +179,10 @@ namespace Services.ControlComponents
         private (bool,string) IsNeededOilBurner()
         {
             var temperature = StateService.GetSensor(SensorName.OilBurnerTemperature).Value;
+            if (temperature >= BURNER_TOO_HOT)
+            {
+                return (false, "");
+            }
             if (IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater)
             {
                 return (true, $"IsBurnerNeededByHeatingCircuit && IsBurnerNeededByHotWater, Oilburner: {temperature}");
@@ -205,6 +224,28 @@ namespace Services.ControlComponents
             SerialCommunicationService.SetActorAsync(oilBurnerSwitch.Name, 0).Wait();
         }
         #endregion
+
+        #region Sicherheitschecks
+        public void CheckOilBurner()
+        {
+            var (needed, _) =IsNeededOilBurner();
+            var oilBurnerSwitch = StateService.GetActor(ActorName.OilBurnerSwitch);
+            if (needed && oilBurnerSwitch.Value == 0)
+            {
+                Log.Warning($"Fsm;OilBurner;Burner should be on, State: {Fsm.ActState.StateEnum}");
+                DoBurnerOn(this, null);
+                return;
+            }
+            var (notNeeded, _) = IsntNeededOilBurner();
+            if (notNeeded && oilBurnerSwitch.Value == 1)
+            {
+                Log.Warning($"Fsm;OilBurner;Burner should be off, State: {Fsm.ActState.StateEnum}");
+                DoBurnerOff(this, null);
+                return;
+            }
+        }
+        #endregion
+
 
     }
 }

@@ -33,25 +33,29 @@
                 </div>
             </div>
         </div>*@
-            <div class="card-body">
+        <div class="card-body">
+            <div class="flex-container">
                 <div class="flex-container">
-                    <div class="flex-container">
-                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Temperatur:"></div>
-                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@OilBurnerTemperature.Value.ToString("F2")></div>
-                        <div class="oi @OilBurnerTemperature.TrendIcon trendicon" aria-hidden="true"></div>
-                        <div><input type="text" readonly class="form-control-plaintext" value=@OilBurnerTemperature.Trend.ToString("F2")></div>
-                    </div>
-                </div>
-                <div class="flex-container">
-                    <div class="d-flex p-2 align-items-center">
-                        <span class="mr-2">Brenner:</span>
-                        <RadzenSwitch class="switch-symbol"
-                                      @bind-Value=@OilBurnerSwitch.IsOn
-                                      Disabled="@OilBurnerSwitch.IsDisabled"
-                                      Change="@(_ => SwitchChangedAsync("OilBurnerSwitch"))" />
-                    </div>
+                    <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Temperatur:"></div>
+                    <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@OilBurnerTemperature.Value.ToString("F2")></div>
+                    <div class="oi @OilBurnerTemperature.TrendIcon trendicon" aria-hidden="true"></div>
+                    <div><input type="text" readonly class="form-control-plaintext" value=@OilBurnerTemperature.Trend.ToString("F2")></div>
                 </div>
             </div>
+            <div class="flex-container">
+                <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Soll:"></div>
+                <div class="set-measurement-input"><input type="number" class="form-control" @bind=@OilBurnerTargetTemperature></div>
+            </div>
+            <div class="flex-container">
+                <div class="d-flex p-2 align-items-center">
+                    <span class="mr-2">Brenner:</span>
+                    <RadzenSwitch class="switch-symbol"
+                                  @bind-Value=@OilBurnerSwitch.IsOn
+                                  Disabled="@OilBurnerSwitch.IsDisabled"
+                                  Change="@(_ => SwitchChangedAsync("OilBurnerSwitch"))" />
+                </div>
+            </div>
+        </div>
             @if (OilBurnerFsmInfo.Length > 0)
             {
                 <div class="card-footer">

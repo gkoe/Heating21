@@ -71,6 +71,35 @@ namespace Services
             await Task.CompletedTask;
         }
 
+        public MeasurementDto[] GetSensorAndActorValues()
+        {
+            var measurements = new List<MeasurementDto>();
+            foreach (var sensor in Sensors)
+            {
+                MeasurementDto measurement = new()
+                {
+                    ItemId = sensor.Id,
+                    ItemName = sensor.Name,
+                    Time = sensor.Time,
+                    Trend = sensor.Trend,
+                    Value = sensor.Value
+                };
+                measurements.Add(measurement);
+            }
+            foreach (var actor in Actors)
+            {
+                MeasurementDto measurement = new()
+                {
+                    ItemId = actor.Id,
+                    ItemName = actor.Name,
+                    Time = actor.Time,
+                    Value = actor.Value
+                };
+                measurements.Add(measurement);
+            }
+            return measurements.ToArray();
+        }
+
 
         public async Task SendItemsBySignalRAsync()
         {

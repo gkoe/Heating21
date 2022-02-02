@@ -20,5 +20,6 @@ namespace Wasm.Services.Contracts
         Task RestartFsmsAsync();
         Task SetTargetTemperature(int floor, double targetTemperature);
         Task<double> GetTargetTemperature(int floor);
+        Task<double> GetOilBurnerTargetTemperature();
     }
 }
