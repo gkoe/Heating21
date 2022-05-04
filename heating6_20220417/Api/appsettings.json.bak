@@ -1,0 +1,45 @@
+{
+  "ConnectionStrings": {
+    "DbFileName": "./data/database.db"
+  },
+  "Serilog": {
+    "LogLevel": {
+      "Using": [],
+      "MinimumLevel": {
+        "Default": "Information",
+        "Override": {
+          "Microsoft": "Warning",
+          "Microsoft.Hosting.Lifetime": "Information",
+          "System": "Warning"
+        }
+      }
+    },
+    "Enrich": [ "FromLogContext", "WithMachineName", "WithProcessId", "WithThreadId" ],
+    "WriteTo": [
+      { "Name": "Console" },
+      {
+        "Name": "File",
+        "Args": {
+          "path": "./data/log.csv",
+          "rollingInterval": "Day",
+          "outputTemplate": "{Timestamp:G};{Level:u3};{Message};{NewLine}{Exception}"
+        }
+      }
+    ]
+  },
+  "AuthSettings": {
+    "SecretKey": "\"251dK9_??UZ1Kt?3GMdy@fjvS7PO:}W(sw7aJa3,;lb~%+/<eeA$3e-V\"W)kF>X\",",
+    "ValidAudience": "https://localhost:5001/",
+    "ValidIssuer": "https://localhost:5001/"
+  },
+  "AllowedHosts": "*",
+  "Client_URL": "https://localhost:5003/",
+  "Communication": {
+    "UrlFirstFloorLivingRoom": "http://192.168.0.107/sensor?temperature",
+    //"UrlFirstFloorLivingRoom": "http://192.168.0.52/sensor?temperature",
+    //"UrlGroundFloorLivingRoom": "http://192.168.0.23/sensor?temperature",
+    "SerialPort": "COM3"
+    //"SerialPort": "/dev/ttyUSB0"
+  }
+
+}

@@ -1,0 +1,52 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Core.Entities.Item">
+    <Position X="5" Y="0.5" Width="3.25" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AQAAAAAYAASAAAQAIAAAAAQCQAAAAAhAAQEwAAAAAQA=</HashCode>
+      <FileName>Entities\Item.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Measurements" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Core.Entities.Actor">
+    <Position X="9.75" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAAAEAAAAAAAAAAAAAAgAQAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Actor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Entities.Sensor">
+    <Position X="1.75" Y="2.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Sensor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Core.Entities.Measurement">
+    <Position X="10" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEgAAAAAAEAAAAAAAAAAAgAAAAAQA=</HashCode>
+      <FileName>Entities\Measurement.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Core.Entities.ActorName" Collapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAACAgAAAAAAAAAAAAAAAAgAgAAAAAAAAABAAA=</HashCode>
+      <FileName>Entities\Actor.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Core.Entities.SensorName" Collapsed="true">
+    <Position X="2.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAEAAQAQSQAAAACAAAAAAAAAAABgAAAAAAAAAAA=</HashCode>
+      <FileName>Entities\Sensor.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

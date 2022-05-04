@@ -1,0 +1,64 @@
+﻿@page "/users"
+
+@using Radzen.Blazor
+@using Base.DataTransferObjects
+
+@inject DialogService DialogService
+
+@if (ApplicationUsers == null || ApplicationUsers.Count == 0)
+{
+    <div class="spinner"></div>
+}
+else
+{
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="px-2 d-flex">
+                    <span class="col-md-10 py-1 text-success"><p style="font-size:x-large;margin:0px;">User Management</p></span>
+                    <RadzenButton Disabled="@(HasChanges)" style="margin: 0 1rem 1rem 0" class="col-md-2 justify-content-end" Click="@AddUser" Text="Add User" ButtonStyle="ButtonStyle.Secondary" />
+                </div>
+                <RadzenGrid @ref="UsersGrid" Count="@Count" Data="@ApplicationUsers"
+                            TItem="UserDetailsDto" SelectionMode="DataGridSelectionMode.Single" @bind-Value=@SelectedUser>
+                    <Columns>
+                        <RadzenGridColumn TItem="UserDetailsDto" Property="Name" Title="Name" />
+                        <RadzenGridColumn TItem="UserDetailsDto" Property="Email" Title="Mailadresse" />
+                        <RadzenGridColumn TItem="UserDetailsDto" Property="PhoneNumber" Title="Telefonnummer" />
+                        <RadzenGridColumn TItem="UserDetailsDto" Property="LastLogin" Title="Last Login" />
+                        <RadzenGridColumn TItem="UserDetailsDto" Property="RoleName" Title="Rolle" />
+
+                        @*<RadzenGridColumn TItem="UserDetailsDto" Bubble="false" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click=@(args => DeleteConfirmation())> </RadzenButton>
+                            </RadzenGridColumn>*@
+
+                        <RadzenGridColumn TItem="UserDetailsDto" Context="user" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                            <Template Context="user">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="edit" Size="ButtonSize.Small" Click="@(args => EditUser(user))">
+                                </RadzenButton>
+                            </Template>
+                            <EditTemplate Context="user">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="edit" Size="ButtonSize.Small" Click="@(args => EditUser(user))">
+                                </RadzenButton>
+                            </EditTemplate>
+                        </RadzenGridColumn>
+
+
+                        <RadzenGridColumn TItem="UserDetailsDto" Context="user" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="70px">
+                            <Template Context="user">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteConfirmation(user))" @onclick:stopPropagation="true">
+                                </RadzenButton>
+                            </Template>
+                            <EditTemplate Context="user">
+                                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="close" Size="ButtonSize.Small" Click="@(args => DeleteConfirmation(user))">
+                                </RadzenButton>
+                            </EditTemplate>
+                        </RadzenGridColumn>
+
+                    </Columns>
+                </RadzenGrid>
+            </div>
+        </div>
+    </div>
+
+}
+

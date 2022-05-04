@@ -1,0 +1,35 @@
+﻿@page "/dialogtest"
+
+@using Radzen.Blazor
+@inject DialogService DialogService
+
+
+
+<h3>DialogTest</h3>
+
+<div class="col-md-12 px-2 d-flex">
+@*    <RadzenButton style="margin: 0 1rem 1rem 0" class="col-md-2 justify-content-end" Click="@ShowInlineDialog" Text="" ButtonStyle="ButtonStyle.Secondary" />*@
+
+    <RadzenButton Text="Show confirm dialog"
+                  Click=@(args => MyConfirm()) />
+</div>
+
+
+@code {
+
+    async Task ShowInlineDialog() => await DialogService.OpenAsync("Simple Dialog", ds =>
+    @<div>
+        <p Style="margin-bottom: 1rem">Confirm?</p>
+        <div class="row">
+            <div class="col-md-12">
+                <RadzenButton Text="Ok" Style="margin-bottom: 10px; width: 150px" />
+            </div>
+        </div>
+    </div>);
+
+    async Task MyConfirm()
+    {
+        bool ok = (await DialogService.Confirm("Are you sure?", "MyTitle", new ConfirmOptions() { OkButtonText = "Yes", CancelButtonText = "No" })).GetValueOrDefault();
+    }
+
+}

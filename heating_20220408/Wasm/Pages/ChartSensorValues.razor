@@ -1,0 +1,46 @@
+﻿@page "/chartsensorvalues"
+
+@using Radzen.Blazor
+
+<div class="container-xl border mt-4">
+    <div  class="row my-flex-card">
+        <div class="card"  style="width:100%">
+            <h5 class="card-header">Sensorwerte</h5>
+            <div class="flex-container">
+                <div class="d-flex p-2 align-items-center">
+                    <RadzenDropDown AllowClear="false" TValue="string" Style="width:200px"
+                                    @bind-Value=@SelectedSensor
+                                    Data=@Sensors
+                                    Change=@(args => OnChangeSensor(args.ToString())) />
+                    <RadzenDatePicker @bind-Value=@SelectedDate DateFormat="d" Change=@(args => OnChangeDate(args.ToString())) />
+                </div>
+            </div>
+
+            <div class="m-2">
+                <RadzenChart>
+                    <RadzenLineSeries Data="@DataItems" Smooth="true" CategoryProperty="Time" Title="@SelectedSensor"
+                                      LineType="LineType.Solid" ValueProperty="Value">
+                        @*                        <RadzenMarkers MarkerType="MarkerType.Square" />*@
+                    </RadzenLineSeries>
+                    <RadzenValueAxis  Formatter=@(value => $" {value:F2} °C")>
+                        <RadzenGridLines Visible="true" />
+                    </RadzenValueAxis>
+                    <RadzenCategoryAxis Step="1" Formatter=@(value => @GetCategoryText(value))>
+                    </RadzenCategoryAxis>
+                    <RadzenLegend Visible="false" />
+                    @*<RadzenTooltip Context="value">
+                        <div>
+                            <span>@value.Quarter</span> 2020:
+                            <strong>@data.Revenue</strong>
+                        </div>
+                    </RadzenTooltip>*@
+                </RadzenChart>
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+

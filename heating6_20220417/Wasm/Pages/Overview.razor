@@ -1,0 +1,256 @@
+﻿@page "/overview"
+
+@using Radzen.Blazor
+
+<div class="container">
+    @*<div class="row">
+            @foreach (string s in list)
+            {
+                <div class="col-lg-3"><span class="oi @s" aria-hidden="true"></span> @s</div>
+            }
+        </div>*@
+    <h3 class="col-12 text-success text-center py-2">
+        <strong>Heizungssteuerung</strong>
+    </h3>
+    <div class="flex-container">
+        <div class="d-flex p-2 align-items-center">
+            <span class="mr-2">Manueller Betrieb:</span>
+            <RadzenSwitch class="switch-symbol"
+                          @bind-Value=@InManualMode
+                          Change="@IsManualModeChanged" />
+        </div>
+    </div>
+
+    <div>
+        <div class="card">
+            <h5 class="card-header">Ölbrenner</h5>
+
+            @*<div class="card-header">
+            <div class="d-flexalign-items-center">
+                <div class="flex-container">
+                    <span class="header">Ölbrenner</span>
+                    <span class="fsm-info">@OilBurnerFsmInfo</span>
+                </div>
+            </div>
+        </div>*@
+            <div class="card-body">
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Temperatur:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@OilBurnerTemperature.Value.ToString("F2")></div>
+                        <div class="oi @OilBurnerTemperature.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@OilBurnerTemperature.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Brenner:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@OilBurnerSwitch.IsOn
+                                      Disabled="@OilBurnerSwitch.IsDisabled"
+                                      Change="@(_ => SwitchChangedAsync("OilBurnerSwitch"))" />
+                    </div>
+                </div>
+            </div>
+            @if (OilBurnerFsmInfo.Length > 0)
+            {
+                <div class="card-footer">
+                    <span>@OilBurnerFsmInfo</span>
+                </div>
+            }
+        </div>
+
+        <div class="card mt-2">
+            <h5 class="card-header">Warmwasser</h5>
+            <div class="card-body">
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Boiler oben:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@BoilerTop.Value.ToString("F2")></div>
+                        <div class="oi @BoilerTop.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@BoilerTop.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Boiler unten:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@BoilerBottom.Value.ToString("F2")></div>
+                        <div class="oi @BoilerBottom.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@BoilerBottom.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Puffer oben:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@BufferTop.Value.ToString("F2")></div>
+                        <div class="oi @BufferTop.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@BufferTop.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Puffer unten:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@BufferBottom.Value.ToString("F2")></div>
+                        <div class="oi @BufferBottom.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@BufferBottom.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Kollektor:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@SolarCollector.Value.ToString("F2")></div>
+                        <div class="oi @SolarCollector.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@SolarCollector.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Pumpe Boiler:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@PumpBoiler.IsOn
+                                      Disabled="@PumpBoiler.IsDisabled"
+                                      Change="@(_ => SwitchChangedAsync("PumpBoiler"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Pumpe Kollektor:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@PumpSolar.IsOn
+                                      Disabled="@PumpSolar.IsDisabled"
+                                      Change="@(_ => SwitchChangedAsync("PumpSolar"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Ventil Boiler > Puffer:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@ValveBoilerBuffer.IsOn
+                                      Disabled="@ValveBoilerBuffer.IsDisabled"
+                                      Change="@(_ => SwitchChangedAsync("ValveBoilerBuffer"))" />
+                    </div>
+                </div>
+            </div>
+            @if (HotWaterFsmInfo.Length > 0)
+            {
+                <div class="card-footer">
+                    <span>@HotWaterFsmInfo</span>
+                </div>
+            }
+        </div>
+
+        <div class="card mt-2">
+            <h5 class="card-header">Heizung</h5>
+            <div class="card-body">
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Wohnzimmer OG:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@HmoLivingroomFirstFloor.Value.ToString("F2")></div>
+                        <div class="oi @HmoLivingroomFirstFloor.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@HmoLivingroomFirstFloor.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Soll:"></div>
+                        <div class="set-measurement-input"><input type="number" class="form-control" @bind=@LivingroomFirstFloorTargetTemperature></div>
+                        <div class="set-measurement-button">
+                            <RadzenButton Click="@SetFirstFloorTemperature" Text="Set" ButtonStyle="ButtonStyle.Secondary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Wohnzimmer EG:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@LivingroomFirstFloor.Value.ToString("F2")></div>
+                        <div class="oi @LivingroomFirstFloor.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@LivingroomFirstFloor.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Soll:"></div>
+                        <div class="set-measurement-input"><input type="number" class="form-control" @bind=@LivingroomGroundFloorTargetTemperature></div>
+                        <div class="set-measurement-button">
+                            <RadzenButton Click="@SetFirstFloorTemperature" Text="Set" ButtonStyle="ButtonStyle.Secondary" />
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Vorlauf OG:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@TemperatureFirstFloor.Value.ToString("F2")></div>
+                        <div class="oi @TemperatureFirstFloor.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@TemperatureFirstFloor.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Vorlauf EG:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@TemperatureGroundFloor.Value.ToString("F2")></div>
+                        <div class="oi @TemperatureGroundFloor.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@TemperatureGroundFloor.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Vorlauf:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@TemperatureBefore.Value.ToString("F2")></div>
+                        <div class="oi @TemperatureBefore.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@TemperatureBefore.Trend.ToString("F2")></div>
+                    </div>
+                    <div class="flex-container">
+                        <div><input type="text" readonly class="form-control-plaintext measurement-label" value="Rücklauf:"></div>
+                        <div><input type="text" readonly class="form-control-plaintext measurement-text" value=@TemperatureAfter.Value.ToString("F2")></div>
+                        <div class="oi @TemperatureAfter.TrendIcon trendicon" aria-hidden="true"></div>
+                        <div><input type="text" readonly class="form-control-plaintext" value=@TemperatureAfter.Trend.ToString("F2")></div>
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Pumpe OG:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@PumpFirstFloor.IsOn
+                                      Disabled="@PumpFirstFloor.IsDisabled"
+                                      Change="@(_ => SwitchChangedAsync("PumpFirstFloor"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Mischer OG plus:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@MixerFirstFloorPlus.IsOn
+                                      Disabled="@MixerFirstFloorPlus.IsDisabled"
+                                      Change="@(_ => MixerChangedAysnc("MixerFirstFloorPlus"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Mischer OG minus:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@MixerFirstFloorMinus.IsOn
+                                      Disabled="@MixerFirstFloorMinus.IsDisabled"
+                                      Change="@(_ => MixerChangedAysnc("MixerFirstFloorMinus"))" />
+                    </div>
+                </div>
+                <div class="flex-container">
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Pumpe EG:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@PumpGroundFloor.IsOn
+                                      Disabled="@PumpGroundFloor.IsOn"
+                                      Change="@(_ => SwitchChangedAsync("PumpGroundFloor"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Mischer EG plus:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@MixerFirstFloorPlus.IsOn
+                                      Disabled="@MixerFirstFloorPlus.IsDisabled"
+                                      Change="@(_ => MixerChangedAysnc("MixerFirstFloorPlus"))" />
+                    </div>
+                    <div class="d-flex p-2 align-items-center">
+                        <span class="mr-2">Mischer EG minus:</span>
+                        <RadzenSwitch class="switch-symbol"
+                                      @bind-Value=@MixerFirstFloorMinus.IsOn
+                                      Disabled="@MixerFirstFloorMinus.IsDisabled"
+                                      Change="@(_ => MixerChangedAysnc("MixerFirstFloorMinus"))" />
+                    </div>
+                </div>
+            </div>
+            @if (HeatingCircuitFsmInfo.Length > 0)
+            {
+                <div class="card-footer">
+                    <span>@HeatingCircuitFsmInfo</span>
+                </div>
+            }
+        </div>
+        <div class="flex-container mt-2">
+            <RadzenButton style="margin: 0 1rem 1rem 0" class="col-md-2 justify-content-end" Click="@RestartFsms" Text="Restart FSMs" ButtonStyle="ButtonStyle.Secondary" />
+        </div>
+
+    </div>
+
+</div>
+

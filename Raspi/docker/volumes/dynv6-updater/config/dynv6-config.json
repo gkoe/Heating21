@@ -1,0 +1,5 @@
+{
+    "url" : "http://dynv6.com/api/update",
+    "token" : "B7cBh4nkdPA-bx74Jv9aGL73LiN1wx",
+    "hostnames": ["heating.dynv6.net", "heatingapi.dynv6.net", "hmomqtt.dynv6.net", "hmonw.dynv6.net", "hmohomematic.dynv6.net"]
+}

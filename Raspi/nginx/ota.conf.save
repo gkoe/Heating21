@@ -1,0 +1,7 @@
+server {
+    listen 80;
+    root /home/pi/ota;
+
+    location / {
+sudo ln -s /etc/nginx/sites-available/ota.conf /etc/nginx/sites-enabled/ota.conf    }
+}
