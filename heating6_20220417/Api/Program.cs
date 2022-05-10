@@ -24,7 +24,7 @@ namespace Api
                 .CreateLogger();
             try
             {
-                Log.Information("App starting ...");
+                Log.Fatal("App starting ...");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

@@ -17,9 +17,17 @@ namespace Services
     public class HomematicHttpCommunicationService : IHomematicHttpCommunicationService
     {
         //private const string URL_LIVINGROOM = "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv";
-        private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
-        private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://10.0.0.2:2121/device/00265D899A9F7C/1/ACTUAL_TEMPERATURE/~pv";
-        private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://10.0.0.2:2121/device/00265D899A9F7C/1/SET_POINT_TEMPERATURE/~pv";
+
+        
+
+
+        private const string URL_OUTDOOR = "http://192.168.0.3:2121//device/OEQ2113490/1/TEMPERATURE/~pv";
+        private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://192.168.0.3:2121/device/KEQ0850330/1/TEMPERATURE/~pv";
+        private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://192.168.0.3:2121/device/KEQ0850330/1/TEMPERATURE/~pv";
+
+        //private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
+        //private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://10.0.0.2:2121/device/00265D899A9F7C/1/ACTUAL_TEMPERATURE/~pv";
+        //private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://10.0.0.2:2121/device/00265D899A9F7C/1/SET_POINT_TEMPERATURE/~pv";
 
         //readonly string[] urls = { "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv", "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv" };
         readonly string[] urls = { URL_OUTDOOR, URL_THERMOSTAT_LIVINGROOM_ACT, URL_THERMOSTAT_LIVINGROOM_SET};
