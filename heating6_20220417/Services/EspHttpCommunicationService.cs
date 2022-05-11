@@ -14,7 +14,6 @@ namespace Services
     public class EspHttpCommunicationService : IEspHttpCommunicationService
     {
         //private const string URL_LIVINGROOM = "http://192.168.0.52/sensor?temperature";
-        //private const string URL_LIVINGROOM = "http://192.168.0.23/sensor?temperature";
         private readonly IHttpClientFactory _httpClientFactory;
         private HttpClient _httpClient;
         //private readonly JsonSerializerOptions _options;

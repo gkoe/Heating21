@@ -11,40 +11,41 @@ using Base.Helper;
 using Core.Entities;
 using System.Text;
 using Newtonsoft.Json;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Services
 {
+    record HomematicSensor(SensorName SensorName, string Url);
+
     public class HomematicHttpCommunicationService : IHomematicHttpCommunicationService
     {
-        //private const string URL_LIVINGROOM = "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv";
-
-        
-
-
-        private const string URL_OUTDOOR = "http://192.168.0.3:2121//device/OEQ2113490/1/TEMPERATURE/~pv";
-        private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://192.168.0.3:2121/device/KEQ0850330/1/TEMPERATURE/~pv";
-        private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://192.168.0.3:2121/device/KEQ0850330/1/TEMPERATURE/~pv";
+        //private string URL_OUTDOOR { get; }
+        //private string URL_THERMOSTAT_LIVINGROOM_ACT { get; }
+        //private string URL_THERMOSTAT_LIVINGROOM_SET { get; }
 
         //private const string URL_OUTDOOR = "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv";
         //private const string URL_THERMOSTAT_LIVINGROOM_ACT = "http://10.0.0.2:2121/device/00265D899A9F7C/1/ACTUAL_TEMPERATURE/~pv";
         //private const string URL_THERMOSTAT_LIVINGROOM_SET = "http://10.0.0.2:2121/device/00265D899A9F7C/1/SET_POINT_TEMPERATURE/~pv";
-
         //readonly string[] urls = { "http://10.0.0.2:2121/device/HEQ0105664/1/TEMPERATURE/~pv", "http://10.0.0.2:2121//device/00185D898B0094/1/ACTUAL_TEMPERATURE/~pv" };
-        readonly string[] urls = { URL_OUTDOOR, URL_THERMOSTAT_LIVINGROOM_ACT, URL_THERMOSTAT_LIVINGROOM_SET};
-        readonly SensorName[] sensorItems = { SensorName.HmoTemperatureOut, SensorName.HmoLivingroomFirstFloor, SensorName.HmoLivingroomFirstFloorSet };
+
+
+        private List<HomematicSensor> HomematicSensors { get; }
         private readonly IHttpClientFactory _httpClientFactory;
-        private HttpClient _httpClient;
+        //private HttpClient _httpClient;
         //private readonly JsonSerializerOptions _options;
 
-        public string UrlFirstFloorLivingRoom { get; init; }
-        public string UrlGroundFloorLivingRoom { get; init; }
+        //public string UrlFirstFloorLivingRoom { get; init; }
+        //public string UrlGroundFloorLivingRoom { get; init; }
 
         public HomematicHttpCommunicationService(IHttpClientFactory httpClientFactory, IConfiguration configuration)
         {
             _httpClientFactory = httpClientFactory;
-            //var appSettingsSection = configuration.GetSection("Communication");
-            //UrlFirstFloorLivingRoom = appSettingsSection["UrlFirstFloorLivingRoom"];
-            //UrlGroundFloorLivingRoom = appSettingsSection["UrlGroundFloorLivingRoom"];
+            var appSettingsSection = configuration.GetSection("Communication");
+            HomematicSensors = new ();
+            HomematicSensors.Add(new HomematicSensor(SensorName.HmoTemperatureOut, appSettingsSection["HmOutdoor"]));
+            HomematicSensors.Add(new HomematicSensor(SensorName.HmoLivingroomFirstFloor, appSettingsSection["HmFirstFloorLivingRoomAct"]));
+            HomematicSensors.Add(new HomematicSensor(SensorName.HmoLivingroomFirstFloorSet, appSettingsSection["HmFirstFloorLivingRoomSet"]));
         }
 
         public event EventHandler<MeasurementDto> MeasurementReceived;
@@ -59,20 +60,20 @@ namespace Services
         {
             // temperature_01/state/{"timestamp":1625917023,"value":25.17}
             //{ "sensor": temperature,"time": 2021 - 07 - 17 20:52:50,"value": 24.42 Grad}
-            _httpClient = _httpClientFactory.CreateClient();
+            var _httpClient = _httpClientFactory.CreateClient();
             Log.Information("HomematicHttpCommunicationService;started");
             while (!StopGetByHttp)
             {
-                for (int i = 0; i < urls.Length; i++)
+                for (int i = 0; i < HomematicSensors.Count; i++)
                 {
                     try
                     {
-                        using var response = await _httpClient.GetAsync(urls[i], HttpCompletionOption.ResponseHeadersRead);
+                        using var response = await _httpClient.GetAsync(HomematicSensors[i].Url, HttpCompletionOption.ResponseHeadersRead);
                         //response.EnsureSuccessStatusCode();  //!
                         if (response.StatusCode == System.Net.HttpStatusCode.OK)
                         {
                             var text = await response.Content.ReadAsStringAsync();
-                            var measurement = GetMeasurementFromMessage(text, sensorItems[i].ToString());
+                            var measurement = ParseMeasurementFromResponseMessage(text, HomematicSensors[i].SensorName.ToString());
                             if (measurement != null)
                             {
                                 MeasurementReceived?.Invoke(this, new MeasurementDto(measurement));
@@ -90,7 +91,7 @@ namespace Services
             }
         }
 
-        private  static Measurement GetMeasurementFromMessage(string message, string sensorName)
+        private  static Measurement ParseMeasurementFromResponseMessage(string message, string sensorName)
         {
             if (RuleEngine.Instance == null || RuleEngine.Instance.StateService == null)
             {
@@ -126,17 +127,24 @@ namespace Services
             }
         }
 
+        /// <summary>
+        /// Die Zieltemperatur am Homematicthermostat wird über das Homematic-Addon CCU-Jack
+        /// per http-Request gesetzt.
+        /// </summary>
+        /// <param name="temperature"></param>
+        /// <returns></returns>
+        public async Task SetTargetTemperatureAsync(double temperature)
+        {
+            var _httpClient = _httpClientFactory.CreateClient();
+            var requestObject = new { v = temperature };
+            var content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
+            var homematicSensor = HomematicSensors.Single(s => s.SensorName == SensorName.HmoLivingroomFirstFloorSet);
+            using var response = await _httpClient.PutAsync(homematicSensor.Url, content);
+        }
 
         public void StopCommunication()
         {
             StopGetByHttp = true;
-        }
-
-        public async Task SetTargetTemperatureAsync(double temperature)
-        {
-            var requestObject = new { v = temperature };
-            var content = new StringContent(JsonConvert.SerializeObject(requestObject), Encoding.UTF8, "application/json");
-            using var response = await _httpClient.PutAsync(URL_THERMOSTAT_LIVINGROOM_SET, content);
         }
     }
 }
