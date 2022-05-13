@@ -7,6 +7,8 @@ using IotServices.Services.MqttAdapter;
 
 using Microsoft.AspNetCore.SignalR;
 
+using Persistence;
+
 using Serilog;
 
 using Services;
@@ -20,7 +22,6 @@ namespace IotServices.Services
         private static readonly Lazy<StateService> lazy = new(() => new StateService());
         public static StateService Instance { get { return lazy.Value; } }
         IHubContext<SignalRHub>? SignalRHubContext { get; set; } // wird vom IotService per Property injiziert
-
 
         private StateService()
         {
@@ -49,10 +50,23 @@ namespace IotServices.Services
 
         public Dictionary<ItemEnum, MeasurementTimeValue?> LastMeasurements { get; }
 
-        public Sensor[] Sensors { get; }
-        public Actor[] Actors { get; }
+        public Sensor[] Sensors { get; set; }
+        public Actor[] Actors { get; set; }
 
         public Sensor GetSensor(ItemEnum sensorEnum) => Sensors.Single(s => s.ItemEnum == sensorEnum);
+        //public Sensor GetSensor(ItemEnum sensorEnum)
+        //{
+
+        //    var xs = Sensors.Where(x => sensorEnum == x.ItemEnum).ToArray();
+        //    var a = xs[0].ItemEnum;
+        //    var b = a == sensorEnum;
+        //    var sensor = Sensors.SingleOrDefault(s => s.ItemEnum == sensorEnum);
+        //    if (sensor == null)
+        //    {
+        //        int x = 0;
+        //    }
+        //    return sensor;
+        //}
         public Sensor? GetSensor(string itemName) => Sensors.SingleOrDefault(s => s.ItemEnum.ToString() == itemName);
         public Actor GetActor(ItemEnum actorEnum) => Actors.Single(a => a.ItemEnum == actorEnum);
         public Actor? GetActor(string itemName) => Actors.SingleOrDefault(s => s.ItemEnum.ToString() == itemName);
@@ -69,13 +83,16 @@ namespace IotServices.Services
         {
             Log.Information("StateService;Init;StateService started");
             // Sensoren und Aktoren mit DB synchronisieren
-            foreach (var sensor in Sensors)
+            using (UnitOfWork unitOfWork = new())
             {
-                NoTrackingPersistenceService.Instance.UnitOfWork.Sensors.SynchronizeAsync(sensor);
-            }
-            foreach (var actor in Actors)
-            {
-                NoTrackingPersistenceService.Instance.UnitOfWork.Actors.SynchronizeAsync(actor);
+                foreach (var sensor in Sensors)
+                {
+                    unitOfWork.Sensors.SynchronizeAsync(sensor);
+                }
+                foreach (var actor in Actors)
+                {
+                    unitOfWork.Actors.SynchronizeAsync(actor);
+                }
             }
             // SignalR-Hub initialisieren
             SignalRHubContext = signalRHubContext;
@@ -108,8 +125,11 @@ namespace IotServices.Services
                         Time = measurementDto.Time,
                         Value = measurementDto.Value,
                     };
-                    await NoTrackingPersistenceService.Instance.UnitOfWork.Measurements.AddAsync(dbMeasurement);
-                    await NoTrackingPersistenceService.Instance.UnitOfWork.SaveChangesAsync();
+                    using (NoTrackingUnitOfWork unitOfWork = new())
+                    {
+                        await unitOfWork.Measurements.AddAsync(dbMeasurement);
+                        await unitOfWork.SaveChangesAsync();
+                    }
                     if (SignalRHubContext != null)
                     {
                         await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurementDto);
@@ -121,6 +141,8 @@ namespace IotServices.Services
                 }
             }
         }
+
+
 
         /// <summary>
         /// Setzt den Aktor per SerialCommunication auf den gewünschten Zustand setzen
@@ -149,6 +171,11 @@ namespace IotServices.Services
 
         public async Task SendItemsBySignalRAsync()
         {
+            if (SignalRHubContext == null)
+            {
+                Log.Error($"StateService;SendItemsBySignalRAsync;SignalRHubContext is null");
+                return;
+            }
             foreach (var sensor in Sensors)
             {
                 MeasurementDto measurement = new()
@@ -159,10 +186,7 @@ namespace IotServices.Services
                     Trend = sensor.Trend,
                     Value = sensor.Value
                 };
-                if (SignalRHubContext != null)
-                {
-                    await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
-                }
+                await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
             foreach (var actor in Actors)
             {
@@ -173,10 +197,7 @@ namespace IotServices.Services
                     Time = actor.Time,
                     Value = actor.Value
                 };
-                if (SignalRHubContext != null)
-                {
-                    await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
-                }
+                await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
             }
         }
 

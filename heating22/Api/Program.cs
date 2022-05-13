@@ -23,7 +23,7 @@ namespace Api
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
             try
             {
-                Log.Information("App starting ...");
+                Log.Fatal("App starting ...");
                 CreateHostBuilder(args).Build().Run();
             }
             catch (Exception ex)

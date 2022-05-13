@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,10 @@ namespace Persistence
             var sensors = await DbContext.Sensors
                 .OrderBy(s => s.Name)
                 .ToArrayAsync();
+            foreach (var sensor in sensors)
+            {
+                sensor.ItemEnum = Enum.Parse<ItemEnum>(sensor.Name);
+            }
             return sensors;
         }
 
@@ -58,6 +63,7 @@ namespace Persistence
             else
             {
                 sensor.Id = dbSensor.Id;
+                sensor.ItemEnum = dbSensor.ItemEnum;
                 sensor.Name = dbSensor.Name;
                 sensor.Unit = dbSensor.Unit;
                 sensor.RowVersion = dbSensor.RowVersion;

@@ -1,4 +1,5 @@
 ﻿
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -30,6 +31,10 @@ namespace Persistence
             var actors = await DbContext.Actors
                 .OrderBy(s => s.Name)
                 .ToArrayAsync();
+            foreach (var actor in actors)
+            {
+                actor.ItemEnum = Enum.Parse<ItemEnum>(actor.Name);
+            }
             return actors;
         }
 

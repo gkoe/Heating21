@@ -11,13 +11,13 @@ using Persistence;
 namespace Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220302191835_InitialMigration")]
+    [Migration("20220511081203_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "6.0.1");
+            modelBuilder.HasAnnotation("ProductVersion", "6.0.4");
 
             modelBuilder.Entity("Base.Entities.Session", b =>
                 {
@@ -44,6 +44,104 @@ namespace Persistence.Migrations
                     b.HasIndex("ApplicationUserId");
 
                     b.ToTable("Sessions");
+                });
+
+            modelBuilder.Entity("Core.Entities.FsmTransition", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("ActState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Fsm")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Input")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("InputMessage")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastState")
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("FsmTransitions");
+                });
+
+            modelBuilder.Entity("Core.Entities.Item", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Discriminator")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("LastPersistenceTime")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("PersistenceInterval")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<double>("Trend")
+                        .HasColumnType("REAL");
+
+                    b.Property<string>("Unit")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Item");
+
+                    b.HasDiscriminator<string>("Discriminator").HasValue("Item");
+                });
+
+            modelBuilder.Entity("Core.Entities.Measurement", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ItemId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("BLOB");
+
+                    b.Property<DateTime>("Time")
+                        .HasColumnType("TEXT");
+
+                    b.Property<double>("Value")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ItemId");
+
+                    b.ToTable("Measurements");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -254,6 +352,23 @@ namespace Persistence.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
+            modelBuilder.Entity("Core.Entities.Actor", b =>
+                {
+                    b.HasBaseType("Core.Entities.Item");
+
+                    b.Property<double>("SettedValue")
+                        .HasColumnType("REAL");
+
+                    b.HasDiscriminator().HasValue("Actor");
+                });
+
+            modelBuilder.Entity("Core.Entities.Sensor", b =>
+                {
+                    b.HasBaseType("Core.Entities.Item");
+
+                    b.HasDiscriminator().HasValue("Sensor");
+                });
+
             modelBuilder.Entity("Base.Entities.Session", b =>
                 {
                     b.HasOne("Base.Entities.ApplicationUser", "ApplicationUser")
@@ -261,6 +376,17 @@ namespace Persistence.Migrations
                         .HasForeignKey("ApplicationUserId");
 
                     b.Navigation("ApplicationUser");
+                });
+
+            modelBuilder.Entity("Core.Entities.Measurement", b =>
+                {
+                    b.HasOne("Core.Entities.Item", "Item")
+                        .WithMany("Measurements")
+                        .HasForeignKey("ItemId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Item");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -312,6 +438,11 @@ namespace Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Core.Entities.Item", b =>
+                {
+                    b.Navigation("Measurements");
                 });
 
             modelBuilder.Entity("Base.Entities.ApplicationUser", b =>

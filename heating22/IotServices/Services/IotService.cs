@@ -27,7 +27,8 @@ namespace IotServices.Services
     /// </summary>
     public class IotService : BackgroundService
     {
-        //readonly IHubContext<SignalRHub> _signalRHubContext;
+        public IHubContext<SignalRHub> SignalRHubContext { get; set; }
+        //IHubContext<SignalRHub> _signalRHubContext;
         //readonly IHttpClientFactory _httpClientFactory;
 
         //readonly Timer SaveMeasurementsTimer;
@@ -36,6 +37,8 @@ namespace IotServices.Services
 
         //private UnitOfWork UnitOfWork { get; }
         public string ConnectionString { get; set; }
+
+        public event EventHandler<MeasurementDto>? NewMeasurement;
 
         //public IConfiguration Configuration { get; set; }
         //public ISerialCommunicationService SerialCommunicationService { get; private set; }
@@ -48,21 +51,13 @@ namespace IotServices.Services
         public OilBurner OilBurner { get; private set; }
         public HeatingCircuit HeatingCircuit { get; private set; }
         public HotWater HotWater { get; private set; }
+        public IServiceProvider ServiceProvider { get; }
 
         public IotService(IServiceProvider serviceProvider) 
         {
-            using var scope = serviceProvider.CreateScope();
-            _ = serviceProvider.GetRequiredService<IHubContext<SignalRHub>>();
-            var dbFileName = ConfigurationHelper.GetConfiguration("DbFileName", "ConnectionStrings");
-            ConnectionString = $"Data Source={dbFileName}";
-            IHttpClientFactory httpClientFactory = serviceProvider.GetRequiredService<IHttpClientFactory>();
-            _ = StateService.Instance;
-            SerialCommunicationService.Instance.StartCommunication();
-            EspHttpCommunicationService.Instance.Init(httpClientFactory);
-            HomematicHttpCommunicationService.Instance.Init(httpClientFactory);
-            HomematicHttpCommunicationService.Instance.MeasurementReceived += HomematicHttpCommunicationService_MeasurementReceived;
-            _ = RaspberryIoService.Instance;
-
+            ServiceProvider = serviceProvider;
+            SignalRHubContext = ServiceProvider.GetRequiredService<IHubContext<SignalRHub>>();
+            ConnectionString = ConfigurationHelper.GetConfiguration("DefaultConnection", "ConnectionStrings");
             OilBurner = OilBurner.Instance;
             OilBurner.Fsm.StateChanged += Fsm_StateChanged;
             HeatingCircuit = HeatingCircuit.Instance;
@@ -81,14 +76,14 @@ namespace IotServices.Services
         /// </summary>
         /// <param name="initialSensors">Sensoren, die sich aus dem ItemEnum ergeben</param>
         /// <returns>Aktuell verwendete Sensoren</returns>
-        private async Task<Sensor[]?> SyncSensors(List<Sensor> initialSensors)
+        private async Task<Sensor[]> SyncSensors(Sensor[] initialSensors)
         {
             using ApplicationDbContext dbContext = new(ConnectionString);
             using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
             try
             {
                 var dbSensors = (await unitOfWork.Sensors.GetAsync()).ToList();
-                Log.Information($"RuleEngine;SyncSensors;{dbSensors.Count} sensors read from db");
+                Log.Information($"IotService;SyncSensors;{dbSensors.Count} sensors read from db");
                 // Zuerst jene Sensoren aus dem DbContext löschen, die nicht mehr im Code vorhanden sind
                 var sensorsToDelete = dbSensors
                     .Where(s => !initialSensors.Any(initialSensor => initialSensor.Name == s.Name))
@@ -111,7 +106,7 @@ namespace IotServices.Services
                 //    .ToArray();
                 //if (resultSensors.Length != sensorNames.Length)
                 //{
-                //    Log.Error($"RuleEngine,SyncSensors; dbSensors: {resultSensors.Length} !=  enumSensors: {sensorNames.Length}");
+                //    Log.Error($"IotService,SyncSensors; dbSensors: {resultSensors.Length} !=  enumSensors: {sensorNames.Length}");
                 //    return null;
                 //}
                 //var sensorArray = new Sensor[sensorNames.Length];
@@ -119,13 +114,13 @@ namespace IotServices.Services
                 //{
                 //    sensorArray[i] = resultSensors.Single(s => s.Name == sensorNamesi]);
                 //}
-                return resultSensors.ToArray();
+                return resultSensors;
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine,SyncSensors;Failed to read sensors; ex: {ex.Message}");
+                Log.Error($"IotService,SyncSensors;Failed to read sensors; ex: {ex.Message}");
             }
-            return null;
+            return Array.Empty<Sensor>();
         }
 
         /// <summary>
@@ -135,14 +130,14 @@ namespace IotServices.Services
         /// </summary>
         /// <param name="initialActors">Aktoren, die sich aus dem ItemEnum ergeben</param>
         /// <returns>Aktuell verwendete Aktoren</returns>
-        private async Task<Actor[]?> SyncActors(List<Actor> initialActors)
+        private async Task<Actor[]> SyncActors(Actor[] initialActors)
         {
             using ApplicationDbContext dbContext = new(ConnectionString);
             using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
             try
             {
                 var dbActors = (await unitOfWork.Actors.GetAsync()).ToList();
-                Log.Information($"RuleEngine;SyncActors;{dbActors.Count} actors read from db");
+                Log.Information($"IotService;SyncActors;{dbActors.Count} actors read from db");
                 var actorsToDelete = dbActors
                     .Where(s => !initialActors.Any(initialActor => initialActor.Name == s.Name))
                     .ToArray();
@@ -159,7 +154,7 @@ namespace IotServices.Services
                 //var actorNames = Enum.GetNames(typeof(ActorName));
                 //if (resultActors.Length != actorNames.Length)
                 //{
-                //    Log.Error($"RuleEngine,SyncActors; dbActors: {resultActors.Length} !=  enumActors: {actorNames.Length}");
+                //    Log.Error($"IotService,SyncActors; dbActors: {resultActors.Length} !=  enumActors: {actorNames.Length}");
                 //    return null;
                 //}
                 //var actorArray = new Actor[actorNames.Length];
@@ -171,9 +166,9 @@ namespace IotServices.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine,SyncActors;Failed to read actors; ex: {ex.Message}");
+                Log.Error($"IotService,SyncActors;Failed to read actors; ex: {ex.Message}");
             }
-            return null;
+            return Array.Empty<Actor>();
         }
         #endregion
 
@@ -196,7 +191,7 @@ namespace IotServices.Services
             }
             catch (Exception ex)
             {
-                Log.Error($"RuleEngine,OnSaveMeasurements;failed to get measurements; ex: {ex.Message}");
+                Log.Error($"IotService,OnSaveMeasurements;failed to get measurements; ex: {ex.Message}");
             }
         }
 
@@ -205,7 +200,7 @@ namespace IotServices.Services
         /// </summary>
         /// <param name="measurements"></param>
         /// <returns></returns>
-        private async Task SaveMeasurements(IEnumerable<Measurement> measurements)
+        private static async Task SaveMeasurements(IEnumerable<Measurement> measurements)
         {
             if (measurements.Any())
             {
@@ -213,9 +208,8 @@ namespace IotServices.Services
                 {
                     m.Item = null;
                 }
-                Log.Information($"RuleEngine;OnSaveMeasurements;{measurements.Count()} Measurements to save");
-                using ApplicationDbContext dbContext = new(ConnectionString);
-                using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+                Log.Information($"IotService;OnSaveMeasurements;{measurements.Count()} Measurements to save");
+                using IUnitOfWork unitOfWork = new UnitOfWork();
                 try
                 {
                     await unitOfWork.Measurements.AddRangeAsync(measurements);
@@ -223,7 +217,7 @@ namespace IotServices.Services
                 }
                 catch (Exception ex)
                 {
-                    Log.Error($"RuleEngine,OnSaveMeasurements;Failed to save Measurement; ex: {ex.Message}");
+                    Log.Error($"IotService,OnSaveMeasurements;Failed to save Measurement; ex: {ex.Message}");
                 }
             }
         }
@@ -239,17 +233,22 @@ namespace IotServices.Services
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Log.Information("IotService;ExecuteAsync;started");
-            await SyncSensors(StateService.Instance.Sensors.ToList());
-            await SyncActors(StateService.Instance.Actors.ToList());
-            try
-            {
-                await RaspberryIoService.Instance.ResetEspAsync();  // Bei Neustart der RuleEngine auch ESP neu starten
-            }
-            catch (Exception)
-            {
-                Log.Error("ExecuteAsync;Raspberry IO not available!");
-            }
-            StartFiniteStateMachines();
+            using var scope = ServiceProvider.CreateScope();
+            IHttpClientFactory httpClientFactory = ServiceProvider.GetRequiredService<IHttpClientFactory>();
+            _ = StateService.Instance;
+            SerialCommunicationService.Instance.StartCommunication();
+            SerialCommunicationService.Instance.MeasurementReceived += MeasurementReceivedAsync;
+            EspHttpCommunicationService.Instance.Init(httpClientFactory);
+            EspHttpCommunicationService.Instance.MeasurementReceived += MeasurementReceivedAsync;
+            HomematicHttpCommunicationService.Instance.Init(httpClientFactory);
+            HomematicHttpCommunicationService.Instance.MeasurementReceived += HomematicHttpCommunicationService_MeasurementReceived;
+            HomematicHttpCommunicationService.Instance.MeasurementReceived += MeasurementReceivedAsync;
+            HomematicHttpCommunicationService.Instance.StartCommunication();
+            _ = RaspberryIoService.Instance;
+            StateService.Instance.Init(SignalRHubContext);
+            StateService.Instance.Sensors = await SyncSensors(StateService.Instance.Sensors);
+            StateService.Instance.Actors = await SyncActors(StateService.Instance.Actors);
+            await RuleEngine.Instance.Init();
             _ = new Timer(OnSaveMeasurements, null, 1 * 1000, 1 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
 
@@ -261,7 +260,7 @@ namespace IotServices.Services
                 round++;
                 if (round >= 100)  // alle 10 Sekunden
                 {
-                    Log.Information($"RuleEngine;ExecuteAsync;check oilburner and heating");
+                    Log.Information($"IotService;ExecuteAsync;check oilburner and heating");
                     OilBurner.CheckOilBurner();
                     HeatingCircuit.CheckHeating();
                     round = 0;
@@ -270,6 +269,23 @@ namespace IotServices.Services
             }
             //return Task.CompletedTask;
         }
+
+        private async void MeasurementReceivedAsync(object? sender, MeasurementDto measurement)
+        {
+            if (measurement != null)
+            {
+                NewMeasurement?.Invoke(this, measurement);
+                await SignalRHubContext.Clients.All.SendAsync("ReceiveMeasurement", measurement);
+                Log.Information($"StateService;MeasurementReceivedAsync; measurement received: {measurement}");
+            }
+            else
+            {
+                Log.Error($"StateService;MeasurementReceived; measurement is null");
+            }
+            await Task.CompletedTask;
+        }
+
+
 
 
         /// <summary>
@@ -286,22 +302,6 @@ namespace IotServices.Services
         }
 
 
-        /// <summary>
-        /// Mauellen Betrieb ein/ausschalten
-        /// </summary>
-        /// <param name="on"></param>
-        public void SetManualOperation(bool on)
-        {
-            if (on)  // manueller Betrieb
-            {
-                StopFiniteStateMachines();
-            }
-            else
-            {
-                StartFiniteStateMachines();
-            }
-        }
-
         private async void Fsm_StateChanged(object? sender, FsmTransition fsmStateChangedInfoDto)
         {
             await StateService.Instance.SendFsmStateChangedAsync(fsmStateChangedInfoDto);
@@ -314,8 +314,7 @@ namespace IotServices.Services
                 ActState = fsmStateChangedInfoDto.ActState,
                 InputMessage = fsmStateChangedInfoDto.InputMessage
             };
-            using ApplicationDbContextNoTracking dbContext = new(ConnectionString);
-            using IUnitOfWork unitOfWork = new UnitOfWork(dbContext);
+            using IUnitOfWork unitOfWork = new UnitOfWork();
             try
             {
                 await unitOfWork.FsmTransitions.AddAsync(fsmTransition);
@@ -327,33 +326,11 @@ namespace IotServices.Services
             }
         }
 
-        public void StartFiniteStateMachines()
-        {
-            OilBurner.Start();
-            HotWater.Start();
-            HeatingCircuit.Start();
-        }
-
-        private void StopFiniteStateMachines()
-        {
-            OilBurner.Stop();
-            HotWater.Stop();
-            HeatingCircuit.Stop();
-        }
-
         public async override Task StopAsync(CancellationToken cancellationToken)
         {
             SerialCommunicationService.Instance.StopCommunication();
             await base.StopAsync(cancellationToken);
         }
-
-        public async Task SetTargetTemperatureAsync(double temperature)
-        {
-            HeatingCircuit.TargetTemperature = temperature;
-            await HomematicHttpCommunicationService.Instance.SetTargetTemperatureAsync(temperature);
-        }
-
-
 
     }
 }

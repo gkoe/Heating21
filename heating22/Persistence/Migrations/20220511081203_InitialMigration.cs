@@ -51,6 +51,45 @@ namespace Persistence.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FsmTransitions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Time = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Fsm = table.Column<string>(type: "TEXT", nullable: true),
+                    LastState = table.Column<string>(type: "TEXT", nullable: true),
+                    ActState = table.Column<string>(type: "TEXT", nullable: true),
+                    Input = table.Column<string>(type: "TEXT", nullable: true),
+                    InputMessage = table.Column<string>(type: "TEXT", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FsmTransitions", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Item",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Trend = table.Column<double>(type: "REAL", nullable: false),
+                    PersistenceInterval = table.Column<int>(type: "INTEGER", nullable: false),
+                    LastPersistenceTime = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    Name = table.Column<string>(type: "TEXT", nullable: true),
+                    Unit = table.Column<string>(type: "TEXT", nullable: true),
+                    Discriminator = table.Column<string>(type: "TEXT", nullable: false),
+                    SettedValue = table.Column<double>(type: "REAL", nullable: true),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Item", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -177,6 +216,28 @@ namespace Persistence.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Measurements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "INTEGER", nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Value = table.Column<double>(type: "REAL", nullable: false),
+                    Time = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    ItemId = table.Column<int>(type: "INTEGER", nullable: false),
+                    RowVersion = table.Column<byte[]>(type: "BLOB", rowVersion: true, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Measurements", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Measurements_Item_ItemId",
+                        column: x => x.ItemId,
+                        principalTable: "Item",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -215,6 +276,11 @@ namespace Persistence.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Measurements_ItemId",
+                table: "Measurements",
+                column: "ItemId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Sessions_ApplicationUserId",
                 table: "Sessions",
                 column: "ApplicationUserId");
@@ -238,10 +304,19 @@ namespace Persistence.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "FsmTransitions");
+
+            migrationBuilder.DropTable(
+                name: "Measurements");
+
+            migrationBuilder.DropTable(
                 name: "Sessions");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Item");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

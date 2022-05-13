@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using IotServices.Services;
+
+using Microsoft.AspNetCore.SignalR;
 
 using Serilog;
 
@@ -12,6 +14,7 @@ namespace Services.Hubs
         {
             // https://consultwithgriff.com/signalr-connection-ids/
             Log.Information($"client connected, connectionid: {Context.ConnectionId}");
+            await StateService.Instance.SendItemsBySignalRAsync();
             await base.OnConnectedAsync();
         }
 

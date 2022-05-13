@@ -17,7 +17,6 @@ namespace Core.Entities
         BoilerTop,
         BoilerBottom,
         SolarCollector,
-        LivingroomFirstFloor,
         HmoLivingroomFirstFloor,
         HmoLivingroomFirstFloorSet,
         HmoTemperatureOut,
@@ -58,7 +57,7 @@ namespace Core.Entities
         public string Unit { get; set; }
 
         [NotMapped]
-        public ItemEnum ItemEnum { get; private set; }
+        public ItemEnum ItemEnum { get; set; }
 
         public ICollection<Measurement> Measurements { get; set; } = new List<Measurement>();
 
@@ -79,8 +78,8 @@ namespace Core.Entities
         [NotMapped]
         public double Value { get; set; }
 
-        [NotMapped]
-        public int EnumNumber { get; private set; }
+        //[NotMapped]
+        //public int EnumNumber { get; private set; }
 
         [NotMapped]
         public double LastValue { get; set; }

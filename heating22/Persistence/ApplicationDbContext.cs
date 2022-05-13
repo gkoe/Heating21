@@ -1,4 +1,5 @@
-﻿using Base.Persistence;
+﻿using Base.Helper;
+using Base.Persistence;
 
 using Core.Entities;
 
@@ -17,6 +18,8 @@ namespace Persistence
 
         public ApplicationDbContext() : base()
         {
+            ConnectionString = ConfigurationHelper
+                .GetConfiguration("DefaultConnection", "ConnectionStrings");
         }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)

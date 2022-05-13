@@ -51,6 +51,7 @@ namespace Api
         /// <param name="services"></param>
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddHttpClient();
             string connectionString = ConfigurationHelper
                 .GetConfiguration("DefaultConnection", "ConnectionStrings");
             //_ = services.AddDbContext<ApplicationDbContext>(options =>
@@ -120,7 +121,7 @@ namespace Api
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "IotFullstack API",
+                    Title = "Heating API",
                     Description = "An API for managing sensors and actors",
                     Contact = new OpenApiContact
                     {
