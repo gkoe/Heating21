@@ -31,7 +31,7 @@ namespace IotServices.Services
         //IHubContext<SignalRHub> _signalRHubContext;
         //readonly IHttpClientFactory _httpClientFactory;
 
-        //readonly Timer SaveMeasurementsTimer;
+        Timer SaveMeasurementsTimer { get; }
 
         //IServiceProvider? ServiceProvider { get; }
 
@@ -64,6 +64,7 @@ namespace IotServices.Services
             HeatingCircuit.Fsm.StateChanged += Fsm_StateChanged;
             HotWater = HotWater.Instance;
             HotWater.Fsm.StateChanged += Fsm_StateChanged;
+            SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
         }
 
         #region Initialize sensors and actors with config and db
@@ -185,9 +186,9 @@ namespace IotServices.Services
             try
             {
                 var sensorMeasurementsToSave = StateService.Instance.GetSensorMeasurementsToSave();
-                await SaveMeasurements(sensorMeasurementsToSave);
+                await SaveMeasurements("sensors", sensorMeasurementsToSave);
                 var actorMeasurementsToSave = StateService.Instance.GetActorMeasurementsToSave();
-                await SaveMeasurements(actorMeasurementsToSave);
+                await SaveMeasurements("actors",actorMeasurementsToSave);
             }
             catch (Exception ex)
             {
@@ -200,7 +201,7 @@ namespace IotServices.Services
         /// </summary>
         /// <param name="measurements"></param>
         /// <returns></returns>
-        private static async Task SaveMeasurements(IEnumerable<Measurement> measurements)
+        private static async Task SaveMeasurements(string source, IEnumerable<Measurement> measurements)
         {
             if (measurements.Any())
             {
@@ -208,7 +209,7 @@ namespace IotServices.Services
                 {
                     m.Item = null;
                 }
-                Log.Information($"IotService;OnSaveMeasurements;{measurements.Count()} Measurements to save");
+                Log.Information($"IotService;OnSaveMeasurements for {source};{measurements.Count()} Measurements to save");
                 using IUnitOfWork unitOfWork = new UnitOfWork();
                 try
                 {
@@ -249,9 +250,8 @@ namespace IotServices.Services
             StateService.Instance.Sensors = await SyncSensors(StateService.Instance.Sensors);
             StateService.Instance.Actors = await SyncActors(StateService.Instance.Actors);
             await RuleEngine.Instance.Init();
-            _ = new Timer(OnSaveMeasurements, null, 1 * 1000, 1 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
+            //_ = new Timer(OnSaveMeasurements, null, 1 * 1000, 1 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
             //SaveMeasurementsTimer = new Timer(OnSaveMeasurements, null, 10 * 1000, 10 * 1000); // nach 60 Sekunden starten dann alle 900 Sekunden
-
             //Instance = this;  // ab jetzt Zugriff über Singleton erlauben
             int round = 0;
             while (!stoppingToken.IsCancellationRequested)
