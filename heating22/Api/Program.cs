@@ -62,9 +62,14 @@ namespace Api
 
             // Log the exception, display it, etc
             var message = "UNKNOWN EXCEPTION";
-            if (e.ExceptionObject as Exception != null)
+            if (e.ExceptionObject is Exception)
             {
+                var exception = (Exception)e.ExceptionObject;
                 message = (e.ExceptionObject as Exception)?.Message;
+                if (exception.InnerException != null)
+                {
+                    message = $"{message}: Inner Exception: {exception.InnerException.Message}";
+                }
             }
             Log.Fatal("UNHANDLED EXCEPTION", $"Message: {message}");
         }
